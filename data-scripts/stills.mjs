@@ -13,7 +13,7 @@ const serveUrl = await bundle({entryPoint: path.resolve('src/index.ts')});
 for (const id of comps.length ? comps : ['TrackLayer']) {
 	const composition = await selectComposition({serveUrl, id, browserExecutable});
 	for (const frame of frames.length ? frames : [0]) {
-		const output = id === 'TrackLayerFlat' ? `renders/flat/f${String(frame).padStart(4, '0')}.png` : id === 'TrackLayerPaper' ? `renders/paper/f${String(frame).padStart(4, '0')}.png` : id === 'TrackLayer' ? `renders/stills/f${String(frame).padStart(4, '0')}.png` : `renders/styleframes/${id}.png`;
+		const output = id === 'TrackLayerFlat' ? `renders/flat/f${String(frame).padStart(4, '0')}.png` : id === 'TrackLayerPaper' ? `renders/paper/f${String(frame).padStart(4, '0')}.png` : id === 'TrackLayer' ? `renders/stills/f${String(frame).padStart(4, '0')}.png` : id === 'JevContract' ? `renders/contract/f${String(frame).padStart(4, '0')}.png` : `renders/styleframes/${id}.png`;
 		await renderStill({serveUrl, composition, frame, output, browserExecutable});
 		console.log('wrote', output);
 	}

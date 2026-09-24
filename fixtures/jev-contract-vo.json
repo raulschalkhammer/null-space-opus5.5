@@ -1,0 +1,60 @@
+{
+  "voice": "af_heart",
+  "lines": [
+    {
+      "id": "C01",
+      "text": "Here's a strange thing to build: an AI that isn't allowed to write. No sentences. No explanations. Just numbers. Why would anyone want that?",
+      "duration": 9.536
+    },
+    {
+      "id": "C02",
+      "text": "Most of us assume that more words means more understanding. A paragraph feels smarter than a number. But remember the train: every extra word was one more bet.",
+      "duration": 10.304
+    },
+    {
+      "id": "C03",
+      "text": "Jev starts with a contract. Before it reads anything, you write down the questions, and every answer it's allowed to give. Is this a scam: yes or no. Which team should handle it: billing, fraud, or lost card. And how urgent is it, anywhere from zero to one.",
+      "duration": 16.832
+    },
+    {
+      "id": "C04",
+      "text": "Picture a mailroom with a fixed wall of slots. A letter comes in. Jev reads the whole thing in a single sweep, and drops it into a slot.",
+      "duration": 8.597
+    },
+    {
+      "id": "C05",
+      "text": "Our train wants to help. It starts building a brand new slot. Miscellaneous-ish. But the wall has no room for it. Jev can pick the wrong slot. It can never invent a new one.",
+      "duration": 11.307
+    },
+    {
+      "id": "C06",
+      "text": "And it answers every question at once. Scam, team and urgency all come out of the same single reading, side by side, instead of one word after another.",
+      "duration": 10.091
+    },
+    {
+      "id": "C07",
+      "text": "Written as math, it's a product again. The chance of all three answers is the chance of each one, multiplied. The same symbol as the chain rule. But here, no answer has to wait for the one before it.",
+      "duration": 12.949
+    },
+    {
+      "id": "C08",
+      "text": "Now a harder letter. My card was charged twice, and now I can't find it. Is that billing, fraud, or a lost card? Make your pick.",
+      "duration": 8.512
+    },
+    {
+      "id": "C09",
+      "text": "Three answers that must add up to one can be drawn as a triangle. Each corner is a sure answer. The very center means: no idea at all. Jev puts this letter here. Pulled toward fraud, but far from any corner.",
+      "duration": 14.08
+    },
+    {
+      "id": "C10",
+      "text": "And that position is useful. When the point drifts toward the middle, Jev doesn't have to bluff. You draw a line, and anything inside it goes to a person.",
+      "duration": 9.301
+    },
+    {
+      "id": "C11",
+      "text": "But all of this rests on one promise. When Jev says ninety one percent, is it right about ninety one percent of the time? That promise has a name. And it's where we go next.",
+      "duration": 10.709
+    }
+  ]
+}

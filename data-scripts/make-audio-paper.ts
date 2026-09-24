@@ -4,16 +4,19 @@
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {FPS, buildFilm, type Fixture, type VoLine} from '../src/shorts/paper-track/timeline.ts';
 import {buildFlatFilm} from '../src/shorts/flat-track/timeline.ts';
+import {buildContract} from '../src/shorts/jev-contract/timeline.ts';
 
 // --film=flat2: the flat cut with its cold open (own narration set, synth score, flat2-track.wav)
 const FLAT2 = process.argv.includes('--film=flat2');
+// --film=contract: chapter 2, Jev's Contract (vo-contract, contract-track.wav)
+const CONTRACT = process.argv.includes('--film=contract');
 
 const root = new URL('../', import.meta.url);
 const fx = JSON.parse(readFileSync(new URL('fixtures/track-layer.json', root), 'utf8')) as Fixture;
-const vo = JSON.parse(readFileSync(new URL(FLAT2 ? 'fixtures/track-layer-flat-vo.json' : 'fixtures/track-layer-vo.json', root), 'utf8')).lines as VoLine[];
-const film = FLAT2 ? buildFlatFilm(fx, vo) : buildFilm(fx, vo);
+const vo = JSON.parse(readFileSync(new URL(CONTRACT ? 'fixtures/jev-contract-vo.json' : FLAT2 ? 'fixtures/track-layer-flat-vo.json' : 'fixtures/track-layer-vo.json', root), 'utf8')).lines as VoLine[];
+const film = CONTRACT ? buildContract(vo) : FLAT2 ? buildFlatFilm(fx, vo) : buildFilm(fx, vo);
 // --style=synth swaps the felt piano for soft synth plucks + pads and writes flat-track.wav
-const SYNTH = FLAT2 || process.argv.includes('--style=synth');
+const SYNTH = FLAT2 || CONTRACT || process.argv.includes('--style=synth');
 
 const SR = 44100;
 const N = Math.ceil((film.total / FPS) * SR) + SR;
@@ -89,7 +92,7 @@ function readWav(path: URL) {
 	return {s, rate};
 }
 for (const l of vo) {
-	const path = new URL(`public/audio/${FLAT2 ? 'vo-flat' : 'vo'}/${l.id}.wav`, root);
+	const path = new URL(`public/audio/${CONTRACT ? 'vo-contract' : FLAT2 ? 'vo-flat' : 'vo'}/${l.id}.wav`, root);
 	if (!existsSync(path)) throw new Error(`missing ${l.id}.wav: run data-scripts/make-vo.py first`);
 	const {s, rate} = readWav(path);
 	const start = Math.round((film.cues[l.id].start / FPS) * SR);
@@ -243,6 +246,6 @@ pcm.write('data', 36);
 pcm.writeUInt32LE(N * 2, 40);
 for (let i = 0; i < N; i++) pcm.writeInt16LE(Math.round(out[i] * 0.95 * 32767), 44 + i * 2);
 mkdirSync(new URL('public/audio/', root), {recursive: true});
-const outName = FLAT2 ? 'flat2-track.wav' : SYNTH ? 'flat-track.wav' : 'paper-track.wav';
+const outName = CONTRACT ? 'contract-track.wav' : FLAT2 ? 'flat2-track.wav' : SYNTH ? 'flat-track.wav' : 'paper-track.wav';
 writeFileSync(new URL(`public/audio/${outName}`, root), pcm);
 console.log(`wrote public/audio/${outName}: ${(N / SR).toFixed(1)} s, ${film.sfx.length} sfx, ${vo.length} narration lines, ${film.total} frames`);
