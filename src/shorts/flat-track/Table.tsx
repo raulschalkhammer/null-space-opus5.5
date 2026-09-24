@@ -2,12 +2,48 @@ import React from 'react';
 import {rng} from '../../fx/rough';
 import {FONT, FlatLoco, K} from '../../flat/kit';
 import {Marker} from '../../flat/type';
-import {type TCam, fmt, forkState, marbleAt, pct, proj, rect, strip} from '../paper-track/Table';
+import {type TCam, fmt, forkState, marbleAt, pct, proj, rect, smooth, strip} from '../paper-track/Table';
 import {type Film, type ForkGeo, ROUTE, easeOut, onTwos, progress} from '../paper-track/timeline';
 
 // Flat-vector tabletop: glowing ribbons on a dusk plain. Same geometry as the paper cut, so widths stay honest.
 
-const ForkRibbons: React.FC<{c: TCam; geo: ForkGeo; reveal: number; decided: number; nextX: number; laidTo: number}> = ({c, geo, reveal, decided, nextX, laidTo}) => {
+// Rails, sleepers and sheen laid along a track bed whose centreline runs from (x0, zc0) to (x1, zc1).
+// The bed's width is the probability; the rails keep a gauge that shrinks only when the bed gets too thin.
+const Rails: React.FC<{c: TCam; x0: number; zc0: number; x1: number; zc1: number; w: number; u1?: number; hot?: boolean; glintX?: number}> = ({c, x0, zc0, x1, zc1, w, u1 = 1, hot, glintX}) => {
+	if (u1 <= 0.01) return null;
+	const g = Math.min(w * 0.3, 42);
+	const zAt = (X: number) => lerpZ(zc0, zc1, smooth((X - x0) / (x1 - x0 || 1)));
+	const sleepers: React.ReactNode[] = [];
+	if (g > 3) {
+		const xe = x0 + (x1 - x0) * u1;
+		for (let X = Math.ceil(x0 / 64) * 64; X < xe; X += 64) {
+			const zc = zAt(X);
+			const q = [proj(c, X - 7, zc - g * 1.45), proj(c, X + 7, zc - g * 1.45), proj(c, X + 7, zc + g * 1.45), proj(c, X - 7, zc + g * 1.45)];
+			sleepers.push(<path key={X} d={`M ${q.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ')} Z`} fill={hot ? '#7A4A3A' : '#3A3470'} />);
+		}
+	}
+	const rail = (off: number, key: string) => (
+		<g key={key}>
+			<path d={strip(c, x0, zc0 + off - 3, 6, x1, zc1 + off - 3, u1)} fill={hot ? '#FFE3B8' : '#9AA2E6'} />
+			<path d={strip(c, x0, zc0 + off + 1.2, 1.8, x1, zc1 + off + 1.2, u1)} fill="#FFFFFF" opacity={hot ? 0.95 : 0.55} />
+		</g>
+	);
+	const glint = glintX !== undefined && glintX > x0 && glintX < x0 + (x1 - x0) * u1 ? [-g, g].map((off, i) => {
+		const p = proj(c, glintX, zAt(glintX) + off);
+		return <ellipse key={i} cx={p.x} cy={p.y} rx={30 * p.s} ry={4 * p.s} fill="#FFFFFF" opacity={0.95} />;
+	}) : null;
+	return (
+		<g>
+			<path d={strip(c, x0, zc0 - w * 0.12, w * 0.24, x1, zc1 - w * 0.12, u1)} fill="#FFFFFF" opacity={0.09} />
+			{sleepers}
+			{g > 1.2 ? [rail(-g, 'a'), rail(g, 'b')] : rail(0, 'a')}
+			{glint}
+		</g>
+	);
+};
+const lerpZ = (a: number, b: number, t: number) => a + (b - a) * t;
+
+const ForkRibbons: React.FC<{c: TCam; geo: ForkGeo; reveal: number; decided: number; nextX: number; laidTo: number; glintX?: number}> = ({c, geo, reveal, decided, nextX, laidTo, glintX}) => {
 	const {BRANCH, STUB, Zc} = ROUTE;
 	const x = geo.x;
 	return (
@@ -22,7 +58,13 @@ const ForkRibbons: React.FC<{c: TCam; geo: ForkGeo; reveal: number; decided: num
 					<g key={i} opacity={op}>
 						{hot ? <path d={d} fill={K.orange} filter="url(#glowBig)" opacity={0.55} /> : null}
 						<path d={d} fill={fill} />
-						{!b.chosen && reveal > 0.99 ? <path d={rect(c, x + BRANCH - 2, x + BRANCH + STUB, b.z1, w)} fill={fill} /> : null}
+						<Rails c={c} x0={x} zc0={b.z0 + w / 2} x1={x + BRANCH} zc1={b.z1 + w / 2} w={w} u1={reveal} hot={hot} />
+						{!b.chosen && reveal > 0.99 ? (
+							<>
+								<path d={rect(c, x + BRANCH - 2, x + BRANCH + STUB, b.z1, w)} fill={fill} />
+								<Rails c={c} x0={x + BRANCH - 2} zc0={b.z1 + w / 2} x1={x + BRANCH + STUB} zc1={b.z1 + w / 2} w={w} />
+							</>
+						) : null}
 					</g>
 				);
 			})}
@@ -30,6 +72,7 @@ const ForkRibbons: React.FC<{c: TCam; geo: ForkGeo; reveal: number; decided: num
 				<>
 					<path d={rect(c, x + BRANCH - 2, Math.min(nextX, laidTo), Zc - geo.chosen.w / 2, Math.max(geo.chosen.w, 1.4))} fill={K.orange} filter="url(#glowBig)" opacity={0.5} />
 					<path d={rect(c, x + BRANCH - 2, Math.min(nextX, laidTo), Zc - geo.chosen.w / 2, Math.max(geo.chosen.w, 1.4))} fill="url(#gChosen)" />
+					<Rails c={c} x0={x + BRANCH - 2} zc0={Zc} x1={Math.min(nextX, laidTo)} zc1={Zc} w={Math.max(geo.chosen.w, 1.4)} hot glintX={glintX} />
 				</>
 			) : null}
 		</g>
@@ -53,7 +96,47 @@ export const FlatTableWorld: React.FC<{
 	const g = onTwos(f);
 	const r = rng(8);
 	const rocks = Array.from({length: 80}, () => ({X: -3000 + r() * 16000, Z: 1500 + r() * 3200, h: 0.6 + r() * 0.9, kind: r()}));
+	const glintX = train.X + 260 + ((f * 26) % 700);
 	const upright: {Z: number; node: React.ReactNode}[] = [];
+	// ground detail: light and dark patches lying flat, then tufts, pebbles and flowers standing up
+	const rd = rng(15);
+	const bits = Array.from({length: 320}, () => ({X: -4000 + rd() * 18000, Z: 1400 + rd() * 3600, k: rd(), s: 0.5 + rd() * 0.9, t: rd()}));
+	const patches: React.ReactNode[] = [];
+	for (const b of bits) {
+		const p = proj(c, b.X, b.Z);
+		if (p.x < -300 || p.x > 2220 || p.y < c.horizon) continue;
+		if (b.k < 0.18) {
+			const rx = 260 * b.s * p.s;
+			patches.push(<ellipse key={`pa${b.X}`} cx={p.x} cy={p.y} rx={rx} ry={rx * (c.H / b.Z)} fill={b.t < 0.5 ? '#2F3790' : '#1A205A'} opacity={0.55} />);
+			continue;
+		}
+		if (Math.abs(b.Z - Zc) < W0 * 0.65) continue;
+		const sc = p.s * 2 * b.s;
+		if (b.k < 0.6) {
+			upright.push({Z: b.Z, node: (
+				<g key={`tu${b.X}`} transform={`translate(${p.x} ${p.y}) scale(${sc})`}>
+					{[-7, 0, 7].map((dx, j) => (
+						<path key={j} d={`M ${dx} 0 Q ${dx + (j - 1) * 3 + 2 * Math.sin(f * 0.04 + b.X)} -12 ${dx + (j - 1) * 8} ${-20 - j * 3}`} stroke={b.t < 0.5 ? '#4B63C4' : '#2F9AA4'} strokeWidth={3.5} fill="none" strokeLinecap="round" />
+					))}
+				</g>
+			)});
+		} else if (b.k < 0.85) {
+			upright.push({Z: b.Z, node: (
+				<g key={`pb${b.X}`} transform={`translate(${p.x} ${p.y}) scale(${sc})`}>
+					<ellipse cx={0} cy={0} rx={13} ry={6} fill="#262C74" />
+					<ellipse cx={-3} cy={-2} rx={8} ry={3.5} fill="#4F58B6" />
+				</g>
+			)});
+		} else {
+			upright.push({Z: b.Z, node: (
+				<g key={`fl${b.X}`} transform={`translate(${p.x} ${p.y}) scale(${sc})`}>
+					<path d="M 0 0 L 0 -18" stroke="#2F9AA4" strokeWidth={2.5} />
+					<circle cx={0} cy={-20} r={5} fill={b.t < 0.5 ? '#FF8FB1' : K.yellow} />
+					<circle cx={0} cy={-20} r={2} fill="#FFFFFF" />
+				</g>
+			)});
+		}
+	}
 	for (const t of rocks) {
 		if (Math.abs(t.Z - Zc) < W0 * 0.8) continue;
 		const p = proj(c, t.X, t.Z);
@@ -77,7 +160,7 @@ export const FlatTableWorld: React.FC<{
 		const st = forkState(film, geo, f, revealAt(i));
 		if (st.reveal <= 0) return;
 		const nextX = route[i + 1]?.x ?? geo.x + BRANCH + 900;
-		grounds.push(<ForkRibbons key={i} c={c} geo={geo} reveal={st.reveal} decided={st.decided} nextX={nextX} laidTo={train.X + 520} />);
+		grounds.push(<ForkRibbons key={i} c={c} geo={geo} reveal={st.reveal} decided={st.decided} nextX={nextX} laidTo={train.X + 520} glintX={glintX} />);
 		geo.branches.forEach((b, j) => {
 			if (b.chosen || b.p < 0.07) return;
 			const p = proj(c, geo.x + BRANCH + STUB + 60 + j * 175, b.z1 + b.w / 2);
@@ -128,13 +211,14 @@ export const FlatTableWorld: React.FC<{
 	)});
 	const painted: React.ReactNode[] = [];
 	if (contextCard) {
-		const X = route[0].x - 1250;
-		const p0 = proj(c, X, Zc);
-		const px = proj(c, X + 1, Zc);
-		const pz = proj(c, X, Zc - 1);
+		const X = route[0].x - 820;
+		const Zt = Zc - W0 / 2 - 200;
+		const p0 = proj(c, X, Zt);
+		const px = proj(c, X + 1, Zt);
+		const pz = proj(c, X, Zt - 1);
 		painted.push(
 			<g key="ctx" transform={`matrix(${px.x - p0.x} ${px.y - p0.y} ${pz.x - p0.x} ${pz.y - p0.y} ${p0.x} ${p0.y})`}>
-				<text textAnchor="middle" y={45} fontFamily={FONT} fontWeight={900} fontSize={150} fill="#A8421C" opacity={0.75}>
+				<text textAnchor="middle" y={60} fontFamily={FONT} fontWeight={900} fontSize={190} fill="#8E97D6" opacity={0.55}>
 					{contextCard}
 				</text>
 			</g>,
@@ -146,14 +230,30 @@ export const FlatTableWorld: React.FC<{
 	return (
 		<g>
 			<rect x={-50} y={hz} width={2020} height={Math.max(0, 1140 - hz)} fill="url(#gGround)" />
+			{patches}
 			{pondC ? (
 				<>
 					<ellipse cx={pondC.x} cy={pondC.y} rx={1300 * pondC.s} ry={300 * pondC.s} fill="#0A0F33" />
-					<ellipse cx={pondC.x} cy={pondC.y - 10 * pondC.s} rx={1000 * pondC.s} ry={200 * pondC.s} fill="none" stroke={K.cyan} strokeWidth={3} opacity={0.3} />
+					<ellipse cx={pondC.x} cy={pondC.y} rx={1300 * pondC.s} ry={300 * pondC.s} fill="none" stroke="#A9C4FF" strokeWidth={4} opacity={0.55} />
+					<ellipse cx={pondC.x} cy={pondC.y + 30 * pondC.s} rx={1150 * pondC.s} ry={240 * pondC.s} fill="#1C2A78" opacity={0.6} />
+					{Array.from({length: 9}, (_, i) => (
+						<rect key={i} x={pondC.x - 900 * pondC.s + ((i * 223 + f * 0.8) % 1700) * pondC.s} y={pondC.y - 150 * pondC.s + ((i * 67) % 300) * pondC.s} width={140 * pondC.s} height={4} rx={2} fill="#8FA2FF" opacity={0.3} />
+					))}
+					{[-1100, -700, 900, 1150].map((dx, i) => (
+						<g key={`rd${i}`} transform={`translate(${pondC.x + dx * pondC.s} ${pondC.y - 120 * pondC.s + (i % 2) * 180 * pondC.s}) scale(${pondC.s * 1.4})`}>
+							{[-12, 0, 12].map((x, j) => (
+								<g key={j}>
+									<path d={`M ${x} 0 L ${x + 3 * Math.sin(f * 0.04 + j)} -${90 + j * 12}`} stroke="#2B3470" strokeWidth={4} strokeLinecap="round" />
+									<rect x={x - 5 + 3 * Math.sin(f * 0.04 + j)} y={-(110 + j * 12)} width={10} height={28} rx={5} fill="#8A5A3C" />
+								</g>
+							))}
+						</g>
+					))}
 				</>
 			) : null}
 			<path d={rect(c, trunkFrom, first.x + 2, Zc - first.win / 2, first.win)} fill={K.orange} filter="url(#glowBig)" opacity={0.45} />
 			<path d={rect(c, trunkFrom, first.x + 2, Zc - first.win / 2, first.win)} fill="url(#gChosen)" />
+			<Rails c={c} x0={trunkFrom} zc0={Zc} x1={first.x + 2} zc1={Zc} w={first.win} hot glintX={glintX} />
 			{painted}
 			{grounds}
 			{upright.map((u) => u.node)}

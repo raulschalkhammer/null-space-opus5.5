@@ -147,10 +147,12 @@ export const City: React.FC<{x: number; y: number; w: number; f: number; seed?: 
 		blocks.push(<rect key={`b${bx}`} x={x + bx} y={y - bh} width={bw} height={bh} fill="#1C2160" />);
 		for (let wy = y - bh + 8; wy < y - 6; wy += 11) {
 			for (let wx = x + bx + 4; wx < x + bx + bw - 5; wx += 8) {
-				if (r() < 0.45) {
-					const on = Math.sin(f * 0.02 + wx * 0.3 + wy) > -0.7;
-					if (on) blocks.push(<rect key={`w${wx}-${wy}`} x={wx} y={wy} width={3.4} height={4.5} fill={r() < 0.8 ? K.yellow : K.cyan} opacity={0.85} />);
-				}
+				// draw both random values unconditionally so the sequence (and every building after this one)
+				// is identical on every frame; only the on/off flicker depends on f
+				const lit = r() < 0.45;
+				const warm = r() < 0.8;
+				const on = Math.sin(f * 0.02 + wx * 0.3 + wy) > -0.7;
+				if (lit && on) blocks.push(<rect key={`w${wx}-${wy}`} x={wx} y={wy} width={3.4} height={4.5} fill={warm ? K.yellow : K.cyan} opacity={0.85} />);
 			}
 		}
 	}
