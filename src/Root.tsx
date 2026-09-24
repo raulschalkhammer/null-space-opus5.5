@@ -25,6 +25,7 @@ import {StylePaper} from './styleframes/StylePaper';
 import {StyleRiso} from './styleframes/StyleRiso';
 import {TrackLayerPaper, film} from './shorts/paper-track/Film';
 import {TrackLayerFlat, film as flatFilm} from './shorts/flat-track/Film';
+import {TrainSheetA, TrainSheetB, TrainSheetC} from './styleframes/TrainSheets';
 
 // Block rendering until every webfont is ready, so no frame renders with fallback fonts.
 const fontsReady = delayRender('Loading fonts');
@@ -39,6 +40,9 @@ export const RemotionRoot: React.FC = () => (
 		<Composition id="TrackLayerFlat" component={TrackLayerFlat} durationInFrames={flatFilm.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="TrackLayerPaper" component={TrackLayerPaper} durationInFrames={film.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="TrackLayer" component={TrackLayer} durationInFrames={tl.total} fps={FPS} width={WIDTH} height={HEIGHT} />
+		<Composition id="TrainA" component={TrainSheetA} durationInFrames={120} fps={FPS} width={WIDTH} height={HEIGHT} />
+		<Composition id="TrainB" component={TrainSheetB} durationInFrames={120} fps={FPS} width={WIDTH} height={HEIGHT} />
+		<Composition id="TrainC" component={TrainSheetC} durationInFrames={120} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleA-Riso" component={StyleRiso} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleB-Blueprint" component={StyleBlueprint} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleC-Paper" component={StylePaper} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
