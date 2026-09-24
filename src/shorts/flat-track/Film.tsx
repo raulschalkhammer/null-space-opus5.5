@@ -1,6 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Audio, staticFile, useCurrentFrame} from 'remotion';
-import {FONT, FlatDefs, FlatLighthouse, FlatLoco, FlatSubtitle, Hills, K, Motes, SansFormula, Stars, Vignette} from '../../flat/kit';
+import {FONT, FlatDefs, FlatLighthouse, FlatSubtitle, Hills, K, Motes, SansFormula, Stars, Vignette} from '../../flat/kit';
 import {Grain} from '../../styleframes/Shared';
 import fixture from '../../../fixtures/track-layer.json';
 import vo from '../../../fixtures/track-layer-flat-vo.json';
@@ -13,6 +13,8 @@ import {Hook} from './Intro';
 import {Clouds, Moon, Mountains, WorldDefs} from '../../flat/world';
 import {NewsScene} from './NewsScene';
 import {buildFlatFilm} from './timeline';
+import {SteamPress} from '../../characters/steam';
+import {WHEEL_DIST, withLook} from './trainMood';
 
 export const film = buildFlatFilm(fixture as Fixture, (vo as {lines: VoLine[]}).lines);
 
@@ -140,9 +142,23 @@ const TitleCard: React.FC<{f: number; next?: boolean}> = ({f, next}) => {
 					<g transform="translate(1540 862) scale(0.8)">
 						<FlatLighthouse on={0.8} />
 					</g>
-					<g transform={`translate(${next ? 520 : -300 + f * 9} 944) scale(0.6)`}>
-						<FlatLoco look={1} />
-					</g>
+					{/* the two engines: Claude-inspired in front, ChatGPT-inspired following */}
+					{[
+						{livery: 'claude' as const, x: next ? 700 : -150 + f * 11, off: 0},
+						{livery: 'gpt' as const, x: next ? 250 : -150 + f * 11 - 420, off: 13},
+					].map((t) => (
+						<g key={t.livery} transform={`translate(${t.x} 944)`}>
+							<SteamPress
+								livery={t.livery}
+								f={f + t.off}
+								s={0.55}
+								speech={[]}
+								expr={next ? withLook('curious', 1, -0.5, {lid: 0.2}) : withLook('happy', 0.6, 0, {bounce: 3})}
+								dist={next ? 0 : WHEEL_DIST(f * 11, 0.55)}
+								smokeT={f * 0.012}
+							/>
+						</g>
+					))}
 				</g>
 				<Motes f={f} count={40} />
 			</svg>

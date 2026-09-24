@@ -1,5 +1,7 @@
 import React from 'react';
-import {FONT, FlatLighthouse, FlatLoco, Hills, K, LAMP_Y, Motes, Stars} from '../../flat/kit';
+import {FONT, FlatLighthouse, Hills, K, LAMP_Y, Motes, Stars} from '../../flat/kit';
+import {SteamPress} from '../../characters/steam';
+import {WHEEL_DIST, moodAt, speechAt, stationKeysGpt, storyKeys} from './trainMood';
 import {Callout, Projected} from '../../flat/type';
 import {Clouds, Fireflies, Foliage, Moon, Mountains, Reeds, Rock, WorldDefs} from '../../flat/world';
 import {Lake, Mist, RailDefs, SideTrack, Steam, Terrain, WaterFront} from '../../flat/rail';
@@ -27,7 +29,8 @@ const SkyLayer: React.FC<{f: number; c: SCam; horizon?: number}> = ({f, c, horiz
 export const FlatStation: React.FC<{film: Film; f: number}> = ({film, f}) => {
 	const {S} = film;
 	const g = onTwos(f);
-	const push = easeInOut(progress(f, S.gab.start - 6, S.gab.end));
+	// push in on the engine we ride with once the narration says so ("Let's ride along with one")
+	const push = easeInOut(progress(f, film.cues.L02.end - 64, S.gab.end + 10));
 	const c: SCam = {cx: lerp(900, 780, push), cy: lerp(560, 610, push), s: lerp(1, 1.45, push)};
 	const fl = progress(f, S.letter.start + 8, S.letter.start + 64);
 	const lx = lerp(1250, 322, easeInOut(fl)) + 50 * Math.sin(fl * 9) * (1 - fl);
@@ -35,10 +38,24 @@ export const FlatStation: React.FC<{film: Film; f: number}> = ({film, f}) => {
 	const lr = 24 * Math.sin(fl * 11) * (1 - fl) - 4;
 	const roll = easeInOut(progress(f, S.gab.end - 60, S.gab.end + 12));
 	const locoX = 820 + 380 * roll;
+	const gptRoll = easeInOut(progress(f, S.gab.end - 54, S.gab.end + 18));
+	const gptX = 1330 + 420 * gptRoll;
+	const LS = 0.72; // engine scale at the station
+	const GS = 0.56;
 	return (
 		<g>
 			<SkyLayer f={f} c={c} />
 			<g transform={camT(c)}>
+				{/* a second line behind the station for the ChatGPT-inspired engine */}
+				<Terrain line={[[-600, 716], [2700, 716]]} bottom={800} f={f} seed={11} />
+				<SideTrack pieces={Array.from({length: 14}, (_, i) => ({x: 1000 + i * 120, y: 700, angle: 0, len: 121}))} f={f} glint={false} />
+				<g transform="translate(1000 700)">
+					<rect x={-10} y={-26} width={14} height={30} rx={3} fill="#2A2F7A" />
+					<rect x={-14} y={-30} width={22} height={9} rx={3} fill={K.rose} />
+				</g>
+				<g transform={`translate(${gptX} 700)`}>
+					<SteamPress livery="gpt" f={f + 11} s={GS} expr={moodAt(stationKeysGpt(film), f)} speech={[]} dist={WHEEL_DIST(gptX - 1330, GS)} smokeT={f * 0.012} />
+				</g>
 				<Terrain line={[[-600, 772], [2700, 772]]} bottom={1500} f={f} seed={6} />
 				<path d="M -600 900 C -200 860 300 910 700 880 C 1100 850 1500 905 1900 875 C 2200 855 2500 890 2700 880 L 2700 1500 L -600 1500 Z" fill="#1A2060" />
 				{[[-120, 900, 1.2], [620, 884, 0.9], [1320, 890, 1.1], [1760, 878, 0.8]].map(([x, y, s], i) => (
@@ -73,18 +90,16 @@ export const FlatStation: React.FC<{film: Film; f: number}> = ({film, f}) => {
 				<rect x={340} y={640} width={60} height={46} rx={8} fill={K.yellow} filter="url(#glowBig)" opacity={0.6} />
 				{/* track stub */}
 				<SideTrack pieces={Array.from({length: 4 + Math.floor(roll * 4)}, (_, i) => ({x: 480 + i * 96, y: 741, angle: 0, len: 97}))} f={f} />
-				<g transform={`translate(${locoX} ${741 + (roll > 0 && roll < 1 ? Math.abs(Math.sin(g * 0.3)) * 2 : 0)})`}>
-					<FlatLoco look={fl < 1 ? -1 : 0.6} blink={g % 80 < 4 ? 1 : 0} />
+				<g transform={`translate(${locoX} 741)`}>
+					<SteamPress livery="claude" f={f} s={LS} expr={moodAt(storyKeys(film), f)} speech={[]} dist={WHEEL_DIST(locoX - 820, LS)} smokeT={f * 0.012} />
 				</g>
-				{[0, 1, 2].map((i) => {
-					if (f < S.gab.start + 20) return null;
-					const k = ((f - S.gab.start + i * 20) % 60) / 60;
-					return <circle key={i} cx={locoX - 110 - 20 * k} cy={530 - 110 * k} r={10 + 18 * k} fill="#D8D4FF" opacity={0.8 * (1 - k)} />;
-				})}
 				{/* who the train stands for: a callout, not a box */}
 				{film.cues.L02 && f >= film.cues.L02.start + 26 && f < film.cues.L02.end + 14 ? (
 					<g opacity={1 - progress(f, film.cues.L02.end, film.cues.L02.end + 14)}>
-						<Callout from={{x: locoX - 110, y: 540}} to={{x: locoX + 40, y: 380}} title="a language model" sub="like ChatGPT or Claude" k={progress(f, film.cues.L02.start + 26, film.cues.L02.start + 60)} size={46} />
+						<Callout from={{x: locoX - 60, y: 600}} to={{x: locoX - 250, y: 400}} title="like Claude" sub="a language model" k={progress(f, film.cues.L02.start + 26, film.cues.L02.start + 60)} size={44} anchor="end" />
+						<g opacity={1 - progress(f, film.cues.L02.end - 70, film.cues.L02.end - 56)}>
+							<Callout from={{x: gptX - 60, y: 590}} to={{x: gptX + 60, y: 430}} title="like ChatGPT" sub="another one" k={progress(f, film.cues.L02.start + 40, film.cues.L02.start + 74)} size={44} />
+						</g>
 					</g>
 				) : null}
 				{/* the letter, trailing sparks */}
@@ -163,9 +178,14 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 	// front of the train: rolls down the bank, hits the water at d0 + 44, then drags to a stop
 	const sFront = f < d0 + 44 ? lerp(3 * L + 120, 9 * L + 33, Math.pow(progress(f, d0, d0 + 44), 1.6)) : lerp(9 * L + 33, 9 * L + 225, easeOut(progress(f, d0 + 44, d0 + 84), 2));
 	const front = at(sFront);
-	const rear = at(sFront - 200);
+	const VS = 0.62; // engine scale in the valley
+	const rear = at(sFront - 250 * VS);
+	const tFront = at(sFront - 262 * VS - 20);
+	const tRear = at(sFront - 470 * VS);
+	const face = moodAt(storyKeys(film), f);
 	const bob = f > d0 + 84 ? 3 * Math.sin((f - d0) * 0.12) : 0;
 	const loco = {x: front.x, y: front.y + bob, rot: (Math.atan2(front.y - rear.y, front.x - rear.x) * 180) / Math.PI};
+	const tender = {x: tFront.x, y: tFront.y, rot: (Math.atan2(tFront.y - tRear.y, tFront.x - tRear.x) * 180) / Math.PI};
 	const entry = at(9 * L + 33);
 	const J = S.jev.start;
 	let dc: SCam = {cx: lerp(820, 1200, easeInOut(progress(f, d0, d0 + 44))), cy: lerp(700, 800, easeInOut(progress(f, d0, d0 + 44))), s: 1.4};
@@ -307,8 +327,14 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 						<Callout from={{x: loco.x - 110, y: loco.y - 200}} to={{x: loco.x - 40, y: loco.y - 470}} title="real models usually catch this one" sub="the scene is exaggerated, the mechanism is not" k={progress(f, cues.L10b.start + 6, cues.L10b.start + 40)} size={38} anchor="end" icon="check" />
 					</g>
 				) : null}
+				{/* the tender follows the track on its own, so the train bends over the edge of the bank */}
+				<g transform={`translate(${tender.x} ${tender.y + bob}) rotate(${tender.rot})`}>
+					<g transform={`translate(${300 * VS} 0)`}>
+						<SteamPress livery="claude" f={f} s={VS} part="tender" expr={face} speech={speechAt(film, f)} dist={WHEEL_DIST(sFront, VS)} smokeT={f * 0.012} />
+					</g>
+				</g>
 				<g transform={`translate(${loco.x} ${loco.y}) rotate(${loco.rot})`}>
-					<FlatLoco worried={f >= d0 + 20} look={f >= J + 150 ? 1 : 0.2} blink={g % 90 < 4 ? 1 : 0} />
+					<SteamPress livery="claude" f={f} s={VS} part="engine" expr={face} speech={speechAt(film, f)} dist={WHEEL_DIST(sFront, VS)} smokeT={f * 0.012} />
 				</g>
 				{/* everything below the waterline is hidden: the lake is drawn again in front */}
 				<WaterFront bank={BANK} level={WATER} right={2500} bottom={1500} f={f} />

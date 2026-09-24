@@ -1,6 +1,8 @@
 import React from 'react';
 import {rng} from '../../fx/rough';
-import {FONT, FlatLoco, K} from '../../flat/kit';
+import {FONT, K} from '../../flat/kit';
+import {SteamPress} from '../../characters/steam';
+import {WHEEL_DIST, moodAt, speechAt, storyKeys} from './trainMood';
 import {Marker} from '../../flat/type';
 import {type TCam, fmt, forkState, marbleAt, pct, proj, rect, smooth, strip} from '../paper-track/Table';
 import {type Film, type ForkGeo, ROUTE, easeOut, onTwos, progress} from '../paper-track/timeline';
@@ -190,8 +192,8 @@ export const FlatTableWorld: React.FC<{
 	const tp = proj(c, train.X, train.Z);
 	const ls = tp.s * 1.6;
 	upright.push({Z: train.Z - 2, node: (
-		<g key="train" transform={`translate(${tp.x + 150 * ls} ${tp.y + 3 * Math.sin(g * 0.5) * tp.s})`}>
-			<FlatLoco scale={ls} look={0.8} blink={g % 90 < 4 ? 1 : 0} />
+		<g key="train" transform={`translate(${tp.x + 150 * ls} ${tp.y})`}>
+			<SteamPress livery="claude" f={f} s={ls * 1.05} expr={moodAt(storyKeys(film), f)} speech={speechAt(film, f)} dist={WHEEL_DIST(train.X * tp.s, ls * 1.05)} smokeT={f * 0.012} />
 			{showGauge ? (
 				<g transform={`translate(${-250 * ls} ${-250 * ls}) scale(${tp.s * 2.2})`}>
 					<rect x={-14} y={-150} width={28} height={150} rx={14} fill="#0B1030" opacity={0.6} />

@@ -14,6 +14,13 @@ The current look is a **flat-vector science-explainer style** (in the spirit of 
 
 Flat cut: `src/shorts/flat-track/` + `src/flat/kit.tsx`, audio via `make-audio-paper.ts --style=synth`.
 
+**The trains (Steam Press).** Two engines with the same build and different liveries: a graphite and green one inspired by ChatGPT, and a terracotta and cream one inspired by Claude. Colours only, no logos. The film rides with the Claude-inspired engine; the ChatGPT-inspired one appears at the station and on the title and end cards.
+- *Face:* the headlamp is the eye (lids, a hood that works as a brow, a pupil). The smokebox door is the mouth, and it shows the firebox glow when it opens.
+- *Body:* lean, bounce, shake, safety-valve steam, the whistle, and the smoke all act too. There are eight moods (happy, curious, proud, determined, nervous, panic, sad, dazed); `src/characters/steam.tsx` blends between them.
+- *Words:* each word the train decides rises as a puff of smoke, and the printing-press tender prints the same word onto a paper tape. Both come from the fork timings, so the smoke and the tape always show what the train has actually said.
+- *Story beats:* the moods are keyed in `src/shorts/flat-track/trainMood.ts`: happy at "Great", proud at the chain rule, panic at the 4% "totally", proud and confident at "legit", panic at the edge, dazed in the lake, then sad as it looks up at the lighthouse.
+- *Sheets:* compositions `SteamMoodsClaude`, `SteamMoodsGpt` and `SteamActing` hold the expression sheets and the acting test.
+
 ### The full video (10 to 15 min): chapter plan
 
 The current render is the intro (cold open, news, how chatbots decide). Proposed chapters after it, each reusing the world and the probability-is-width rule:

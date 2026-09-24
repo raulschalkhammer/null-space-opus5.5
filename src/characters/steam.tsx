@@ -35,6 +35,9 @@ export type Expr = {
 	speed: number; // how fast it drives
 };
 
+// Words the train has said so far in the story, each with its age in frames (0 = just decided).
+export type Speech = {word: string; age: number}[];
+
 export type SteamMood = 'happy' | 'curious' | 'proud' | 'determined' | 'nervous' | 'panic' | 'sad' | 'dazed';
 
 const BASE: Expr = {lid: 0.1, low: 0, tilt: 0, browY: 0, pupil: 1, lookX: 0.3, lookY: 0, smile: 0.2, open: 0, mw: 1, wob: 0, lamp: 1, flicker: 0, swirl: 0, bounce: 0, lean: 0, shake: 0, droop: 0, smoke: 1, rate: 1, dark: 0, sweat: 0, whistle: 0, blush: 0, speed: 1};
@@ -53,6 +56,7 @@ export const MOODS: Record<SteamMood, Expr> = {
 const PUFFS = 5; // puffs in the air at once
 const PERIOD = 0.2; // clock units between puffs (one word each)
 const TAPE = 300; // visible tape length
+const LIFE = (PERIOD * PUFFS) / 0.012; // frames a puff lives at rate 1
 
 export const lerpExpr = (a: Expr, b: Expr, t: number): Expr => {
 	const o = {} as Expr;
@@ -69,7 +73,7 @@ const mix = (a: string, b: string, t: number) => {
 // face plate colours per livery: a silver door on the graphite engine, a lighter clay door on the terracotta one
 const PLATE = {gpt: {plate: '#AEB6C0', ring: '#6B7380', mouth: '#15161B', fire: '#6BEBC4'}, claude: {plate: '#E88F6F', ring: '#A9533A', mouth: '#4A2217', fire: '#FFB35C'}};
 
-export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?: SteamMood; expr?: Expr; smokeT?: number; dist?: number; blink?: boolean}> = ({
+export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?: SteamMood; expr?: Expr; smokeT?: number; dist?: number; blink?: boolean; speech?: Speech; part?: 'all' | 'engine' | 'tender'}> = ({
 	livery,
 	f,
 	s = 1,
@@ -78,6 +82,8 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 	smokeT,
 	dist,
 	blink = true,
+	speech,
+	part = 'all',
 }) => {
 	const L = LIV[livery];
 	const P = PLATE[livery];
@@ -143,9 +149,23 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 	}).join(' L ')}`;
 	// on the tape a small mark separates one pass of the sentence from the next
 	const tapeWord = (k: number) => (((k % words.length) + words.length) % words.length === 0 ? '•  ' : '') + wordAt(k);
-	const tapeText = Array.from({length: 6}, (_, j) => tapeWord(kNow - 5 + j)).join(' ');
-	const emerge = Math.min(1, prog * 2.2);
-	const tapeOffset = TAPE - 10 + (1 - emerge * emerge * (3 - 2 * emerge)) * ((tapeWord(kNow).length + 1) * 8.4);
+	// story mode: the tape holds exactly what the train has said, the newest word sliding out of the press
+	const said = speech ? speech.filter((w) => w.age >= 0) : null;
+	const newest = said && said.length ? said[said.length - 1] : null;
+	const joinWords = (ws: string[]) => ws.reduce((acc, w) => (acc && !/^[!?.,;:]/.test(w) ? `${acc} ${w}` : acc + w), '');
+	const tapeText = said ? joinWords(said.slice(-6).map((w) => w.word)) : Array.from({length: 6}, (_, j) => tapeWord(kNow - 5 + j)).join(' ');
+	const emerge = said ? Math.min(1, (newest?.age ?? 99) / 20) : Math.min(1, prog * 2.2);
+	const tapeOffset = TAPE - 10 + (1 - emerge * emerge * (3 - 2 * emerge)) * (((said ? newest?.word ?? '' : tapeWord(kNow)).length + 1) * 8.4);
+	// puffs: in loop mode every puff carries the next word of the sentence; in story mode the chuffing is plain smoke
+	// and only the words actually decided get a puff of their own
+	type Puff = {key: string; a: number; word: string | null; k: number};
+	const puffs: Puff[] = [];
+	for (let j = 0; j < PUFFS; j++) {
+		const k = kNow - j;
+		const a = (clock - k * PERIOD) / (PERIOD * PUFFS);
+		if (a >= 0 && a < 1) puffs.push({key: `c${k}`, a, word: said ? null : wordAt(k), k});
+	}
+	if (said) said.slice(-PUFFS).forEach((w, i) => w.age < LIFE && puffs.push({key: `w${said.length - PUFFS + i}`, a: w.age / LIFE, word: w.word, k: i * 3 + 1}));
 	const puffLight = livery === 'gpt' ? '#C9CED6' : '#F1E3D6';
 	const puff = mix(puffLight, '#5A5470', E.dark);
 	const toot = E.whistle * (E.whistle > 0.9 ? 1 : Math.max(0, Math.sin(f * 0.22)));
@@ -161,6 +181,7 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 				</clipPath>
 			</defs>
 			{/* headlamp beam, behind everything */}
+			{part !== 'tender' && (
 			<g transform={body}>
 				<path
 					d={`M ${ex + R - 4} ${ey - 10} L ${ex + 280} ${ey - 56 + E.lookY * 40} L ${ex + 280} ${ey + 64 + E.lookY * 40} L ${ex + R - 4} ${ey + 10} Z`}
@@ -168,27 +189,26 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 					opacity={0.14 * lamp}
 				/>
 			</g>
+			)}
 			{/* smoke made of words: one puff per word, in sentence order, drifting back and up with the train's speed.
 			    Only the newest puffs still carry their word; older ones dissolve into plain smoke. */}
-			{Array.from({length: PUFFS}, (_, j) => {
-				const k = kNow - j;
-				const a = (clock - k * PERIOD) / (PERIOD * PUFFS);
-				if (a < 0 || a >= 1) return null;
-				const wd = wordAt(k);
-				const tw = wd.length * 9.6 + 24;
-				const sc = (0.85 + 0.5 * a) * (0.75 + 0.25 * E.smoke);
+			{part !== 'tender' &&
+				puffs.map(({key, a, word, k}) => {
+				const wd = word ?? '';
+				const tw = word ? wd.length * 9.6 + 24 : 40;
+				const sc = (0.85 + 0.5 * a) * (0.75 + 0.25 * E.smoke) * (word || !said ? 1 : 0.7);
 				const drift = 0.55 + 0.45 * Math.min(2, E.speed);
 				const x = O.x - 200 * Math.pow(a, 0.85) * drift + 6 * Math.sin(a * 6 + k) + E.shake * 3 * Math.sin(f * 0.9 + k);
 				const y = O.y - 24 * sc - 170 * (1 - E.dark * 0.4) * (1 - (1 - a) * (1 - a));
 				const puffOp = Math.min(1, a * 10) * Math.pow(1 - a, 1.2);
 				const textOp = a < 0.34 ? 1 : Math.max(0, 1 - (a - 0.34) / 0.2);
 				return (
-					<g key={k} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${sc.toFixed(3)})`} opacity={puffOp}>
+					<g key={key} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${sc.toFixed(3)})`} opacity={puffOp * (word || !said ? 1 : 0.75)}>
 						<rect x={-tw / 2} y={-17} width={tw} height={34} rx={17} fill={puff} />
 						<circle cx={-tw * 0.18} cy={-15} r={15} fill={puff} />
 						<circle cx={tw * 0.16} cy={-17} r={18} fill={puff} />
 						<circle cx={-tw * 0.22} cy={-19} r={6} fill="#FFFFFF" opacity={0.35 * (1 - E.dark)} />
-						{textOp > 0.01 && (
+						{word && textOp > 0.01 && (
 							<text y={6} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={17} fill={L.ink} opacity={textOp}>
 								{wd}
 							</text>
@@ -197,6 +217,7 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 				);
 			})}
 			{/* tender: a printing press; each word from the smoke is printed onto the tape, which feeds out backwards */}
+			{part !== 'engine' && (
 			<g transform="translate(-300 0)">
 				<defs>
 					<linearGradient id={`tapeFade${uid}`} gradientUnits="userSpaceOnUse" x1={-150 - TAPE} y1={0} x2={-150} y2={0}>
@@ -209,6 +230,8 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 					</mask>
 					<path id={`tape${uid}`} d={tapeD} />
 				</defs>
+				{(!said || said.length > 0) && (
+				<>
 				<path d={tapeD} fill="none" stroke={L.lo} strokeWidth={26} strokeLinecap="round" strokeLinejoin="round" opacity={0.35} transform="translate(0 3)" />
 				<path d={tapeD} fill="none" stroke={L.paper} strokeWidth={24} strokeLinecap="round" strokeLinejoin="round" />
 				<g mask={`url(#tapeMask${uid})`}>
@@ -218,6 +241,8 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 						</textPath>
 					</text>
 				</g>
+				</>
+				)}
 				{/* the press mouth the tape comes out of */}
 				<rect x={-158} y={-104} width={14} height={28} rx={4} fill={L.lo} />
 				<rect x={-150} y={-170} width={190} height={112} rx={10} fill={L.body} />
@@ -235,7 +260,10 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 				<Wheel x={10} y={-26} r={22} turn={turn} c="#1B1D24" hub={L.metal} rim={L.trimHi} />
 				<rect x={54} y={-46} width={40} height={6} rx={3} fill="#14151B" />
 			</g>
+			)}
 
+			{part !== 'tender' && (
+			<>
 			<g transform={body}>
 				{/* cab */}
 				<rect x={-250} y={-210} width={92} height={150} rx={8} fill={L.body} />
@@ -373,6 +401,8 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 			<rect x={-210 + pin.x} y={-43 + pin.y} width={98} height={7} rx={3.5} fill={L.metal} />
 			<path d={`M ${-112 + pin.x} ${-40 + pin.y} L 10 -62`} stroke={L.metal} strokeWidth={6} strokeLinecap="round" />
 			<path d="M 28 -60 L 58 -4 L 22 -4 Z" fill={L.trim} />
+			</>
+			)}
 		</g>
 	);
 };
