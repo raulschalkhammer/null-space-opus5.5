@@ -9,12 +9,24 @@ About 2:54. Opens cold on a planet of people asking chatbots questions, ChatGPT 
 ```
 python data-scripts/make-vo.py kokoro-v1.0.onnx voices-v1.0.bin story/track-layer-flat-vo.json public/audio/vo-flat fixtures/track-layer-flat-vo.json
 node --experimental-strip-types data-scripts/make-audio-paper.ts --film=flat2
-npx remotion render src/index.ts TrackLayerFlat renders/01-track-layer-flat-v5.mp4
+npx remotion render src/index.ts TrackLayerFlat renders/01-track-layer-flat-v6.mp4
 ```
 
 Narration: `story/track-layer-flat-vo.json`. Cold open: `src/shorts/flat-track/Intro.tsx`; timeline: `src/shorts/flat-track/timeline.ts`.
 
 Code: `src/shorts/flat-track/` and `src/flat/kit.tsx` (reuses the geometry and timeline from `src/shorts/paper-track/`).
+
+## Chapter 2: Jev's Contract (flat, narrated): draft
+
+About 2:30. Jev as a contract: the questions and every allowed answer are fixed before reading; a mailroom whose wall has no slot for the train's "Miscellaneous-ish"; one pass answering every question at once (a product that rhymes with the chain rule); the probability triangle with a guess-first pause, and a hexagon that routes unsure letters to a person; the promise that 0.91 means 91 of 100, which sets up calibration.
+
+```
+python data-scripts/make-vo.py kokoro-v1.0.onnx voices-v1.0.bin story/jev-contract-vo.json public/audio/vo-contract fixtures/jev-contract-vo.json
+node --experimental-strip-types data-scripts/make-audio-paper.ts --film=contract
+npx remotion render src/index.ts JevContract renders/02-jev-contract-v1.mp4
+```
+
+Code: `src/shorts/jev-contract/`. Numbers are illustrative placeholders until a real Jev run.
 
 ## Short no. 1: Track Layer (paper cut, narrated)
 
