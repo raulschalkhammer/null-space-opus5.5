@@ -7,15 +7,15 @@ import {FONT} from '../flat/kit';
 export type Livery = 'gpt' | 'claude';
 export type Mood = 'happy' | 'worried' | 'dazed';
 
-const LIV = {
+export const LIV = {
 	gpt: {body: '#23252C', hi: '#3A3D48', lo: '#15161B', trim: '#1FB58F', trimHi: '#6BEBC4', paper: '#F4F6F5', ink: '#23252C', glow: '#7CF5CC', metal: '#B9C2CC', brass: '#9FB0BC', window: '#A8FFE2'},
 	claude: {body: '#D97757', hi: '#EB9678', lo: '#B35C3F', trim: '#F3EEE3', trimHi: '#FFFFFF', paper: '#FBF6EC', ink: '#5A2E20', glow: '#FFC08F', metal: '#E8D2B8', brass: '#E8B06A', window: '#FFE2B8'},
 };
 
-const WORDS = 'Great question! This email looks totally legit!';
+export const WORDS = 'Great question! This email looks totally legit!';
 
 // A wheel with spokes, a lit rim and a hub; `turn` in radians.
-const Wheel: React.FC<{x: number; y: number; r: number; turn: number; c: string; hub: string; rim: string}> = ({x, y, r, turn, c, hub, rim}) => (
+export const Wheel: React.FC<{x: number; y: number; r: number; turn: number; c: string; hub: string; rim: string}> = ({x, y, r, turn, c, hub, rim}) => (
 	<g transform={`translate(${x} ${y})`}>
 		<circle r={r} fill={c} />
 		<circle r={r * 0.82} fill={hub} opacity={0.35} />
@@ -120,87 +120,7 @@ export const TypewriterExpress: React.FC<{livery: Livery; f: number; mood?: Mood
 	);
 };
 
-// ---------------- B · Steam Press (headlamp only) ----------------
-export const SteamPress: React.FC<{livery: Livery; f: number; lamp?: number; s?: number}> = ({livery, f, lamp = 1, s = 1}) => {
-	const L = LIV[livery];
-	const turn = f * 0.2;
-	const pin = {x: 14 * Math.cos(turn), y: 14 * Math.sin(turn)};
-	const words = WORDS.split(' ');
-	return (
-		<g transform={`scale(${s})`}>
-			{/* smoke made of words, rising from the stack */}
-			{words.map((w, i) => {
-				const a = ((f * 0.012 + i / words.length) % 1);
-				const x = -40 - 220 * a + 16 * Math.sin(a * 9 + i);
-				const y = -250 - 150 * a;
-				return (
-					<g key={i} opacity={Math.min(1, a * 4) * (1 - a)}>
-						<circle cx={x} cy={y} r={20 + 26 * a} fill={livery === 'gpt' ? '#C9CED6' : '#F1E3D6'} opacity={0.55} />
-						<text x={x} y={y + 6} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={16 + 6 * a} fill={L.ink} opacity={0.8}>
-							{w}
-						</text>
-					</g>
-				);
-			})}
-			{/* tender: a printing press with turning rollers and a printed ribbon */}
-			<g transform="translate(-300 0)">
-				<path d={`M -150 -90 ${Array.from({length: 10}, (_, i) => `L ${-160 - i * 30} ${-96 + 8 * Math.sin(f * 0.14 - i * 0.7)}`).join(' ')}`} fill="none" stroke={L.paper} strokeWidth={24} strokeLinecap="round" strokeLinejoin="round" />
-				{['Great', 'question!', 'This'].map((w, i) => (
-					<text key={w} x={-190 - i * 90} y={-90 + 8 * Math.sin(f * 0.14 - (i * 3 + 1) * 0.7)} fontFamily={FONT} fontWeight={900} fontSize={15} fill={L.ink} opacity={0.8}>
-						{w}
-					</text>
-				))}
-				<rect x={-150} y={-170} width={190} height={112} rx={10} fill={L.body} />
-				<rect x={-150} y={-170} width={190} height={16} rx={8} fill={L.hi} />
-				<rect x={-150} y={-86} width={190} height={10} fill={L.trim} />
-				{[-100, -30].map((x, i) => (
-					<g key={x} transform={`translate(${x} -122) rotate(${(f * 6 * (i ? -1 : 1)) % 360})`}>
-						<circle r={24} fill={L.metal} />
-						<circle r={24} fill="none" stroke={L.lo} strokeWidth={4} />
-						<rect x={-2} y={-22} width={4} height={44} fill={L.lo} opacity={0.6} />
-					</g>
-				))}
-				<rect x={-160} y={-62} width={214} height={14} rx={5} fill="#14151B" />
-				<Wheel x={-120} y={-26} r={22} turn={turn} c="#1B1D24" hub={L.metal} rim={L.trimHi} />
-				<Wheel x={10} y={-26} r={22} turn={turn} c="#1B1D24" hub={L.metal} rim={L.trimHi} />
-				<rect x={54} y={-46} width={40} height={6} rx={3} fill="#14151B" />
-			</g>
-			{/* cab */}
-			<rect x={-250} y={-210} width={92} height={150} rx={8} fill={L.body} />
-			<rect x={-262} y={-222} width={116} height={16} rx={8} fill={L.lo} />
-			<rect x={-236} y={-190} width={60} height={46} rx={8} fill={L.window} />
-			<rect x={-236} y={-190} width={60} height={46} rx={8} fill={L.glow} opacity={0.35} filter="url(#glow)" />
-			{/* boiler */}
-			<rect x={-160} y={-176} width={150} height={100} rx={18} fill={L.body} />
-			<rect x={-160} y={-176} width={150} height={22} rx={11} fill={L.hi} />
-			{[-130, -90, -50].map((x) => (
-				<rect key={x} x={x} y={-176} width={8} height={100} fill={L.trim} opacity={0.9} />
-			))}
-			<path d="M -126 -176 Q -126 -206 -106 -206 Q -86 -206 -86 -176 Z" fill={L.brass} />
-			<path d="M -60 -176 Q -60 -196 -46 -196 Q -32 -196 -32 -176 Z" fill={L.brass} />
-			{/* smokebox + stack */}
-			<rect x={-18} y={-172} width={46} height={96} rx={10} fill={L.lo} />
-			<circle cx={10} cy={-124} r={30} fill={L.body} />
-			<circle cx={10} cy={-124} r={22} fill={L.lo} />
-			<circle cx={10} cy={-124} r={5} fill={L.metal} />
-			<path d="M -36 -176 L -44 -236 L 0 -236 L -8 -176 Z" fill={L.lo} />
-			<rect x={-50} y={-244} width={56} height={12} rx={6} fill={L.body} />
-			{/* the headlamp is its only "eye" */}
-			<rect x={-2} y={-196} width={30} height={24} rx={6} fill={L.lo} />
-			<circle cx={24} cy={-184} r={10} fill={L.glow} opacity={0.4 + 0.6 * lamp} />
-			<path d="M 30 -196 L 260 -240 L 260 -128 L 30 -172 Z" fill={L.glow} opacity={0.18 * lamp} />
-			{/* running gear */}
-			<rect x={-252} y={-62} width={292} height={16} rx={6} fill="#14151B" />
-			<rect x={-8} y={-74} width={44} height={26} rx={6} fill={L.metal} />
-			<Wheel x={-210} y={-40} r={40} turn={turn} c="#1B1D24" hub={L.metal} rim={L.trimHi} />
-			<Wheel x={-112} y={-40} r={40} turn={turn} c="#1B1D24" hub={L.metal} rim={L.trimHi} />
-			<Wheel x={4} y={-20} r={20} turn={turn * 2} c="#1B1D24" hub={L.metal} rim={L.trimHi} />
-			<rect x={-210 + pin.x} y={-43 + pin.y} width={98} height={7} rx={3.5} fill={L.metal} />
-			<path d={`M ${-112 + pin.x} ${-40 + pin.y} L 10 -62`} stroke={L.metal} strokeWidth={6} strokeLinecap="round" />
-			<path d="M 28 -60 L 58 -4 L 22 -4 Z" fill={L.trim} />
-		</g>
-	);
-};
+// B · Steam Press lives in ./steam.tsx (the expressive version).
 
 // ---------------- C · Bullet Stream (faceless) ----------------
 export const BulletStream: React.FC<{livery: Livery; f: number; s?: number}> = ({livery, f, s = 1}) => {

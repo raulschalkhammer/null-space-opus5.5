@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
-import {BulletStream, SteamPress, TypewriterExpress} from '../characters/trains';
+import {SteamPress} from '../characters/steam';
+import {BulletStream, TypewriterExpress} from '../characters/trains';
 import {FONT, FlatDefs, K, Motes, Stars, Vignette} from '../flat/kit';
 import {RailDefs, SideTrack, Terrain} from '../flat/rail';
 import {Callout} from '../flat/type';
@@ -44,7 +45,7 @@ const META: Record<Opt, {name: string; line: string; notes: {from: [number, numb
 };
 
 const Train: React.FC<{opt: Opt; livery: 'gpt' | 'claude'; f: number; s: number}> = ({opt, livery, f, s}) =>
-	opt === 'A' ? <TypewriterExpress livery={livery} f={f} s={s} mood={livery === 'claude' ? 'worried' : 'happy'} /> : opt === 'B' ? <SteamPress livery={livery} f={f} s={s} /> : <BulletStream livery={livery} f={f} s={s} />;
+	opt === 'A' ? <TypewriterExpress livery={livery} f={f} s={s} mood={livery === 'claude' ? 'worried' : 'happy'} /> : opt === 'B' ? <SteamPress livery={livery} f={f} s={s} mood={livery === 'claude' ? 'curious' : 'proud'} /> : <BulletStream livery={livery} f={f} s={s} />;
 
 export const TrainSheet: React.FC<{opt: Opt}> = ({opt}) => {
 	const f = useCurrentFrame() + 40;
