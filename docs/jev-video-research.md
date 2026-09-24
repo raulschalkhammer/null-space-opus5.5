@@ -14,6 +14,30 @@ The current look is a **flat-vector science-explainer style** (in the spirit of 
 
 Flat cut: `src/shorts/flat-track/` + `src/flat/kit.tsx`, audio via `make-audio-paper.ts --style=synth`.
 
+### The full video (10 to 15 min): chapter plan
+
+The current render is the intro (cold open, news, how chatbots decide). Proposed chapters after it, each reusing the world and the probability-is-width rule:
+
+| # | Chapter | Story device | Math | Length |
+|---|---|---|---|---|
+| 0 | Cold open + the news | planet of questions, Jev over the sea | none (stakes) | 0:45 |
+| 1 | How chatbots decide (built) | the train lays track, forks, marble, derail | autoregression, chain rule, sampling | 2:10 |
+| 2 | Jev's contract | the lighthouse signals with pennants; the mailroom sorts letters into fixed slots | typed answer spaces, one pass, Noul/Choice/Score, the probability triangle (simplex) | 2:00 |
+| 3 | What 0.91 promises | a village of forecasters; marble jars fill into a reliability diagram | calibration, reliability diagrams, ECE | 2:00 |
+| 4 | Why honesty wins | the bowl where exaggeration rolls uphill; applause meter vs scoreboard | proper scoring rules, Brier derivation, RLHF vs RLCD | 2:30 |
+| 5 | Using the number | the night shift: 1,000 real support tickets, a threshold dial, a human's inbox | decision threshold τ* = 1 − C_human/C_error, risk-coverage, cost and latency (measured) | 2:30 |
+| 6 | The catch | the office moves town and the jars stop lining up; a tailor re-fits the dial | calibration is data-relative, recalibration, independent benchmarks | 1:30 |
+| 7 | Two systems | train and lighthouse working together | System 1 vs System 2, when to use which | 1:00 |
+
+### Visual and text rules (from review of the intro)
+
+- **No text boxes.** Text lives in the world: kinetic type set directly into the sky, thin callout lines from an object to its label, labels on stems above the ground, words painted onto surfaces, numbers projected in light.
+- **Numbers become objects** whenever possible: a race for speed, coin stacks for cost, a draining gauge for probability, a chain whose weak link breaks for compounding risk.
+- **Dense, lit environments.** Every scene gets depth layers (sky with moon and clouds, two-tone mountains, mid-ground detail, blurred foreground foliage), ambient motion (fireflies, drifting clouds, water shimmer) and rim light on characters.
+- **Formulas** use the film's rounded sans with drawn symbols, never a LaTeX serif.
+- **UI appears only when it is diegetic** (a chat window is shown because the story is about chat windows).
+- **Claims are labelled.** Company claims carry an asterisk and "the company's own claims"; illustrative numbers keep the draft stamp until measured.
+
 ## 0a. Previous direction: Paper Diorama, narrated
 
 After a first cartoon cut and three style frames, the series is going with **Paper Diorama**: layered cut paper lit like a stop-motion set, soft cast shadows, shallow depth of field, an earthy palette, and a calm narrator. Characters are objects, not cartoons: Gab is a faceless paper locomotive-typewriter, Jev is a lighthouse.

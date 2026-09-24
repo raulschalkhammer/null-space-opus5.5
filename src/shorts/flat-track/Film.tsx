@@ -9,7 +9,9 @@ import {type TCam, fmt, trainAt} from '../paper-track/Table';
 import {type ForkGeo, type Span, ROUTE, buildRoute, easeIn, easeInOut, easeOut, lerp, progress} from '../paper-track/timeline';
 import {FlatEmailCard, FlatStation, FlatValley} from './Side';
 import {FlatTableWorld} from './Table';
-import {Hook, News} from './Intro';
+import {Hook} from './Intro';
+import {Clouds, Moon, Mountains, WorldDefs} from '../../flat/world';
+import {NewsScene} from './NewsScene';
 import {buildFlatFilm} from './timeline';
 
 export const film = buildFlatFilm(fixture as Fixture, (vo as {lines: VoLine[]}).lines);
@@ -20,14 +22,19 @@ const mixCam = (a: TCam, b: TCam, k: number): TCam => ({camX: lerp(a.camX, b.cam
 const Frame: React.FC<{f: number; horizon: number; shift?: number; children: React.ReactNode}> = ({f, horizon, shift = 0, children}) => (
 	<svg width={1920} height={1080} style={{position: 'absolute'}}>
 		<FlatDefs />
+		<WorldDefs />
 		<rect x={-60} y={-60} width={2040} height={1200} fill="url(#gSky)" />
 		<g transform={`translate(0 ${horizon - 560})`}>
 			<Stars f={f} maxY={520} />
 		</g>
-		<Hills y={horizon + 12} shift={shift * 0.1} />
-		<g transform={`translate(${1700 - (shift % 1400) * 0.05} ${horizon - 30}) scale(0.36)`}>
+		<Moon x={420} y={horizon - 250} r={34} />
+		<circle cx={1300} cy={horizon - 20} r={300} fill="url(#gSun)" opacity={0.85} />
+		<Clouds f={f} y={horizon - 300} count={4} seed={8} opacity={0.9} />
+		<Mountains y={horizon - 24} shift={shift * 0.08} seed={4} layers={2} />
+		<g transform={`translate(${1700 - (shift % 1400) * 0.05} ${horizon + 50}) scale(0.36)`}>
 			<FlatLighthouse on={0.5} />
 		</g>
+		<rect x={-60} y={horizon + 20} width={2040} height={70} fill="url(#gHaze)" opacity={0.6} />
 		{children}
 		<Motes f={f} />
 		<Vignette />
@@ -69,11 +76,15 @@ const Magnified: React.FC<{f: number; k: number; span: Span; context: string; po
 			<Frame f={f} horizon={c.horizon} shift={c.camX}>
 				<FlatTableWorld film={film} f={f} c={c} route={[geo]} trunkFrom={-3000} revealAt={() => span.start + 14} train={{X, Z, cum: f >= ft.land ? real.cumAfter : real.cumBefore}} showGauge pond={pond} contextCard={context} />
 			</Frame>
-			<div style={{position: 'absolute', left: 80, top: 170, opacity: tagK, transform: `translateX(${(1 - tagK) * -40}px)`, display: 'flex', alignItems: 'center', gap: 16, background: K.navy, borderRadius: 40, padding: '12px 28px 12px 14px', boxShadow: '0 12px 30px rgba(5,8,32,0.5)', fontFamily: FONT}}>
-				<div style={{width: 52, height: 52, borderRadius: 26, background: K.teal, color: K.ink, fontWeight: 900, fontSize: 24, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>×</div>
-				<div>
-					<div style={{fontWeight: 900, fontSize: 30, color: K.white}}>ZOOMED IN {Math.round(1 / real.cumBefore).toLocaleString('en-US')}×</div>
-					<div style={{fontWeight: 700, fontSize: 18, color: K.mute}}>the real track here is only {fmt(real.cumBefore)} wide</div>
+			<div style={{position: 'absolute', right: 90, top: 110, opacity: tagK, transform: `translateX(${(1 - tagK) * 40}px)`, display: 'flex', alignItems: 'center', gap: 22, fontFamily: FONT}}>
+				<svg width={110} height={110} viewBox="0 0 110 110">
+					<circle cx={46} cy={46} r={36} fill="rgba(92,200,255,0.15)" stroke={K.white} strokeWidth={9} />
+					<path d="M 30 34 A 20 20 0 0 1 46 24" fill="none" stroke={K.white} strokeWidth={5} strokeLinecap="round" opacity={0.7} />
+					<rect x={70} y={64} width={16} height={40} rx={8} fill={K.teal} transform="rotate(-45 78 84)" />
+				</svg>
+				<div style={{textShadow: '0 4px 16px rgba(5,8,32,0.7)'}}>
+					<div style={{fontWeight: 900, fontSize: 84, color: K.white, lineHeight: 0.95}}>{Math.round(1 / real.cumBefore).toLocaleString('en-US')}×</div>
+					<div style={{fontWeight: 800, fontSize: 24, color: K.mute}}>zoomed in: the real track is only {fmt(real.cumBefore)} wide</div>
 				</div>
 			</div>
 		</>
@@ -90,25 +101,26 @@ const ChainPanel: React.FC<{f: number}> = ({f}) => {
 	const eqK = easeOut(progress(f, cues.L06.start + 10, cues.L06.start + 28), 2);
 	const nameK = easeOut(progress(f, cues.L06.start + 36, cues.L06.start + 50), 2);
 	return (
-		<div style={{position: 'absolute', left: 250, right: 250, top: 70, opacity: k, transform: `translateY(${(1 - k) * -30}px) scale(${0.96 + 0.04 * k})`, background: K.navy, borderRadius: 44, padding: '26px 40px 30px', boxShadow: '0 24px 50px rgba(5,8,32,0.55)', textAlign: 'center', fontFamily: FONT, color: K.white}}>
+		<div style={{position: 'absolute', left: 150, right: 150, top: 60, opacity: k, transform: `translateY(${(1 - k) * -30}px)`, textAlign: 'center', fontFamily: FONT, color: K.white, textShadow: '0 4px 20px rgba(5,8,32,0.8)'}}>
+			<div style={{position: 'absolute', left: '10%', right: '10%', top: -40, height: 380, borderRadius: '50%', background: 'radial-gradient(ellipse at center, rgba(8,10,40,0.55) 0%, rgba(8,10,40,0) 70%)', zIndex: -1}} />
 			<div style={{fontWeight: 800, fontSize: 22, letterSpacing: 2, color: K.mute}}>THE CHANCE OF THE WHOLE SENTENCE</div>
-			<div style={{fontWeight: 900, fontSize: 54, marginTop: 6, whiteSpace: 'nowrap'}}>
+			<div style={{fontWeight: 900, fontSize: 64, marginTop: 6, whiteSpace: 'nowrap'}}>
 				{route.slice(0, n).map((g, i) => (
-					<span key={i} style={{opacity: i < shown ? 1 : 0.15}}>
-						{i ? <span style={{color: K.mute, fontWeight: 700}}> × </span> : null}
+					<span key={i} style={{display: 'inline-block', opacity: i < shown ? 1 : 0, transform: `translateY(${i < shown ? 0 : 30}px) scale(${i === shown - 1 ? 1.12 : 1})`}}>
+						{i ? <span style={{color: K.mute, fontWeight: 700, margin: '0 16px'}}>×</span> : null}
 						{fmt(g.chosen.p)}
 					</span>
 				))}
 				<span style={{opacity: shown >= n ? 1 : 0.15}}>
-					<span style={{color: K.mute, fontWeight: 700}}> = </span>
+					<span style={{color: K.mute, fontWeight: 700, margin: '0 16px'}}>=</span>
 					<span style={{color: K.orangeHi}}>{fmt(route[n - 1].cumAfter)}</span>
 				</span>
 			</div>
-			<div style={{height: 4, borderRadius: 2, background: K.indigoHi, margin: '20px 80px 16px', opacity: eqK}} />
+			<div style={{height: 3, borderRadius: 2, background: `linear-gradient(90deg, transparent, ${K.teal}, transparent)`, margin: '22px 160px 20px', opacity: eqK}} />
 			<div style={{opacity: eqK, transform: `translateY(${(1 - eqK) * 10}px)`}}>
-				<SansFormula size={46} />
+				<SansFormula size={54} />
 			</div>
-			<div style={{opacity: nameK, marginTop: 14, display: 'inline-block', background: K.teal, color: K.ink, fontWeight: 900, fontSize: 20, letterSpacing: 3, padding: '6px 20px', borderRadius: 20}}>THE CHAIN RULE</div>
+			<div style={{opacity: nameK, marginTop: 18, fontWeight: 900, fontSize: 26, letterSpacing: 10, color: K.teal, transform: `scale(${0.9 + 0.1 * nameK})`}}>THE CHAIN RULE</div>
 		</div>
 	);
 };
@@ -164,7 +176,7 @@ export const TrackLayerFlat: React.FC = () => {
 	const {S, XF, cues} = film;
 	const scenes: Scene[] = [
 		{span: S.hook, render: (x) => <Hook film={film} f={x} />},
-		{span: S.news, render: (x) => <News film={film} f={x} />},
+		{span: S.news, render: (x) => <NewsScene film={film} f={x} />},
 		{span: S.title, render: (x) => <TitleCard f={x - S.title.start} />},
 		{span: {start: S.letter.start, end: S.gab.end}, render: (x) => (
 			<>

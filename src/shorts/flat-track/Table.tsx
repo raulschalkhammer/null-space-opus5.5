@@ -1,6 +1,7 @@
 import React from 'react';
 import {rng} from '../../fx/rough';
-import {FONT, FlatLoco, K, Pill} from '../../flat/kit';
+import {FONT, FlatLoco, K} from '../../flat/kit';
+import {Marker} from '../../flat/type';
 import {type TCam, fmt, forkState, marbleAt, pct, proj, rect, strip} from '../paper-track/Table';
 import {type Film, type ForkGeo, ROUTE, easeOut, onTwos, progress} from '../paper-track/timeline';
 
@@ -81,14 +82,14 @@ export const FlatTableWorld: React.FC<{
 			if (b.chosen || b.p < 0.07) return;
 			const p = proj(c, geo.x + BRANCH + STUB + 60 + j * 175, b.z1 + b.w / 2);
 			const pop = easeOut(progress(f, revealAt(i) + 8 + j * 2, revealAt(i) + 18 + j * 2), 2);
-			if (pop > 0.01) upright.push({Z: b.z1 + b.w / 2, node: <Pill key={`l${i}-${j}`} x={p.x} y={p.y} s={p.s * 2.2 * pop} title={b.other ? 'others' : b.t.trim() || '␣'} sub={pct(b.p)} opacity={1 - 0.8 * st.decided} />});
+			if (pop > 0.01) upright.push({Z: b.z1 + b.w / 2, node: <Marker key={`l${i}-${j}`} x={p.x} y={p.y} s={p.s * 2.2 * pop} title={b.other ? 'others' : b.t.trim() || '␣'} sub={pct(b.p)} opacity={1 - 0.8 * st.decided} />});
 		});
 		const ch = geo.chosen;
 		const glow = glowCards >= i;
 		const cz = Zc + Math.max(ch.w, 30) / 2 + 70;
 		const cp = proj(c, geo.x + BRANCH * 0.62, cz);
 		const pop = easeOut(progress(f, revealAt(i) + 8, revealAt(i) + 18), 2);
-		if (pop > 0.01) upright.push({Z: cz, node: <Pill key={`c${i}`} x={cp.x} y={cp.y} s={cp.s * 2.2 * pop * (glow ? 1.25 : 1)} title={ch.t.trim() || '␣'} sub={st.decided > 0.5 ? `× ${fmt(ch.p)}` : pct(ch.p)} hot={st.decided > 0.5 || glow} />});
+		if (pop > 0.01) upright.push({Z: cz, node: <Marker key={`c${i}`} x={cp.x} y={cp.y} s={cp.s * 2.2 * pop * (glow ? 1.25 : 1)} title={ch.t.trim() || '␣'} sub={st.decided > 0.5 ? `× ${fmt(ch.p)}` : pct(ch.p)} hot={st.decided > 0.5 || glow} />});
 		const m = marbleAt(film, geo, f);
 		if (m) {
 			const p = proj(c, m.X, m.Z);
@@ -109,24 +110,35 @@ export const FlatTableWorld: React.FC<{
 		<g key="train" transform={`translate(${tp.x + 150 * ls} ${tp.y + 3 * Math.sin(g * 0.5) * tp.s})`}>
 			<FlatLoco scale={ls} look={0.8} blink={g % 90 < 4 ? 1 : 0} />
 			{showGauge ? (
-				<g transform={`translate(${-120 * ls} ${-430 * ls}) scale(${tp.s * 2.2})`}>
-					<rect x={-2} y={92} width={4} height={50} rx={2} fill={K.mute} />
-					<g filter="url(#soft)">
-						<rect x={-120} y={0} width={240} height={94} rx={30} fill={K.navy} />
-					</g>
-					<text x={0} y={34} textAnchor="middle" fontFamily={FONT} fontWeight={700} fontSize={20} fill={K.mute}>
-						CHANCE SO FAR
-					</text>
-					<text x={0} y={76} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={40} fill={K.orangeHi}>
+				<g transform={`translate(${-250 * ls} ${-250 * ls}) scale(${tp.s * 2.2})`}>
+					<rect x={-14} y={-150} width={28} height={150} rx={14} fill="#0B1030" opacity={0.6} />
+					<rect x={-10} y={-4 - 142 * Math.max(train.cum, 0.004)} width={20} height={142 * Math.max(train.cum, 0.004)} rx={10} fill={K.orange} />
+					<rect x={-10} y={-4 - 142 * Math.max(train.cum, 0.004)} width={20} height={142 * Math.max(train.cum, 0.004)} rx={10} fill={K.orange} filter="url(#glow)" opacity={0.6} />
+					<rect x={-14} y={-150} width={28} height={150} rx={14} fill="none" stroke="#C9CCFF" strokeWidth={3} opacity={0.8} />
+					<rect x={-8} y={-140} width={5} height={120} rx={2.5} fill="#FFFFFF" opacity={0.25} />
+					<text x={-26} y={-110} textAnchor="end" fontFamily={FONT} fontWeight={900} fontSize={40} fill={K.orangeHi} style={{paintOrder: 'stroke', stroke: 'rgba(8,10,40,0.7)', strokeWidth: 7}}>
 						{fmt(train.cum)}
+					</text>
+					<text x={-26} y={-78} textAnchor="end" fontFamily={FONT} fontWeight={800} fontSize={20} fill={K.mute} style={{paintOrder: 'stroke', stroke: 'rgba(8,10,40,0.7)', strokeWidth: 6}}>
+						chance so far
 					</text>
 				</g>
 			) : null}
 		</g>
 	)});
+	const painted: React.ReactNode[] = [];
 	if (contextCard) {
-		const p = proj(c, route[0].x - 900, Zc + W0 / 2 + 90);
-		upright.push({Z: Zc + W0 / 2 + 90, node: <Pill key="ctx" x={p.x} y={p.y} s={p.s * 2.6} title={contextCard} />});
+		const X = route[0].x - 1250;
+		const p0 = proj(c, X, Zc);
+		const px = proj(c, X + 1, Zc);
+		const pz = proj(c, X, Zc - 1);
+		painted.push(
+			<g key="ctx" transform={`matrix(${px.x - p0.x} ${px.y - p0.y} ${pz.x - p0.x} ${pz.y - p0.y} ${p0.x} ${p0.y})`}>
+				<text textAnchor="middle" y={45} fontFamily={FONT} fontWeight={900} fontSize={150} fill="#A8421C" opacity={0.75}>
+					{contextCard}
+				</text>
+			</g>,
+		);
 	}
 	upright.sort((a, b) => b.Z - a.Z);
 	const pondC = pond ? proj(c, route[0].x + BRANCH + 1350, Zc) : null;
@@ -142,6 +154,7 @@ export const FlatTableWorld: React.FC<{
 			) : null}
 			<path d={rect(c, trunkFrom, first.x + 2, Zc - first.win / 2, first.win)} fill={K.orange} filter="url(#glowBig)" opacity={0.45} />
 			<path d={rect(c, trunkFrom, first.x + 2, Zc - first.win / 2, first.win)} fill="url(#gChosen)" />
+			{painted}
 			{grounds}
 			{upright.map((u) => u.node)}
 		</g>

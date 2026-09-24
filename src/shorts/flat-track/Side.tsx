@@ -1,5 +1,7 @@
 import React from 'react';
 import {FONT, FlatLighthouse, FlatLoco, Hills, K, LAMP_Y, Motes, Stars} from '../../flat/kit';
+import {Callout, Projected} from '../../flat/type';
+import {Clouds, Fireflies, Foliage, Moon, Mountains, Reeds, Rock, WorldDefs} from '../../flat/world';
 import {type Film, clamp01, easeIn, easeInOut, easeOut, lerp, onTwos, progress} from '../paper-track/timeline';
 
 type SCam = {cx: number; cy: number; s: number};
@@ -7,9 +9,13 @@ const camT = (c: SCam) => `translate(960 540) scale(${c.s}) translate(${-c.cx} $
 
 const SkyLayer: React.FC<{f: number; c: SCam; horizon?: number}> = ({f, c, horizon = 600}) => (
 	<>
+		<WorldDefs />
 		<rect x={-60} y={-60} width={2040} height={1200} fill="url(#gSky)" />
 		<Stars f={f} maxY={520} />
 		<g transform={`translate(0 ${(c.cy - 540) * -0.25})`}>
+			<Moon x={560 - (c.cx - 960) * 0.05} y={150} r={38} />
+			<Clouds f={f} y={150} count={4} seed={12} opacity={0.9} />
+			<Mountains y={horizon - 40} shift={(c.cx - 960) * 0.5} seed={7} layers={2} />
 			<Hills y={horizon} shift={(c.cx - 960) * 0.6} />
 		</g>
 	</>
@@ -54,6 +60,13 @@ export const FlatStation: React.FC<{film: Film; f: number}> = ({film, f}) => {
 				<text x={320} y={513} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={20} letterSpacing={3} fill={K.white}>
 					QUESTION
 				</text>
+				{/* lamp post */}
+				<rect x={496} y={600} width={8} height={160} rx={4} fill="#2A2F7A" />
+				<circle cx={500} cy={596} r={12} fill={K.yellow} />
+				<circle cx={500} cy={596} r={60} fill={K.yellow} opacity={0.18} filter="url(#glowBig)" />
+				<Rock x={140} y={774} s={0.8} />
+				<Rock x={1500} y={774} s={1.1} />
+				<Fireflies f={f} x={-200} y={560} w={2200} h={200} count={16} />
 				{/* window glow */}
 				<rect x={340} y={640} width={60} height={46} rx={8} fill={K.yellow} opacity={0.85} />
 				<rect x={340} y={640} width={60} height={46} rx={8} fill={K.yellow} filter="url(#glowBig)" opacity={0.6} />
@@ -70,33 +83,12 @@ export const FlatStation: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					const k = ((f - S.gab.start + i * 20) % 60) / 60;
 					return <circle key={i} cx={locoX - 110 - 20 * k} cy={530 - 110 * k} r={10 + 18 * k} fill="#D8D4FF" opacity={0.8 * (1 - k)} />;
 				})}
-				{/* who the train stands for */}
-				{film.cues.L02 && f >= film.cues.L02.start + 26 && f < film.cues.L02.end + 10
-					? (() => {
-							const a = film.cues.L02.start + 26;
-							const k = (i: number) => easeOut(progress(f, a + i * 5, a + 12 + i * 5), 3) * (1 - progress(f, film.cues.L02.end, film.cues.L02.end + 10));
-							const chips = ['ChatGPT', 'Claude', '…'];
-							return (
-								<g transform={`translate(${locoX - 110} 330)`}>
-									<path d="M 0 118 L 0 176" stroke={K.white} strokeWidth={3} strokeDasharray="6 6" opacity={k(0)} />
-									<g transform={`scale(${k(0)})`}>
-										<rect x={-170} y={-8} width={340} height={56} rx={28} fill={K.teal} />
-										<text x={0} y={29} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={24} letterSpacing={2} fill={K.ink}>
-											LANGUAGE MODELS
-										</text>
-									</g>
-									{chips.map((c, i) => (
-										<g key={c} transform={`translate(${(i - 1) * 118} 84) scale(${k(i + 1)})`}>
-											<rect x={-54} y={-22} width={108} height={44} rx={22} fill={K.navy} />
-											<text x={0} y={8} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={21} fill={K.white}>
-												{c}
-											</text>
-										</g>
-									))}
-								</g>
-							);
-						})()
-					: null}
+				{/* who the train stands for: a callout, not a box */}
+				{film.cues.L02 && f >= film.cues.L02.start + 26 && f < film.cues.L02.end + 14 ? (
+					<g opacity={1 - progress(f, film.cues.L02.end, film.cues.L02.end + 14)}>
+						<Callout from={{x: locoX - 110, y: 540}} to={{x: locoX + 40, y: 380}} title="a language model" sub="like ChatGPT or Claude" k={progress(f, film.cues.L02.start + 26, film.cues.L02.start + 60)} size={46} />
+					</g>
+				) : null}
 				{/* the letter, trailing sparks */}
 				{fl < 1
 					? [1, 2, 3, 4, 5].map((i) => {
@@ -113,6 +105,8 @@ export const FlatStation: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					</g>
 				</g>
 			</g>
+			<Foliage x={-40} y={1120} s={1.5} f={f} blur />
+			<Foliage x={1960} y={1130} s={1.7} f={f} blur flip />
 			<Motes f={f} />
 		</g>
 	);
@@ -123,13 +117,11 @@ export const FlatEmailCard: React.FC<{film: Film; f: number}> = ({film, f}) => {
 	const k = easeOut(progress(f, cue.start - 4, cue.start + 10), 3) * (1 - easeIn(progress(f, cue.end + 6, cue.end + 20)));
 	if (k <= 0) return null;
 	return (
-		<div style={{position: 'absolute', left: 1030, top: 170, width: 720, transform: `translateY(${(1 - k) * 40}px) scale(${0.94 + 0.06 * k})`, opacity: k, background: K.navy, borderRadius: 34, padding: '34px 44px', boxShadow: '0 20px 40px rgba(5,8,32,0.55)', fontFamily: FONT, color: K.white}}>
-			<div style={{display: 'flex', gap: 12, alignItems: 'center'}}>
-				<div style={{width: 44, height: 44, borderRadius: 22, background: K.rose, color: K.white, fontWeight: 900, fontSize: 24, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>!</div>
-				<div style={{fontWeight: 700, fontSize: 18, color: K.mute, letterSpacing: 1}}>prizes@cruise-winner.biz</div>
-			</div>
-			<div style={{fontWeight: 800, fontSize: 34, lineHeight: 1.3, marginTop: 18}}>{film.fx.email}</div>
-			<div style={{fontWeight: 900, fontSize: 34, color: K.orangeHi, marginTop: 18}}>{film.fx.question}</div>
+		<div style={{position: 'absolute', left: 1040, top: 150, width: 700, transform: `translateY(${(1 - k) * 60}px) rotate(${2 - k}deg) scale(${0.9 + 0.1 * k})`, opacity: k, background: 'linear-gradient(180deg, #FBF8FF 0%, #EEEAFB 49.6%, #E2DDF4 50%, #F6F2FF 51%, #FBF8FF 100%)', padding: '40px 50px 44px', boxShadow: '0 30px 60px rgba(5,8,32,0.6)', fontFamily: FONT, color: K.navy, clipPath: 'polygon(0 0, 100% 0, 100% 100%, 4% 100%, 0 96%)'}}>
+			<div style={{position: 'absolute', right: 36, top: 30, width: 70, height: 84, border: `4px dashed ${K.rose}`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: K.rose, fontWeight: 900, fontSize: 30, transform: 'rotate(6deg)'}}>$$$</div>
+			<div style={{fontWeight: 800, fontSize: 19, color: '#7A7AA8', letterSpacing: 1}}>from: prizes@cruise-winner.biz</div>
+			<div style={{fontWeight: 900, fontSize: 38, lineHeight: 1.25, marginTop: 20, maxWidth: 520}}>{film.fx.email}</div>
+			<div style={{fontWeight: 900, fontSize: 36, color: K.orangeLo, marginTop: 22}}>{film.fx.question}</div>
 		</div>
 	);
 };
@@ -222,7 +214,7 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					<FlatLighthouse on={f >= J ? lampOn : 0} />
 				</g>
 				{slots > 0 ? (
-					<g transform="translate(1632 340)">
+					<g transform="translate(1572 340)">
 						{[
 							{label: 'SCAM', p: pYes, fill: K.orange},
 							{label: 'NOT SCAM', p: 1 - pYes, fill: K.teal},
@@ -231,12 +223,12 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 							const len = PEN * lerp(0.5, pn.p, widths) + 50;
 							const y0 = i === 0 ? 0 : PEN * 0.5 * lerp(0.5, pYes, widths) + 14;
 							const wave = 5 * Math.sin(g * 0.25 + i);
-							const d = `M 0 0 L ${len * 0.5} ${wave} L ${len} ${h / 2 + wave * 0.5} L ${len * 0.5} ${h + wave} L 0 ${h} Z`;
+							const d = `M 0 0 L ${-len * 0.5} ${wave} L ${-len} ${h / 2 + wave * 0.5} L ${-len * 0.5} ${h + wave} L 0 ${h} Z`;
 							return (
 								<g key={i} transform={`translate(0 ${y0})`}>
 									<path d={d} fill={pn.fill} filter="url(#glowBig)" opacity={0.5} />
 									<path d={d} fill={pn.fill} />
-									<text x={len + 12} y={h / 2 + 8} fontFamily={FONT} fontWeight={900} fontSize={20} letterSpacing={1} fill={K.white} opacity={slots}>
+									<text x={-len - 12} y={h / 2 + 8} textAnchor="end" fontFamily={FONT} fontWeight={900} fontSize={20} letterSpacing={1} fill={K.white} opacity={slots}>
 										{pn.label}
 									</text>
 								</g>
@@ -245,25 +237,19 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 						<rect x={-6} y={-8} width={5} height={PEN * 0.5 + 30} rx={2} fill={K.white} />
 					</g>
 				) : null}
-				{tagK > 0 ? (
-					<g transform={`translate(1636 ${566 - 10 * (1 - tagK)})`} opacity={tagK}>
-						<g filter="url(#soft)">
-							<rect x={0} y={0} width={262} height={96} rx={32} fill={K.navy} />
-						</g>
-						<text x={131} y={38} textAnchor="middle" fontFamily={FONT} fontWeight={700} fontSize={20} fill={K.mute}>
-							p(scam | email)
-						</text>
-						<text x={131} y={78} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={K.orangeHi}>
-							{pYes.toFixed(2)} · 1 pass
-						</text>
-					</g>
-				) : null}
+				{tagK > 0 ? <path d={`M ${lamp.x} ${lamp.y} L 1260 120 L 1560 90 Z`} fill="#FFE9A0" opacity={0.18 * tagK} style={{mixBlendMode: 'screen'}} /> : null}
+				<Projected x={1400} y={130} text={pYes.toFixed(2)} size={110} k={tagK} sub="P(SCAM) · ONE PASS" />
 				{/* plateau, cliff, pond */}
 				<path d="M -400 760 L 900 760 C 980 770 1040 820 1090 880 C 1120 920 1140 960 1150 1400 L -400 1400 Z" fill="#212872" />
 				<path d="M -400 760 L 900 760 C 980 770 1040 820 1090 880 L 1082 890 C 1034 834 976 784 900 774 L -400 774 Z" fill="#3A43A2" />
 				<path d="M 1130 930 C 1250 900 1450 905 1600 940 C 1650 960 1640 1000 1560 1010 C 1400 1030 1220 1020 1150 995 C 1100 975 1100 945 1130 930 Z" fill="#0C1340" />
 				<path d="M 1140 936 C 1260 910 1440 914 1590 946" fill="none" stroke={K.cyan} strokeWidth={4} strokeLinecap="round" opacity={0.45} />
 				<path d="M 1220 972 C 1300 962 1380 962 1440 970" fill="none" stroke={K.cyan} strokeWidth={3} strokeLinecap="round" opacity={0.25} />
+				<Reeds x={1150} y={940} f={f} n={5} />
+				<Reeds x={1600} y={950} f={f} n={6} s={1.1} />
+				<Rock x={1700} y={1000} s={1.2} />
+				<Rock x={380} y={780} s={0.7} />
+				<Fireflies f={f} x={1120} y={780} w={560} h={160} count={12} color={K.cyan} />
 				{/* the letter */}
 				<g transform={`translate(${letter.x} ${letter.y}) rotate(-3)`}>
 					<rect x={-12} y={-12} width={letter.w + 24} height={letter.h + 24} rx={20} fill={K.yellow} filter="url(#glowBig)" opacity={0.25 + 0.5 * sweep} />
@@ -285,36 +271,51 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					</g>
 				))}
 				{cues.L10b && f >= cues.L10b.start && f < S.jev.start + 30
-					? ps.map((p, i) => {
-							const step = film.fx.steps[i];
-							const prob = step.options.find((o) => o.t === step.chosen)?.p ?? 0;
-							const at = cues.L10b.start + 130 + i * 5;
-							const k = easeOut(progress(f, at, at + 10), 3) * (1 - progress(f, S.jev.start, S.jev.start + 20));
-							const bad = i === 6;
-							const hot = bad && f >= cues.L10b.end - 50;
-							if (k <= 0) return null;
-							const r = (p.angle * Math.PI) / 180;
-							const cx = p.x + 75 * Math.cos(r);
-							const cy = p.y + 75 * Math.sin(r) - 58;
+					? (() => {
+							const pts = ps.map((p, i) => {
+								const r = (p.angle * Math.PI) / 180;
+								const step = film.fx.steps[i];
+								return {x: p.x + 75 * Math.cos(r), y: p.y + 75 * Math.sin(r) - 70, prob: step.options.find((o) => o.t === step.chosen)?.p ?? 0};
+							});
+							const out = 1 - progress(f, S.jev.start, S.jev.start + 20);
+							const hot = f >= cues.L10b.end - 56;
+							const brk = easeOut(progress(f, cues.L10b.end - 56, cues.L10b.end - 36), 2);
+							const halo = {paintOrder: 'stroke' as const, stroke: 'rgba(8,10,40,0.75)', strokeWidth: 7, strokeLinejoin: 'round' as const};
 							return (
-								<g key={`b${i}`} transform={`translate(${cx} ${cy}) scale(${k * (hot ? 1.3 : 1)})`}>
-									{hot ? <circle r={44} fill={K.rose} opacity={0.35} filter="url(#glowBig)" /> : null}
-									<rect x={-40} y={-20} width={80} height={40} rx={20} fill={bad ? K.rose : K.navy} />
-									<text x={0} y={8} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={21} fill={K.white}>
-										{Math.round(prob * 100)}%
-									</text>
+								<g opacity={out}>
+									{pts.slice(0, -1).map((a, i) => {
+										const b = pts[i + 1];
+										const k = easeOut(progress(f, cues.L10b.start + 130 + i * 5, cues.L10b.start + 142 + i * 5), 3);
+										if (k <= 0) return null;
+										const broken = i === 5 || i === 6;
+										const drop = broken ? brk * 40 : 0;
+										return [0.3, 0.5, 0.7].map((t, j) => {
+											const x = a.x + (b.x - a.x) * t;
+											const y = a.y + (b.y - a.y) * t + drop * (j === 1 ? 1 : 0.5);
+											const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+											return <ellipse key={`${i}-${j}`} cx={x} cy={y} rx={j % 2 ? 12 : 13} ry={j % 2 ? 4 : 7} transform={`rotate(${ang + (broken ? brk * (j - 1) * 30 : 0)} ${x} ${y})`} fill="none" stroke={broken && hot ? K.rose : '#C9CCFF'} strokeWidth={4} opacity={k * 0.9} />;
+										});
+									})}
+									{pts.map((pt, i) => {
+										const k = easeOut(progress(f, cues.L10b.start + 128 + i * 5, cues.L10b.start + 140 + i * 5), 3);
+										if (k <= 0) return null;
+										const bad = i === 6;
+										return (
+											<g key={`n${i}`} transform={`translate(${pt.x} ${pt.y}) scale(${k * (bad && hot ? 1.35 : 1)})`}>
+												{bad && hot ? <circle r={46} fill={K.rose} opacity={0.4} filter="url(#glowBig)" /> : null}
+												<text y={10} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={bad ? K.rose : K.white} style={halo}>
+													{Math.round(pt.prob * 100)}%
+												</text>
+											</g>
+										);
+									})}
 								</g>
 							);
-						})
+						})()
 					: null}
-				{cues.L10b && f >= cues.L10b.start + 6 && f < cues.L10b.start + 110 ? (
-					<g transform={`translate(1320 600) scale(${easeOut(progress(f, cues.L10b.start + 6, cues.L10b.start + 18), 3) * (1 - progress(f, cues.L10b.start + 96, cues.L10b.start + 110))})`}>
-						<rect x={-240} y={-34} width={480} height={68} rx={34} fill={K.navy} />
-						<circle cx={-200} cy={0} r={20} fill={K.teal} />
-						<path d="M -210 0 L -202 8 L -189 -8" fill="none" stroke={K.ink} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
-						<text x={-166} y={9} fontFamily={FONT} fontWeight={800} fontSize={25} fill={K.white}>
-							real models usually catch this one
-						</text>
+				{cues.L10b && f >= cues.L10b.start + 6 && f < cues.L10b.start + 116 ? (
+					<g opacity={1 - progress(f, cues.L10b.start + 100, cues.L10b.start + 116)}>
+						<Callout from={{x: loco.x - 110, y: loco.y - 200}} to={{x: loco.x - 40, y: loco.y - 470}} title="real models usually catch this one" sub="the scene is exaggerated, the mechanism is not" k={progress(f, cues.L10b.start + 6, cues.L10b.start + 40)} size={38} anchor="end" icon="check" />
 					</g>
 				) : null}
 				<g transform={`translate(${loco.x} ${loco.y}) rotate(${loco.rot})`}>
@@ -342,6 +343,8 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					</>
 				) : null}
 			</g>
+			<Foliage x={-60} y={1140} s={1.6} f={f} blur />
+			<Foliage x={1990} y={1150} s={1.5} f={f} blur flip />
 			<Motes f={f} color={K.yellow} count={18} seed={9} />
 		</g>
 	);
