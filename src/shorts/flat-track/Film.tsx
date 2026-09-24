@@ -12,6 +12,7 @@ import {FlatTableWorld} from './Table';
 import {Hook} from './Intro';
 import {Clouds, Moon, Mountains, WorldDefs} from '../../flat/world';
 import {NewsScene} from './NewsScene';
+import {GuessScene, RunsScene, ShannonScene} from './Curiosity';
 import {buildFlatFilm} from './timeline';
 import {SteamPress} from '../../characters/steam';
 import {WHEEL_DIST, withLook} from './trainMood';
@@ -204,8 +205,16 @@ export const TrackLayerFlat: React.FC = () => {
 				<FlatEmailCard film={film} f={x} />
 			</>
 		)},
-		{span: {start: S.fork.start, end: S.chain.end}, render: (x) => <MainTable f={x} />, zoomOut: true},
-		{span: S.marble, render: (x) => <Magnified f={x} k={6} span={S.marble} context="… this email looks" />, zoomOut: true},
+		...(S.guess
+			? [
+					{span: {start: S.fork.start, end: S.thin.end}, render: (x: number) => <MainTable f={x} />},
+					{span: S.guess, render: (x: number) => <GuessScene film={film} f={x} />},
+					{span: S.chain, render: (x: number) => <MainTable f={x} />, zoomOut: !S.shannon},
+				]
+			: [{span: {start: S.fork.start, end: S.chain.end}, render: (x: number) => <MainTable f={x} />, zoomOut: true}]),
+		...(S.shannon ? [{span: S.shannon, render: (x: number) => <ShannonScene film={film} f={x} />}] : []),
+		{span: S.marble, render: (x) => <Magnified f={x} k={6} span={S.marble} context="… this email looks" />, zoomOut: !S.runs},
+		...(S.runs ? [{span: S.runs, render: (x: number) => <RunsScene film={film} f={x} />}] : []),
 		{span: S.lean, render: (x) => <Magnified f={x} k={7} span={S.lean} context="… looks totally" pond />},
 		{span: {start: S.derail.start, end: S.close.end}, render: (x) => (
 			<svg width={1920} height={1080} style={{position: 'absolute'}}>

@@ -67,15 +67,18 @@ export const Hook: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 	const bubbles = Array.from({length: 46}, (_, i) => {
 		const a = r() * Math.PI * 2;
 		const rad = 330 + r() * 170;
-		return {x: Math.cos(a) * rad, y: Math.sin(a) * rad * 0.8, at: cues.H01.start + 6 + i * 2.2 + r() * 4, color: [K.white, '#BFF5EA', '#FFD9B0', '#D9D4FF'][i % 4], s: 0.55 + r() * 0.5};
+		return {x: Math.cos(a) * rad, y: Math.sin(a) * rad * 0.8, at: cues.H03.start + 6 + i * 2.2 + r() * 4, color: [K.white, '#BFF5EA', '#FFD9B0', '#D9D4FF'][i % 4], s: 0.55 + r() * 0.5};
 	});
-	const zoomIn = easeInOut(progress(f, cues.H03.start - 6, cues.H03.start + 16));
-	const cam = lerp(1, 1.08, progress(f, 0, cues.H03.start));
+	const planetIn = cues.H03.start - 10;
+	const zoomIn = easeInOut(progress(f, cues.H04.start - 6, cues.H04.start + 16));
+	const cam = lerp(1, 1.08, progress(f, planetIn, cues.H04.start));
 	const qs = ['Should I sign this?', 'Is this rash normal?', 'Is this email a scam?'];
 	const qPos = [{x: 470, y: 250}, {x: 960, y: 150}, {x: 1450, y: 250}];
 	return (
 		<AbsoluteFill>
-			<AbsoluteFill style={{transform: `scale(${cam * (1 + 5 * easeIn(zoomIn, 2))})`, transformOrigin: `${qPos[2].x}px ${qPos[2].y}px`, opacity: 1 - progress(f, cues.H03.start + 6, cues.H03.start + 16)}}>
+			{f < planetIn + 16 ? <Twice film={film} f={f} out={progress(f, planetIn, planetIn + 16)} /> : null}
+			{f >= planetIn ? (
+			<AbsoluteFill style={{transform: `scale(${cam * (1 + 5 * easeIn(zoomIn, 2))})`, transformOrigin: `${qPos[2].x}px ${qPos[2].y}px`, opacity: progress(f, planetIn, planetIn + 16) * (1 - progress(f, cues.H04.start + 6, cues.H04.start + 16))}}>
 				<svg width={1920} height={1080} style={{position: 'absolute'}}>
 					<FlatDefs />
 					<rect x={-60} y={-60} width={2040} height={1200} fill={K.night} />
@@ -102,7 +105,85 @@ export const Hook: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 					);
 				})}
 			</AbsoluteFill>
-			{f >= cues.H03.start + 6 ? <ChatWindows film={film} f={f} /> : null}
+			) : null}
+			{f >= cues.H04.start + 6 ? <ChatWindows film={film} f={f} /> : null}
+		</AbsoluteFill>
+	);
+};
+
+// ---------- cold open puzzle: the same question, asked twice, answered differently ----------
+const TWICE = {
+	q: 'Should I sign this contract?',
+	a: ['Yes, this looks like a standard lease. The terms are typical, so signing it seems reasonable.', 'I’d hold off. Clause 4 lets them raise the rent at any time, which is unusual for a lease.'],
+};
+const Twice: React.FC<{film: FlatFilm; f: number; out: number}> = ({film, f, out}) => {
+	const {cues} = film;
+	const h2 = cues.H02;
+	const at = (u: number) => h2.start + (h2.end - h2.start) * u;
+	const starts = [cues.H01.start + 4, cues.H01.end + 6];
+	const sameQ = easeOut(progress(f, at(0), at(0.12)), 3);
+	const diff = easeOut(progress(f, at(0.4), at(0.52)), 3);
+	const which = pop(f, at(0.62), 12);
+	const split = easeInOut(progress(f, at(0.62), at(0.8)));
+	return (
+		<AbsoluteFill style={{opacity: 1 - out}}>
+			<svg width={1920} height={1080} style={{position: 'absolute'}}>
+				<FlatDefs />
+				<rect x={-60} y={-60} width={2040} height={1200} fill={K.night} />
+				<Stars f={f} count={140} maxY={1080} seed={13} />
+				<Motes f={f} />
+				<Vignette />
+			</svg>
+			{[0, 1].map((w) => {
+				const inK = easeOut(progress(f, starts[w], starts[w] + 14), 3);
+				if (inK <= 0) return null;
+				const words = TWICE.a[w].split(' ');
+				const t0 = starts[w] + 18;
+				const shown = Math.max(0, Math.floor((f - t0) / 4));
+				const tilt = (w ? 1 : -1) * 2.5 * split;
+				return (
+					<div key={w} style={{position: 'absolute', top: 210, left: w ? 1010 : 150, width: 760, opacity: inK, transform: `translateY(${(1 - inK) * 40}px) translateX(${(w ? 1 : -1) * 24 * split}px) rotate(${tilt}deg)`, background: K.navy, borderRadius: 36, padding: '26px 30px 34px', boxShadow: '0 24px 50px rgba(5,8,32,0.55)', fontFamily: FONT}}>
+						<div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+							<div style={{width: 14, height: 14, borderRadius: 7, background: K.teal}} />
+							<div style={{fontWeight: 900, fontSize: 28, color: K.white}}>A chatbot</div>
+							<div style={{fontWeight: 800, fontSize: 20, color: w ? K.orangeHi : K.mute, marginLeft: 'auto', letterSpacing: 2}}>{w ? 'ASKED AGAIN' : 'ASKED ONCE'}</div>
+						</div>
+						<div style={{marginTop: 18, marginLeft: 'auto', width: 'fit-content', background: K.indigoHi, color: K.white, borderRadius: 22, padding: '10px 18px', fontWeight: 800, fontSize: 26, boxShadow: sameQ > 0 ? `0 0 ${30 * sameQ}px rgba(74,227,200,${0.6 * sameQ})` : undefined}}>{TWICE.q}</div>
+						<div style={{marginTop: 24, fontWeight: 700, fontSize: 32, lineHeight: 1.5, color: K.white, minHeight: 200}}>
+							{words.slice(0, shown).map((word, i) => {
+								const fresh = clamp01(1 - (f - (t0 + (i + 1) * 4)) / 10);
+								const first = i < 2;
+								return (
+									<span key={i} style={{display: 'inline-block', marginRight: 9, color: fresh > 0.1 ? K.orangeHi : first && diff > 0 ? (w ? K.orange : K.teal) : K.white, transform: first && diff > 0 ? `scale(${1 + 0.08 * diff})` : undefined}}>
+										{word}
+									</span>
+								);
+							})}
+						</div>
+					</div>
+				);
+			})}
+			{/* labels live in the scene, joined to the cards by thin lines */}
+			<svg width={1920} height={1080} style={{position: 'absolute', pointerEvents: 'none'}}>
+				<g opacity={sameQ * (1 - diff * 0.4)}>
+					<path d={`M 960 150 L ${lerp(960, 836, sameQ)} 286 M 960 150 L ${lerp(960, 1420, sameQ)} 296`} stroke={K.teal} strokeWidth={3} fill="none" strokeLinecap="round" />
+					<circle cx={960} cy={150} r={6} fill={K.teal} />
+					<text x={960} y={128} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={K.white}>same question</text>
+				</g>
+				<g opacity={diff}>
+					<path d="M 960 860 L 520 720 M 960 860 L 1380 720" stroke={K.orange} strokeWidth={3} fill="none" strokeLinecap="round" />
+					<circle cx={960} cy={860} r={6} fill={K.orange} />
+					<text x={960} y={905} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={K.white}>different answer</text>
+				</g>
+				{which > 0 ? (
+					<g transform={`translate(960 520) scale(${which})`}>
+						<circle r={78} fill={K.orange} opacity={0.3} filter="url(#glowBig)" />
+						<circle r={62} fill={K.orange} />
+						<text y={30} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={96} fill={K.ink}>?</text>
+					</g>
+				) : null}
+			</svg>
+			<div style={{position: 'absolute', top: 170, left: 150, fontFamily: FONT, fontWeight: 700, fontSize: 18, color: K.mute, opacity: 0.8}}>illustrative replies</div>
 		</AbsoluteFill>
 	);
 };
@@ -114,8 +195,8 @@ const ANSWERS = [
 ];
 const ChatWindows: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 	const {cues, streamStart} = film;
-	const inK = easeOut(progress(f, cues.H03.start + 6, cues.H03.start + 20), 3);
-	const bet = easeInOut(progress(f, cues.H03.end - 40, cues.H03.end - 20));
+	const inK = easeOut(progress(f, cues.H04.start + 6, cues.H04.start + 20), 3);
+	const bet = easeInOut(progress(f, cues.H04.end - 40, cues.H04.end - 20));
 	const out = progress(f, film.S.hook.end - 12, film.S.hook.end + 8);
 	return (
 		<AbsoluteFill style={{opacity: inK * (1 - out)}}>

@@ -8,6 +8,8 @@ export type StepData = {chosen: string; options: Option[]};
 export type Fixture = {status: string; email: string; question: string; steps: StepData[]; jev: {label: string; p: number; status: string}};
 export type VoLine = {id: string; text: string; duration: number};
 export type Span = {start: number; end: number};
+export const GUESS_PAUSE = 84; // frames the viewer gets to guess (a 3-2-1 countdown)
+export const RUNS_LEN = 120; // frames for the hundred marbles to drop
 
 export const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -98,16 +100,39 @@ export function buildFilm(fx: Fixture, vo: VoLine[], t0 = 0) {
 	S.fork.end = say('L04', l03 + 8) + 40;
 	S.thin = {start: S.fork.end, end: 0};
 	S.thin.end = say('L05', S.thin.start + 10) + 30;
-	S.chain = {start: S.thin.end, end: 0};
+	const has = (id: string) => vo.some((l) => l.id === id);
+	let next = S.thin.end;
+	// optional curiosity beats (flat cut): guess before the chain rule, Shannon after it, 100 runs after "totally"
+	if (has('G01')) {
+		S.guess = {start: next, end: 0};
+		const g1 = say('G01', S.guess.start + 16);
+		S.guess.end = say('G02', g1 + GUESS_PAUSE) + 20;
+		next = S.guess.end;
+	}
+	S.chain = {start: next, end: 0};
 	S.chain.end = say('L06', S.chain.start + 64) + 30;
-	S.marble = {start: S.chain.end, end: 0};
+	next = S.chain.end;
+	if (has('SH01')) {
+		S.shannon = {start: next, end: 0};
+		const sh1 = say('SH01', S.shannon.start + 20);
+		S.shannon.end = say('SH02', sh1 + 10) + 24;
+		next = S.shannon.end;
+	}
+	S.marble = {start: next, end: 0};
 	const l07 = say('L07', S.marble.start + 10);
 	S.marble.end = say('L08', l07 + 6) + 34;
-	S.lean = {start: S.marble.end, end: 0};
+	next = S.marble.end;
+	if (has('R01')) {
+		S.runs = {start: next, end: 0};
+		const r1 = say('R01', S.runs.start + 12);
+		S.runs.end = say('R02', r1 + RUNS_LEN) + 30;
+		next = S.runs.end;
+	}
+	S.lean = {start: next, end: 0};
 	S.lean.end = say('L09', S.lean.start + 20) + 40;
 	S.derail = {start: S.lean.end, end: 0};
 	S.derail.end = say('L10', S.derail.start + 58) + 20;
-	if (vo.some((l) => l.id === 'L10b')) S.derail.end = say('L10b', S.derail.end - 8) + 20;
+	if (has('L10b')) S.derail.end = say('L10b', S.derail.end - 8) + 20;
 	S.jev = {start: S.derail.end, end: 0};
 	const l11 = say('L11', S.jev.start + 26);
 	const l12 = say('L12', l11 + 8);
@@ -165,6 +190,13 @@ export function buildFilm(fx: Fixture, vo: VoLine[], t0 = 0) {
 	sfx.push({f: S.derail.start + 36, kind: 'whoosh', v: 0.6});
 	sfx.push({f: S.derail.start + 44, kind: 'splash'});
 	for (let i = 0; i < 6; i++) sfx.push({f: S.derail.start + 60 + i * 9 + (i % 2) * 4, kind: 'bubble', pitch: 240 + i * 50});
+	if (S.guess) {
+		const g = cues.G01.end;
+		for (let i = 0; i < 3; i++) sfx.push({f: g + 6 + i * 24, kind: 'tick', pitch: 1 + i * 0.1});
+		sfx.push({f: cues.G02.start, kind: 'chime', v: 0.6});
+	}
+	if (S.shannon) sfx.push({f: S.shannon.start + 4, kind: 'paperRise'});
+	if (S.runs) for (let i = 0; i < 100; i += 3) sfx.push({f: cues.R01.end + 4 + Math.round(i * 1.05), kind: 'tick', pitch: 0.8 + (i % 7) * 0.08, v: 0.5});
 	sfx.push({f: S.jev.start + 6, kind: 'whoosh', v: 0.4});
 	sfx.push({f: S.jev.start + 24, kind: 'lamp'});
 	sfx.push({f: cues.L12.start + 30, kind: 'sweep'});

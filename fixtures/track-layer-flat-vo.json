@@ -3,16 +3,21 @@
   "lines": [
     {
       "id": "H01",
-      "text": "Right now, hundreds of millions of people are asking machines for answers.",
-      "duration": 4.075
+      "text": "Ask a chatbot the same question twice.",
+      "duration": 2.325
     },
     {
       "id": "H02",
-      "text": "Should I sign this? Is this rash normal? Is this email a scam?",
-      "duration": 3.968
+      "text": "Same question. Same machine. A different answer. So which one did it actually mean?",
+      "duration": 5.269
     },
     {
       "id": "H03",
+      "text": "Right now, hundreds of millions of people are asking machines things like this. Should I sign this? Is this rash normal? Is this email a scam?",
+      "duration": 8.725
+    },
+    {
+      "id": "H04",
       "text": "And every answer, from ChatGPT to Claude, is built the same way: one word at a time. Each word, a small bet.",
       "duration": 7.488
     },
@@ -43,8 +48,8 @@
     },
     {
       "id": "L02",
-      "text": "Now picture models like ChatGPT and Claude as little trains. They can't see their destination. They lay down their answer as track, one word at a time. Let's ride along with one.",
-      "duration": 11.947
+      "text": "You might think a chatbot knows its whole answer and simply types it out. It doesn't. Picture models like ChatGPT and Claude as little trains. They can't see their destination. They lay down their answer as track, one word at a time. Let's ride along with one.",
+      "duration": 16.704
     },
     {
       "id": "L03",
@@ -62,9 +67,29 @@
       "duration": 9.259
     },
     {
+      "id": "G01",
+      "text": "Quick test. Say every word is a safe bet, eighty percent likely. How likely is a whole sentence of twenty words? Take a guess.",
+      "duration": 8.0
+    },
+    {
+      "id": "G02",
+      "text": "About one percent. Twenty safe bets, multiplied together, leave almost nothing.",
+      "duration": 5.077
+    },
+    {
       "id": "L06",
       "text": "Mathematicians call this the chain rule. And it is, quite literally, how these models write.",
       "duration": 5.397
+    },
+    {
+      "id": "SH01",
+      "text": "The idea is older than any chatbot. In 1951, Claude Shannon, the father of information theory, gave people a passage of text and asked them to guess it, one letter at a time.",
+      "duration": 12.587
+    },
+    {
+      "id": "SH02",
+      "text": "They were surprisingly good at it, because language is predictable. Every chatbot today plays Shannon's game, with words instead of letters, billions of times a day.",
+      "duration": 10.091
     },
     {
       "id": "L07",
@@ -75,6 +100,16 @@
       "id": "L08",
       "text": "Totally. Four percent.",
       "duration": 1.579
+    },
+    {
+      "id": "R01",
+      "text": "Four percent sounds like never. So how often does it actually happen? Let's run this junction a hundred times.",
+      "duration": 6.741
+    },
+    {
+      "id": "R02",
+      "text": "Four trains out of a hundred take the thin branch. Rare is not never. And across hundreds of millions of questions a day, rare happens all the time.",
+      "duration": 9.28
     },
     {
       "id": "L09",
