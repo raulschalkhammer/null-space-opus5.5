@@ -70,6 +70,33 @@ export const FlatStation: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					const k = ((f - S.gab.start + i * 20) % 60) / 60;
 					return <circle key={i} cx={locoX - 110 - 20 * k} cy={530 - 110 * k} r={10 + 18 * k} fill="#D8D4FF" opacity={0.8 * (1 - k)} />;
 				})}
+				{/* who the train stands for */}
+				{film.cues.L02 && f >= film.cues.L02.start + 26 && f < film.cues.L02.end + 10
+					? (() => {
+							const a = film.cues.L02.start + 26;
+							const k = (i: number) => easeOut(progress(f, a + i * 5, a + 12 + i * 5), 3) * (1 - progress(f, film.cues.L02.end, film.cues.L02.end + 10));
+							const chips = ['ChatGPT', 'Claude', '…'];
+							return (
+								<g transform={`translate(${locoX - 110} 330)`}>
+									<path d="M 0 118 L 0 176" stroke={K.white} strokeWidth={3} strokeDasharray="6 6" opacity={k(0)} />
+									<g transform={`scale(${k(0)})`}>
+										<rect x={-170} y={-8} width={340} height={56} rx={28} fill={K.teal} />
+										<text x={0} y={29} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={24} letterSpacing={2} fill={K.ink}>
+											LANGUAGE MODELS
+										</text>
+									</g>
+									{chips.map((c, i) => (
+										<g key={c} transform={`translate(${(i - 1) * 118} 84) scale(${k(i + 1)})`}>
+											<rect x={-54} y={-22} width={108} height={44} rx={22} fill={K.navy} />
+											<text x={0} y={8} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={21} fill={K.white}>
+												{c}
+											</text>
+										</g>
+									))}
+								</g>
+							);
+						})()
+					: null}
 				{/* the letter, trailing sparks */}
 				{fl < 1
 					? [1, 2, 3, 4, 5].map((i) => {
@@ -151,7 +178,11 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 		loco = {x: endX + 120 + 60 * easeOut(clamp01(u / 1.4)), y: endY + 176 + 14 * damp * Math.cos(7 * u) + 3 * Math.sin(u * 2), rot: 12 + 40 * damp * Math.cos(6 * u)};
 	}
 	const J = S.jev.start;
-	const dc: SCam = {cx: lerp(760, 1080, easeInOut(progress(f, d0, d0 + 40))), cy: lerp(700, 800, easeInOut(progress(f, d0, d0 + 40))), s: 1.45};
+	let dc: SCam = {cx: lerp(760, 1080, easeInOut(progress(f, d0, d0 + 40))), cy: lerp(700, 800, easeInOut(progress(f, d0, d0 + 40))), s: 1.45};
+	if (cues.L10b) {
+		const k = easeInOut(progress(f, cues.L10b.start + 90, cues.L10b.start + 130));
+		dc = {cx: lerp(dc.cx, 780, k), cy: lerp(dc.cy, 720, k), s: lerp(dc.s, 1.02, k)};
+	}
 	const shake = f >= d0 + 44 ? Math.exp(-(f - d0 - 44) / 6) : 0;
 	const jevK = easeInOut(progress(f, J, J + 40));
 	let c: SCam = f < J ? {cx: dc.cx + 10 * shake * Math.sin(f * 2.1), cy: dc.cy + 8 * shake * Math.cos(f * 2.9), s: dc.s} : {cx: lerp(dc.cx, 1150, jevK), cy: lerp(dc.cy, 520, jevK), s: lerp(1.45, 1.12, jevK)};
@@ -253,6 +284,39 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 						<rect x={0} y={-3} width={150} height={5} rx={2} fill={K.mute} />
 					</g>
 				))}
+				{cues.L10b && f >= cues.L10b.start && f < S.jev.start + 30
+					? ps.map((p, i) => {
+							const step = film.fx.steps[i];
+							const prob = step.options.find((o) => o.t === step.chosen)?.p ?? 0;
+							const at = cues.L10b.start + 130 + i * 5;
+							const k = easeOut(progress(f, at, at + 10), 3) * (1 - progress(f, S.jev.start, S.jev.start + 20));
+							const bad = i === 6;
+							const hot = bad && f >= cues.L10b.end - 50;
+							if (k <= 0) return null;
+							const r = (p.angle * Math.PI) / 180;
+							const cx = p.x + 75 * Math.cos(r);
+							const cy = p.y + 75 * Math.sin(r) - 58;
+							return (
+								<g key={`b${i}`} transform={`translate(${cx} ${cy}) scale(${k * (hot ? 1.3 : 1)})`}>
+									{hot ? <circle r={44} fill={K.rose} opacity={0.35} filter="url(#glowBig)" /> : null}
+									<rect x={-40} y={-20} width={80} height={40} rx={20} fill={bad ? K.rose : K.navy} />
+									<text x={0} y={8} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={21} fill={K.white}>
+										{Math.round(prob * 100)}%
+									</text>
+								</g>
+							);
+						})
+					: null}
+				{cues.L10b && f >= cues.L10b.start + 6 && f < cues.L10b.start + 110 ? (
+					<g transform={`translate(1320 600) scale(${easeOut(progress(f, cues.L10b.start + 6, cues.L10b.start + 18), 3) * (1 - progress(f, cues.L10b.start + 96, cues.L10b.start + 110))})`}>
+						<rect x={-240} y={-34} width={480} height={68} rx={34} fill={K.navy} />
+						<circle cx={-200} cy={0} r={20} fill={K.teal} />
+						<path d="M -210 0 L -202 8 L -189 -8" fill="none" stroke={K.ink} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
+						<text x={-166} y={9} fontFamily={FONT} fontWeight={800} fontSize={25} fill={K.white}>
+							real models usually catch this one
+						</text>
+					</g>
+				) : null}
 				<g transform={`translate(${loco.x} ${loco.y}) rotate(${loco.rot})`}>
 					<FlatLoco worried={f >= d0 + 20} look={f >= J + 150 ? 1 : 0.2} blink={g % 90 < 4 ? 1 : 0} />
 				</g>

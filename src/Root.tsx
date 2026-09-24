@@ -24,7 +24,7 @@ import {StyleBlueprint} from './styleframes/StyleBlueprint';
 import {StylePaper} from './styleframes/StylePaper';
 import {StyleRiso} from './styleframes/StyleRiso';
 import {TrackLayerPaper, film} from './shorts/paper-track/Film';
-import {TrackLayerFlat} from './shorts/flat-track/Film';
+import {TrackLayerFlat, film as flatFilm} from './shorts/flat-track/Film';
 
 // Block rendering until every webfont is ready, so no frame renders with fallback fonts.
 const fontsReady = delayRender('Loading fonts');
@@ -36,7 +36,7 @@ Promise.all(
 
 export const RemotionRoot: React.FC = () => (
 	<>
-		<Composition id="TrackLayerFlat" component={TrackLayerFlat} durationInFrames={film.total} fps={FPS} width={WIDTH} height={HEIGHT} />
+		<Composition id="TrackLayerFlat" component={TrackLayerFlat} durationInFrames={flatFilm.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="TrackLayerPaper" component={TrackLayerPaper} durationInFrames={film.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="TrackLayer" component={TrackLayer} durationInFrames={tl.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleA-Riso" component={StyleRiso} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />

@@ -1,0 +1,28 @@
+{
+  "voice": "af_heart",
+  "speed": 0.94,
+  "lines": [
+    {"id": "H01", "text": "Right now, hundreds of millions of people are asking machines for answers."},
+    {"id": "H02", "text": "Should I sign this? Is this rash normal? Is this email a scam?"},
+    {"id": "H03", "text": "And every answer, from ChatGPT to Claude, is built the same way: one word at a time. Each word, a small bet."},
+    {"id": "N01", "text": "On September fifteenth, a startup called TypeSafe released an AI that refuses to play that game."},
+    {"id": "N02", "text": "It's called Jev. It doesn't write a single word. It answers with a number."},
+    {"id": "N03", "text": "Its makers claim it's up to a hundred times faster and cheaper than today's chatbots. And they raised forty million dollars on that bet."},
+    {"id": "N04", "text": "So is this a better way for a machine to decide? To find out, we first have to look inside the ones we already use."},
+    {"id": "L01", "text": "Take one question. An email arrives. Urgent! You have won a free cruise. Is it a scam?"},
+    {"id": "L02", "text": "Now picture a model like ChatGPT or Claude as a little train. It can't see its destination. It lays down its answer as track, one word at a time."},
+    {"id": "L03", "text": "At every junction, the track splits into possible next words. And each branch is exactly as wide as the chance of that word."},
+    {"id": "L04", "text": "The train takes one. And only then can it see the next junction."},
+    {"id": "L05", "text": "Each choice keeps only part of the width. So the chance of the whole sentence is whatever survives every junction. You multiply, one word at a time."},
+    {"id": "L06", "text": "Mathematicians call this the chain rule. And it is, quite literally, how these models write."},
+    {"id": "L07", "text": "Usually, the train takes a wide branch. But every choice is a roll of the dice, and now and then, a thin one wins."},
+    {"id": "L08", "text": "Totally. Four percent."},
+    {"id": "L09", "text": "And every junction is shaped by the track already laid. After totally, the widest branch is... legit."},
+    {"id": "L10", "text": "And just like that, the train has talked itself into a swamp. Fluent, confident, and wrong."},
+    {"id": "L10b", "text": "To be fair, real models usually get an email this obvious right. But the mechanism is real: every answer is a chain of small bets, and sometimes one goes bad."},
+    {"id": "L11", "text": "Jev works differently. It never lays track, and it never says a word."},
+    {"id": "L12", "text": "It takes in the whole letter in a single sweep, and splits all of its certainty between the only answers it is allowed to give."},
+    {"id": "L13", "text": "Scam: zero point nine one. In one pass."},
+    {"id": "L14", "text": "One of them writes. The other decides. Whether that's the future comes down to one question: can we trust that number? That's next time."}
+  ]
+}

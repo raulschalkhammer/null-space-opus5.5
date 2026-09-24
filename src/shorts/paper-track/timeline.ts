@@ -77,7 +77,8 @@ export function buildRoute(steps: StepData[]): ForkGeo[] {
 }
 
 // ---------- the film ----------
-export function buildFilm(fx: Fixture, vo: VoLine[]) {
+// t0 shifts the whole story later (room for a cold open); an optional L10b line extends the derail beat.
+export function buildFilm(fx: Fixture, vo: VoLine[], t0 = 0) {
 	const d = (id: string) => Math.round((vo.find((l) => l.id === id)?.duration ?? 3) * FPS);
 	const cues: Record<string, Span> = {};
 	const say = (id: string, at: number) => {
@@ -87,9 +88,9 @@ export function buildFilm(fx: Fixture, vo: VoLine[]) {
 	const S: Record<string, Span> = {};
 	const XF = 12; // crossfade frames between scenes
 
-	S.title = {start: 0, end: 84};
-	S.letter = {start: 72, end: 0};
-	S.letter.end = say('L01', 96) + 20;
+	S.title = {start: t0, end: t0 + 84};
+	S.letter = {start: t0 + 72, end: 0};
+	S.letter.end = say('L01', t0 + 96) + 20;
 	S.gab = {start: S.letter.end, end: 0};
 	S.gab.end = say('L02', S.gab.start + 12) + 18;
 	S.fork = {start: S.gab.end, end: 0};
@@ -106,6 +107,7 @@ export function buildFilm(fx: Fixture, vo: VoLine[]) {
 	S.lean.end = say('L09', S.lean.start + 20) + 40;
 	S.derail = {start: S.lean.end, end: 0};
 	S.derail.end = say('L10', S.derail.start + 58) + 20;
+	if (vo.some((l) => l.id === 'L10b')) S.derail.end = say('L10b', S.derail.end - 8) + 20;
 	S.jev = {start: S.derail.end, end: 0};
 	const l11 = say('L11', S.jev.start + 26);
 	const l12 = say('L12', l11 + 8);
@@ -140,7 +142,7 @@ export function buildFilm(fx: Fixture, vo: VoLine[]) {
 	// ---------- sound ----------
 	type Sfx = {f: number; kind: string; v?: number; pitch?: number; dur?: number};
 	const sfx: Sfx[] = [];
-	sfx.push({f: 6, kind: 'paperRise'});
+	sfx.push({f: t0 + 6, kind: 'paperRise'});
 	sfx.push({f: S.letter.start + 10, kind: 'flutter', dur: 60});
 	sfx.push({f: S.letter.start + 64, kind: 'pin'});
 	sfx.push({f: S.gab.start + 30, kind: 'chug'});
@@ -172,7 +174,7 @@ export function buildFilm(fx: Fixture, vo: VoLine[]) {
 	sfx.sort((a, b) => a.f - b.f);
 
 	const music = [
-		{kind: 'theme', start: 0, end: S.derail.start + 30},
+		{kind: 'theme', start: t0, end: S.derail.start + 30},
 		{kind: 'low', start: S.derail.start + 40, end: S.jev.start + 10},
 		{kind: 'lamp', start: S.jev.start + 10, end: total},
 	];

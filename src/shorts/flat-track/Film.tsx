@@ -1,16 +1,20 @@
 import React from 'react';
-import katex from 'katex';
 import {AbsoluteFill, Audio, staticFile, useCurrentFrame} from 'remotion';
-import {FONT, FlatDefs, FlatLighthouse, FlatLoco, FlatSubtitle, Hills, K, Motes, Stars} from '../../flat/kit';
+import {FONT, FlatDefs, FlatLighthouse, FlatLoco, FlatSubtitle, Hills, K, Motes, SansFormula, Stars, Vignette} from '../../flat/kit';
 import {Grain} from '../../styleframes/Shared';
-import {film} from '../paper-track/Film';
+import fixture from '../../../fixtures/track-layer.json';
+import vo from '../../../fixtures/track-layer-flat-vo.json';
+import type {Fixture, VoLine} from '../paper-track/timeline';
 import {type TCam, fmt, trainAt} from '../paper-track/Table';
 import {type ForkGeo, type Span, ROUTE, buildRoute, easeIn, easeInOut, easeOut, lerp, progress} from '../paper-track/timeline';
 import {FlatEmailCard, FlatStation, FlatValley} from './Side';
 import {FlatTableWorld} from './Table';
+import {Hook, News} from './Intro';
+import {buildFlatFilm} from './timeline';
+
+export const film = buildFlatFilm(fixture as Fixture, (vo as {lines: VoLine[]}).lines);
 
 // Flat-vector cut of "Track Layer". Same narration, timing and math as the paper cut; new look.
-const tex = (s: string) => katex.renderToString(s, {throwOnError: false, output: 'html'});
 const mixCam = (a: TCam, b: TCam, k: number): TCam => ({camX: lerp(a.camX, b.camX, k), f: lerp(a.f, b.f, k), H: lerp(a.H, b.H, k), horizon: lerp(a.horizon, b.horizon, k)});
 
 const Frame: React.FC<{f: number; horizon: number; shift?: number; children: React.ReactNode}> = ({f, horizon, shift = 0, children}) => (
@@ -26,6 +30,7 @@ const Frame: React.FC<{f: number; horizon: number; shift?: number; children: Rea
 		</g>
 		{children}
 		<Motes f={f} />
+		<Vignette />
 	</svg>
 );
 
@@ -100,7 +105,9 @@ const ChainPanel: React.FC<{f: number}> = ({f}) => {
 				</span>
 			</div>
 			<div style={{height: 4, borderRadius: 2, background: K.indigoHi, margin: '20px 80px 16px', opacity: eqK}} />
-			<div style={{opacity: eqK, fontSize: 46, color: K.white}} dangerouslySetInnerHTML={{__html: tex('p(\\text{sentence}) = \\prod_{t} \\, p\\big(\\,\\text{word}_t \\mid \\text{words before it}\\,\\big)')}} />
+			<div style={{opacity: eqK, transform: `translateY(${(1 - eqK) * 10}px)`}}>
+				<SansFormula size={46} />
+			</div>
 			<div style={{opacity: nameK, marginTop: 14, display: 'inline-block', background: K.teal, color: K.ink, fontWeight: 900, fontSize: 20, letterSpacing: 3, padding: '6px 20px', borderRadius: 20}}>THE CHAIN RULE</div>
 		</div>
 	);
@@ -156,12 +163,15 @@ export const TrackLayerFlat: React.FC = () => {
 	const f = useCurrentFrame();
 	const {S, XF, cues} = film;
 	const scenes: Scene[] = [
-		{span: S.title, render: (x) => <TitleCard f={x} />},
+		{span: S.hook, render: (x) => <Hook film={film} f={x} />},
+		{span: S.news, render: (x) => <News film={film} f={x} />},
+		{span: S.title, render: (x) => <TitleCard f={x - S.title.start} />},
 		{span: {start: S.letter.start, end: S.gab.end}, render: (x) => (
 			<>
 				<svg width={1920} height={1080} style={{position: 'absolute'}}>
 					<FlatDefs />
 					<FlatStation film={film} f={x} />
+					<Vignette />
 				</svg>
 				<FlatEmailCard film={film} f={x} />
 			</>
@@ -173,6 +183,7 @@ export const TrackLayerFlat: React.FC = () => {
 			<svg width={1920} height={1080} style={{position: 'absolute'}}>
 				<FlatDefs />
 				<FlatValley film={film} f={x} />
+				<Vignette />
 			</svg>
 		)},
 		{span: S.endcard, render: (x) => <TitleCard f={x - S.endcard.start} next />},
@@ -195,7 +206,7 @@ export const TrackLayerFlat: React.FC = () => {
 			{film.fx.status !== 'measured' && f < S.endcard.start ? (
 				<div style={{position: 'absolute', right: 40, top: 34, fontFamily: FONT, fontWeight: 800, fontSize: 13, letterSpacing: 3, color: K.mute, border: `2px solid ${K.indigoHi}`, borderRadius: 14, padding: '4px 12px', opacity: 0.8}}>DRAFT · ILLUSTRATIVE NUMBERS</div>
 			) : null}
-			<Audio src={staticFile('audio/flat-track.wav')} />
+			<Audio src={staticFile('audio/flat2-track.wav')} />
 		</AbsoluteFill>
 	);
 };

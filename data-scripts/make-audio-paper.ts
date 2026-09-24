@@ -3,13 +3,17 @@
 // Run: node --experimental-strip-types data-scripts/make-audio-paper.ts
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {FPS, buildFilm, type Fixture, type VoLine} from '../src/shorts/paper-track/timeline.ts';
+import {buildFlatFilm} from '../src/shorts/flat-track/timeline.ts';
+
+// --film=flat2: the flat cut with its cold open (own narration set, synth score, flat2-track.wav)
+const FLAT2 = process.argv.includes('--film=flat2');
 
 const root = new URL('../', import.meta.url);
 const fx = JSON.parse(readFileSync(new URL('fixtures/track-layer.json', root), 'utf8')) as Fixture;
-const vo = JSON.parse(readFileSync(new URL('fixtures/track-layer-vo.json', root), 'utf8')).lines as VoLine[];
-const film = buildFilm(fx, vo);
+const vo = JSON.parse(readFileSync(new URL(FLAT2 ? 'fixtures/track-layer-flat-vo.json' : 'fixtures/track-layer-vo.json', root), 'utf8')).lines as VoLine[];
+const film = FLAT2 ? buildFlatFilm(fx, vo) : buildFilm(fx, vo);
 // --style=synth swaps the felt piano for soft synth plucks + pads and writes flat-track.wav
-const SYNTH = process.argv.includes('--style=synth');
+const SYNTH = FLAT2 || process.argv.includes('--style=synth');
 
 const SR = 44100;
 const N = Math.ceil((film.total / FPS) * SR) + SR;
@@ -85,7 +89,7 @@ function readWav(path: URL) {
 	return {s, rate};
 }
 for (const l of vo) {
-	const path = new URL(`public/audio/vo/${l.id}.wav`, root);
+	const path = new URL(`public/audio/${FLAT2 ? 'vo-flat' : 'vo'}/${l.id}.wav`, root);
 	if (!existsSync(path)) throw new Error(`missing ${l.id}.wav: run data-scripts/make-vo.py first`);
 	const {s, rate} = readWav(path);
 	const start = Math.round((film.cues[l.id].start / FPS) * SR);
@@ -135,6 +139,9 @@ for (const e of film.sfx) {
 		case 'cut':
 			noise(fxBus, {t, dur: 0.16, g: 0.12, lp0: 7000, hp: 2500, shape: 'tri'});
 			break;
+		case 'pop':
+			tone(fxBus, {t, dur: 0.09, f0: 380 * (e.pitch ?? 1), f1: 900 * (e.pitch ?? 1), g: 0.07 * v, exp: 0.04});
+			break;
 		case 'tick':
 			tone(fxBus, {t, dur: 0.1, f0: 1200 * (e.pitch ?? 1), g: 0.06, exp: 0.03});
 			break;
@@ -180,7 +187,13 @@ const prog = [
 for (const cue of film.music) {
 	const t0 = cue.start / FPS;
 	const t1 = cue.end / FPS;
-	if (cue.kind === 'theme') {
+	if (cue.kind === 'intro') {
+		// a low pulse under the cold open, opening up into a chord for the news
+		for (let t = t0; t < t1 - 0.5; t += BEAT) piano(t, 38, 0.05, 1.6);
+		[50, 57, 62, 66].forEach((m, i) => piano(t0 + 0.4 + i * 0.05, m + 12, 0.025, 8));
+		const mid = t0 + (t1 - t0) * 0.45;
+		[50, 57, 62, 69, 74].forEach((m, i) => piano(mid + i * 0.12, m + 12, 0.03, 6));
+	} else if (cue.kind === 'theme') {
 		for (let bar = 0; t0 + bar * 4 * BEAT < t1 - 1; bar++) {
 			const ch = prog[bar % prog.length];
 			const tb = t0 + bar * 4 * BEAT;
@@ -230,6 +243,6 @@ pcm.write('data', 36);
 pcm.writeUInt32LE(N * 2, 40);
 for (let i = 0; i < N; i++) pcm.writeInt16LE(Math.round(out[i] * 0.95 * 32767), 44 + i * 2);
 mkdirSync(new URL('public/audio/', root), {recursive: true});
-const outName = SYNTH ? 'flat-track.wav' : 'paper-track.wav';
+const outName = FLAT2 ? 'flat2-track.wav' : SYNTH ? 'flat-track.wav' : 'paper-track.wav';
 writeFileSync(new URL(`public/audio/${outName}`, root), pcm);
 console.log(`wrote public/audio/${outName}: ${(N / SR).toFixed(1)} s, ${film.sfx.length} sfx, ${vo.length} narration lines, ${film.total} frames`);

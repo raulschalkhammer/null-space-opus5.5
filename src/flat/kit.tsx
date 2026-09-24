@@ -81,6 +81,10 @@ export const FlatDefs: React.FC = () => (
 			<stop offset="0" stopColor="#2A2F7E" />
 			<stop offset="1" stopColor="#141C4E" />
 		</linearGradient>
+		<radialGradient id="gVignette" cx="0.5" cy="0.48" r="0.75">
+			<stop offset="0.55" stopColor="#050820" stopOpacity={0} />
+			<stop offset="1" stopColor="#050820" stopOpacity={0.55} />
+		</radialGradient>
 		<radialGradient id="gSun">
 			<stop offset="0" stopColor="#FFE3A3" />
 			<stop offset="0.35" stopColor="#FFB86B" />
@@ -119,19 +123,50 @@ export const Motes: React.FC<{f: number; count?: number; seed?: number; color?: 
 	);
 };
 
-// Layered dusk hills along a horizon line.
-export const Hills: React.FC<{y: number; shift?: number}> = ({y, shift = 0}) => (
-	<g>
-		<circle cx={1320 - shift * 0.2} cy={y - 40} r={260} fill="url(#gSun)" opacity={0.9} />
-		<circle cx={1320 - shift * 0.2} cy={y - 40} r={70} fill="#FFE0A0" />
-		<g transform={`translate(${-shift * 0.3} 0)`}>
-			<path d={`M -400 ${y - 30} C -100 ${y - 110} 200 ${y - 60} 480 ${y - 95} C 760 ${y - 130} 1000 ${y - 50} 1260 ${y - 90} C 1520 ${y - 130} 1760 ${y - 70} 2000 ${y - 100} C 2200 ${y - 120} 2350 ${y - 80} 2600 ${y - 90} C 2900 ${y - 110} 3200 ${y - 60} 3600 ${y - 95} L 3600 ${y + 80} L -400 ${y + 80} Z`} fill="#4B3A8E" />
+// Layered dusk hills along a horizon line, each with a thin rim of light along its crest.
+export const Hills: React.FC<{y: number; shift?: number}> = ({y, shift = 0}) => {
+	const far = `M -400 ${y - 30} C -100 ${y - 110} 200 ${y - 60} 480 ${y - 95} C 760 ${y - 130} 1000 ${y - 50} 1260 ${y - 90} C 1520 ${y - 130} 1760 ${y - 70} 2000 ${y - 100} C 2200 ${y - 120} 2350 ${y - 80} 2600 ${y - 90} C 2900 ${y - 110} 3200 ${y - 60} 3600 ${y - 95}`;
+	const near = `M -400 ${y + 5} C -100 ${y - 40} 260 ${y} 560 ${y - 35} C 860 ${y - 70} 1100 ${y - 5} 1400 ${y - 45} C 1700 ${y - 80} 1950 ${y - 20} 2500 ${y - 35} C 2900 ${y - 60} 3200 ${y - 10} 3600 ${y - 40}`;
+	return (
+		<g>
+			<circle cx={1320 - shift * 0.2} cy={y - 40} r={300} fill="url(#gSun)" opacity={0.9} />
+			<circle cx={1320 - shift * 0.2} cy={y - 40} r={72} fill="#FFE6AE" />
+			<g transform={`translate(${-shift * 0.3} 0)`}>
+				<path d={`${far} L 3600 ${y + 80} L -400 ${y + 80} Z`} fill="#4A3890" />
+				<path d={far} fill="none" stroke="#B679C6" strokeWidth={3} opacity={0.55} />
+			</g>
+			<g transform={`translate(${-shift * 0.5} 0)`}>
+				<path d={`${near} L 3600 ${y + 90} L -400 ${y + 90} Z`} fill="#2D2C7C" />
+				<path d={near} fill="none" stroke="#7E6FD0" strokeWidth={3} opacity={0.6} />
+			</g>
 		</g>
-		<g transform={`translate(${-shift * 0.5} 0)`}>
-			<path d={`M -400 ${y + 5} C -100 ${y - 40} 260 ${y} 560 ${y - 35} C 860 ${y - 70} 1100 ${y - 5} 1400 ${y - 45} C 1700 ${y - 80} 1950 ${y - 20} 2500 ${y - 35} C 2900 ${y - 60} 3200 ${y - 10} 3600 ${y - 40} L 3600 ${y + 90} L -400 ${y + 90} Z`} fill="#2F2E7A" />
-		</g>
-	</g>
-);
+	);
+};
+
+// Soft dark edges, as in most explainer frames.
+export const Vignette: React.FC = () => <rect x={-60} y={-60} width={2040} height={1200} fill="url(#gVignette)" />;
+
+// Formulas set in the film's own rounded sans (no LaTeX serif), with a drawn product sign.
+export const SansFormula: React.FC<{size?: number; color?: string; accent?: string}> = ({size = 46, color = K.white, accent = K.teal}) => {
+	const sub = {fontSize: size * 0.55, position: 'relative' as const, top: size * 0.28};
+	return (
+		<div style={{display: 'inline-flex', alignItems: 'center', gap: size * 0.22, fontFamily: FONT, fontWeight: 800, fontSize: size, color, whiteSpace: 'nowrap'}}>
+			<span>p(sentence)</span>
+			<span style={{color: K.mute}}>=</span>
+			<span style={{display: 'inline-flex', alignItems: 'flex-end'}}>
+				<svg width={size * 0.9} height={size * 1.05} viewBox="0 0 40 46">
+					<rect x={2} y={2} width={36} height={7} rx={3.5} fill={accent} />
+					<rect x={7} y={2} width={7} height={42} rx={3.5} fill={accent} />
+					<rect x={26} y={2} width={7} height={42} rx={3.5} fill={accent} />
+				</svg>
+				<span style={{...sub, color: accent}}>t</span>
+			</span>
+			<span>
+				p(word<span style={sub}>t</span> <span style={{color: K.mute}}>|</span> words before it)
+			</span>
+		</div>
+	);
+};
 
 // Gab: a flat locomotive-typewriter with two simple eyes. Origin = front wheel contact, facing right.
 export const FlatLoco: React.FC<{scale?: number; look?: number; blink?: number; worried?: boolean}> = ({scale = 1, look = 0.3, blink = 0, worried}) => (
@@ -144,6 +179,7 @@ export const FlatLoco: React.FC<{scale?: number; look?: number; blink?: number; 
 			<rect x={-172} y={-156} width={134} height={18} rx={9} fill={K.ink} />
 			<rect x={-194} y={-140} width={184} height={102} rx={22} fill="url(#gOrange)" />
 			<rect x={-194} y={-70} width={184} height={32} rx={0} fill={K.orangeLo} opacity={0.5} />
+			<path d="M -184 -134 Q -190 -134 -190 -126 L -190 -118 Q -186 -130 -172 -132 L -30 -136 Q -20 -136 -16 -130 Q -18 -140 -30 -140 L -172 -140 Q -184 -140 -184 -134 Z" fill="#FFD9A0" opacity={0.9} />
 			{[0, 1, 2].map((r) => [0, 1, 2, 3, 4].map((c) => <circle key={`${r}${c}`} cx={-176 + c * 21 + r * 6} cy={-62 - r * 20} r={6.5} fill="#FFE6C8" />))}
 			{/* eyes */}
 			{[-58, -30].map((x) => (
@@ -158,6 +194,7 @@ export const FlatLoco: React.FC<{scale?: number; look?: number; blink?: number; 
 				<g key={x}>
 					<circle cx={x} cy={-18} r={22} fill="#1C2358" />
 					<circle cx={x} cy={-18} r={9} fill="#5A64B8" />
+					<path d={`M ${x - 17} ${-28} A 20 20 0 0 1 ${x + 6} ${-39}`} fill="none" stroke="#6D78D6" strokeWidth={3} strokeLinecap="round" />
 				</g>
 			))}
 			<path d="M -4 -36 L 22 -4 L -4 -4 Z" fill={K.orangeLo} />

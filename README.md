@@ -4,12 +4,15 @@ An anthology of playful 2D animated shorts about Jev, TypeSafe AI's "System One"
 
 ## Short no. 1: Track Layer (flat-vector cut, narrated): current
 
-Same narration, timing and math as the paper cut below, in a flat-vector explainer look: dusk palette, glowing ribbons, a glowing orb as the marble, rounded label pills.
+About 2:54. Opens cold on a planet of people asking chatbots questions, ChatGPT and Claude answering one word (one bet) at a time, and the news that TypeSafe released Jev; then the train, which stands for language models like ChatGPT and Claude, lays its answer as track where probability is width, derails, and a fairness beat notes that real models usually catch this email while the mechanism is real. Jev's lighthouse answers with pennants as wide as its odds.
 
 ```
-node --experimental-strip-types data-scripts/make-audio-paper.ts --style=synth   # narration + SFX + synth score
-npx remotion render src/index.ts TrackLayerFlat renders/01-track-layer-flat.mp4
+python data-scripts/make-vo.py kokoro-v1.0.onnx voices-v1.0.bin story/track-layer-flat-vo.json public/audio/vo-flat fixtures/track-layer-flat-vo.json
+node --experimental-strip-types data-scripts/make-audio-paper.ts --film=flat2
+npx remotion render src/index.ts TrackLayerFlat renders/01-track-layer-flat-v2.mp4
 ```
+
+Narration: `story/track-layer-flat-vo.json`. Cold open: `src/shorts/flat-track/Intro.tsx`; timeline: `src/shorts/flat-track/timeline.ts`.
 
 Code: `src/shorts/flat-track/` and `src/flat/kit.tsx` (reuses the geometry and timeline from `src/shorts/paper-track/`).
 
