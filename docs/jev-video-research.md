@@ -8,7 +8,13 @@ Research date: 24 Sep 2026. Jev launched 15 Sep 2026, so facts are young. The pr
 
 ---
 
-## 0. Chosen direction (update): Paper Diorama, narrated
+## 0. Chosen direction (update 2): flat vector, narrated
+
+The current look is a **flat-vector science-explainer style** (in the spirit of Kurzgesagt): dusk palettes, bold saturated shapes with soft top-lit gradients and no outlines, glows on anything that emits light, drifting particles and rounded type. Characters, logo and branding are original; don't use another studio's characters, name or marks, or present the series as affiliated with one. Everything below about how math lives in the story still applies unchanged; the paper cut remains in the repo as an alternative (`TrackLayerPaper`).
+
+Flat cut: `src/shorts/flat-track/` + `src/flat/kit.tsx`, audio via `make-audio-paper.ts --style=synth`.
+
+## 0a. Previous direction: Paper Diorama, narrated
 
 After a first cartoon cut and three style frames, the series is going with **Paper Diorama**: layered cut paper lit like a stop-motion set, soft cast shadows, shallow depth of field, an earthy palette, and a calm narrator. Characters are objects, not cartoons: Gab is a faceless paper locomotive-typewriter, Jev is a lighthouse.
 

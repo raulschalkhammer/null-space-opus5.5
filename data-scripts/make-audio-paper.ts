@@ -8,6 +8,8 @@ const root = new URL('../', import.meta.url);
 const fx = JSON.parse(readFileSync(new URL('fixtures/track-layer.json', root), 'utf8')) as Fixture;
 const vo = JSON.parse(readFileSync(new URL('fixtures/track-layer-vo.json', root), 'utf8')).lines as VoLine[];
 const film = buildFilm(fx, vo);
+// --style=synth swaps the felt piano for soft synth plucks + pads and writes flat-track.wav
+const SYNTH = process.argv.includes('--style=synth');
 
 const SR = 44100;
 const N = Math.ceil((film.total / FPS) * SR) + SR;
@@ -58,7 +60,11 @@ const bell = (buf: Float32Array, t: number, f: number, g: number, decay = 1.6) =
 	for (const [m, gg] of [[1, 1], [2.76, 0.3], [5.4, 0.12]] as const) tone(buf, {t, dur: decay * 3, f0: f * m, g: g * gg, exp: decay / Math.sqrt(m)});
 };
 // felt-piano-ish pluck: soft attack, quick bloom, long decay, darkened by a lowpass
-const piano = (t: number, m: number, g: number, dur = 2.4) => tone(music, {t, dur, f0: 440 * Math.pow(2, (m - 69) / 12), g, atk: 0.012, exp: dur / 3.2, harm: [1, 0.35, 0.12, 0.05], lp: 2200});
+const piano = (t: number, m: number, g: number, dur = 2.4) =>
+	SYNTH
+		? (tone(music, {t, dur: dur * 1.3, f0: 440 * Math.pow(2, (m - 69) / 12), g: g * 0.9, atk: 0.02, exp: dur / 2.2, harm: [1, 0.5, 0.33, 0.25, 0.2, 0.16], lp: 1500}),
+			tone(music, {t, dur: dur * 1.3, f0: 440 * Math.pow(2, (m - 69) / 12) * 1.004, g: g * 0.5, atk: 0.3, exp: dur / 1.6, harm: [1, 0.3], lp: 1200}))
+		: tone(music, {t, dur, f0: 440 * Math.pow(2, (m - 69) / 12), g, atk: 0.012, exp: dur / 3.2, harm: [1, 0.35, 0.12, 0.05], lp: 2200});
 
 // ---------- narration ----------
 function readWav(path: URL) {
@@ -224,5 +230,6 @@ pcm.write('data', 36);
 pcm.writeUInt32LE(N * 2, 40);
 for (let i = 0; i < N; i++) pcm.writeInt16LE(Math.round(out[i] * 0.95 * 32767), 44 + i * 2);
 mkdirSync(new URL('public/audio/', root), {recursive: true});
-writeFileSync(new URL('public/audio/paper-track.wav', root), pcm);
-console.log(`wrote public/audio/paper-track.wav: ${(N / SR).toFixed(1)} s, ${film.sfx.length} sfx, ${vo.length} narration lines, ${film.total} frames`);
+const outName = SYNTH ? 'flat-track.wav' : 'paper-track.wav';
+writeFileSync(new URL(`public/audio/${outName}`, root), pcm);
+console.log(`wrote public/audio/${outName}: ${(N / SR).toFixed(1)} s, ${film.sfx.length} sfx, ${vo.length} narration lines, ${film.total} frames`);

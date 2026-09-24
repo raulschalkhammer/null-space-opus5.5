@@ -8,14 +8,14 @@ import {type Film, type ForkGeo, ROUTE, buildRoute, clamp01, easeInOut, easeOut,
 // chance equal to its width.
 
 export type TCam = {camX: number; f: number; H: number; horizon: number};
-const proj = (c: TCam, X: number, Z: number) => ({x: 960 + (c.f * (X - c.camX)) / Z, y: c.horizon + (c.f * c.H) / Z, s: c.f / Z});
-const smooth = (t: number) => {
+export const proj = (c: TCam, X: number, Z: number) => ({x: 960 + (c.f * (X - c.camX)) / Z, y: c.horizon + (c.f * c.H) / Z, s: c.f / Z});
+export const smooth = (t: number) => {
 	const x = clamp01(t);
 	return x * x * (3 - 2 * x);
 };
 
 // Paper strip between two edge curves (Sankey link), projected. u0..u1 limits how much of it is drawn.
-function strip(c: TCam, x0: number, zb0: number, w: number, x1: number, zb1: number, u1 = 1, n = 28) {
+export function strip(c: TCam, x0: number, zb0: number, w: number, x1: number, zb1: number, u1 = 1, n = 28) {
 	const pts: {x: number; y: number}[] = [];
 	const edge = (off: number) => Array.from({length: n + 1}, (_, i) => {
 		const u = (i / n) * u1;
@@ -24,7 +24,7 @@ function strip(c: TCam, x0: number, zb0: number, w: number, x1: number, zb1: num
 	pts.push(...edge(w), ...edge(0).reverse());
 	return `M ${pts.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ')} Z`;
 }
-const rect = (c: TCam, x0: number, x1: number, zb: number, w: number) => strip(c, x0, zb, w, x1, zb);
+export const rect = (c: TCam, x0: number, x1: number, zb: number, w: number) => strip(c, x0, zb, w, x1, zb);
 
 // Upright paper card on a little stick, standing on the ground plane.
 const Card: React.FC<{c: TCam; X: number; Z: number; title: string; sub?: string; hot?: boolean; opacity?: number; pop?: number; big?: number}> = ({c, X, Z, title, sub, hot, opacity = 1, pop = 1, big = 1}) => {
@@ -50,7 +50,7 @@ const Card: React.FC<{c: TCam; X: number; Z: number; title: string; sub?: string
 	);
 };
 
-const pct = (p: number) => `${Math.round(p * 100)}%`;
+export const pct = (p: number) => `${Math.round(p * 100)}%`;
 export const fmt = (p: number) => (p >= 0.1 ? p.toFixed(2) : p >= 0.01 ? p.toFixed(3) : p.toPrecision(2));
 
 // ---------- state over time ----------
@@ -83,7 +83,7 @@ export function trainAt(film: Film, route: ForkGeo[], f: number, start: number) 
 }
 
 // Marble position for fork k: rolls down the trunk, wobbles across the mouth, settles in the chosen lane.
-function marbleAt(film: Film, geo: ForkGeo, f: number) {
+export function marbleAt(film: Film, geo: ForkGeo, f: number) {
 	const t = film.forkTimes.find((x) => x.k === geo.k)!;
 	if (f < t.roll || f > t.land + 24) return null;
 	const {Zc, BRANCH} = ROUTE;

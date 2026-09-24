@@ -2,6 +2,17 @@
 
 An anthology of playful 2D animated shorts about Jev, TypeSafe AI's "System One" model, built in code with [Remotion](https://www.remotion.dev). The research and production plan is in [`docs/jev-video-research.md`](docs/jev-video-research.md).
 
+## Short no. 1: Track Layer (flat-vector cut, narrated): current
+
+Same narration, timing and math as the paper cut below, in a flat-vector explainer look: dusk palette, glowing ribbons, a glowing orb as the marble, rounded label pills.
+
+```
+node --experimental-strip-types data-scripts/make-audio-paper.ts --style=synth   # narration + SFX + synth score
+npx remotion render src/index.ts TrackLayerFlat renders/01-track-layer-flat.mp4
+```
+
+Code: `src/shorts/flat-track/` and `src/flat/kit.tsx` (reuses the geometry and timeline from `src/shorts/paper-track/`).
+
 ## Short no. 1: Track Layer (paper cut, narrated)
 
 The current version. A narrated paper-diorama short (about 108 s) where probability is literally the width of the track: forks split it, a brass marble picks a branch with chance equal to its width, the track under Gab thins as the chain rule multiplies, and Jev's lighthouse answers with signal pennants as wide as its probabilities.
