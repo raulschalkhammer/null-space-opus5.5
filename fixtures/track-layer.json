@@ -1,0 +1,18 @@
+{
+  "status": "illustrative",
+  "note": "Placeholder numbers shaped like real next-token distributions and a placeholder Jev answer. Replace with measured values: run data-scripts/llm-next-token.mjs (needs Hugging Face access) and a real Jev call, then re-render.",
+  "email": "URGENT!! You have WON a FREE cruise. Click here within 24h to claim your prize >>",
+  "question": "Is this email a scam?",
+  "steps": [
+    {"chosen": "Great", "options": [{"t": "Great", "p": 0.38}, {"t": "Yes", "p": 0.22}, {"t": "This", "p": 0.17}, {"t": "Hi", "p": 0.07}, {"t": "Sure", "p": 0.05}]},
+    {"chosen": " question", "options": [{"t": " question", "p": 0.81}, {"t": " catch", "p": 0.04}, {"t": " point", "p": 0.03}, {"t": " idea", "p": 0.03}]},
+    {"chosen": "!", "options": [{"t": "!", "p": 0.72}, {"t": ".", "p": 0.12}, {"t": ",", "p": 0.09}]},
+    {"chosen": " This", "options": [{"t": " This", "p": 0.44}, {"t": " Let", "p": 0.21}, {"t": " I", "p": 0.14}, {"t": " The", "p": 0.09}]},
+    {"chosen": " email", "options": [{"t": " email", "p": 0.67}, {"t": " message", "p": 0.18}, {"t": " one", "p": 0.06}]},
+    {"chosen": " looks", "options": [{"t": " looks", "p": 0.41}, {"t": " is", "p": 0.29}, {"t": " has", "p": 0.13}, {"t": " seems", "p": 0.08}]},
+    {"chosen": " totally", "options": [{"t": " like", "p": 0.46}, {"t": " suspicious", "p": 0.31}, {"t": " very", "p": 0.09}, {"t": " totally", "p": 0.04}]},
+    {"chosen": " legit", "options": [{"t": " legit", "p": 0.72}, {"t": " fine", "p": 0.11}, {"t": " safe", "p": 0.07}]},
+    {"chosen": "!", "options": [{"t": "!", "p": 0.64}, {"t": ".", "p": 0.15}, {"t": " and", "p": 0.08}]}
+  ],
+  "jev": {"label": "scam?", "p": 0.91, "status": "placeholder"}
+}

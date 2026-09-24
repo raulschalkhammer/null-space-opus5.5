@@ -1,0 +1,35 @@
+{
+  "name": "the-model-that-doesnt-talk",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "studio": "npm run audio && remotion studio src/index.ts",
+    "audio": "node --experimental-strip-types data-scripts/make-audio.ts",
+    "render:track-layer": "npm run audio && remotion render src/index.ts TrackLayer renders/01-track-layer.mp4",
+    "stills": "node data-scripts/stills.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource/caveat": "^5.3.0",
+    "@fontsource/fraunces": "^5.3.0",
+    "@fontsource/gochi-hand": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/patrick-hand": "^5.3.0",
+    "@remotion/bundler": "4.0.528",
+    "@remotion/cli": "4.0.528",
+    "@remotion/renderer": "4.0.528",
+    "katex": "^0.18.9",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "4.0.528",
+    "roughjs": "^4.6.6"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.8",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}
