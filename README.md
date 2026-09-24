@@ -2,7 +2,19 @@
 
 An anthology of playful 2D animated shorts about Jev, TypeSafe AI's "System One" model, built in code with [Remotion](https://www.remotion.dev). The research and production plan is in [`docs/jev-video-research.md`](docs/jev-video-research.md).
 
-## Short no. 1: Track Layer
+## Short no. 1: Track Layer (paper cut, narrated)
+
+The current version. A narrated paper-diorama short (about 108 s) where probability is literally the width of the track: forks split it, a brass marble picks a branch with chance equal to its width, the track under Gab thins as the chain rule multiplies, and Jev's lighthouse answers with signal pennants as wide as its probabilities.
+
+```
+python data-scripts/make-vo.py kokoro-v1.0.onnx voices-v1.0.bin   # narration (Kokoro-82M via kokoro-onnx)
+node --experimental-strip-types data-scripts/make-audio-paper.ts  # mix narration + SFX + score
+npx remotion render src/index.ts TrackLayerPaper renders/01-track-layer-paper.mp4
+```
+
+Code: `src/shorts/paper-track/` (timeline, tabletop forks, side-view diorama, cards) and `src/paper/kit.tsx` (palette, cut-paper filters, props). Narration script: `story/track-layer-vo.json`.
+
+## Short no. 1: Track Layer (first cartoon cut)
 
 Gab, a chatty typewriter-train, builds its answer one word at a time by spinning a wheel of next-word odds and laying each word as a piece of track. One unlucky spin later it talks itself into a swamp. Jev read the email once and has been holding its typed answer the whole time. A chalkboard card then names the math: $p(y\mid x)=\prod_t p(y_t\mid y_{<t},x)$.
 

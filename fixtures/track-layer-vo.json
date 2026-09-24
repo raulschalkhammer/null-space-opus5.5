@@ -1,0 +1,75 @@
+{
+  "voice": "af_heart",
+  "lines": [
+    {
+      "id": "L01",
+      "text": "An email arrives. Urgent! You have won a free cruise. Is it a scam?",
+      "duration": 4.117
+    },
+    {
+      "id": "L02",
+      "text": "Ask a language model, and it answers the only way it can: one word at a time, laying down its own track as it goes.",
+      "duration": 7.403
+    },
+    {
+      "id": "L03",
+      "text": "At every junction, the track splits into possible next words. And each branch is exactly as wide as the chance of that word.",
+      "duration": 7.936
+    },
+    {
+      "id": "L04",
+      "text": "Gab takes one. And only then can it see the next junction.",
+      "duration": 3.307
+    },
+    {
+      "id": "L05",
+      "text": "Each choice keeps only part of the width. So the chance of the whole sentence is whatever survives every junction. You multiply, one word at a time.",
+      "duration": 9.259
+    },
+    {
+      "id": "L06",
+      "text": "Mathematicians call this the chain rule. And it is, quite literally, all a language model does.",
+      "duration": 5.696
+    },
+    {
+      "id": "L07",
+      "text": "Usually, Gab takes a wide branch. But every choice is a roll of the dice, and now and then, a thin one wins.",
+      "duration": 6.72
+    },
+    {
+      "id": "L08",
+      "text": "Totally. Four percent.",
+      "duration": 1.579
+    },
+    {
+      "id": "L09",
+      "text": "And every junction is shaped by the track already laid. After totally, the widest branch is... legit.",
+      "duration": 6.784
+    },
+    {
+      "id": "L10",
+      "text": "Gab has talked itself into a swamp. Fluent, confident, and wrong.",
+      "duration": 4.245
+    },
+    {
+      "id": "L11",
+      "text": "Jev works differently. It never lays track, and it never says a word.",
+      "duration": 4.075
+    },
+    {
+      "id": "L12",
+      "text": "It takes in the whole letter in a single sweep, and splits all of its certainty between the only answers it is allowed to give.",
+      "duration": 7.232
+    },
+    {
+      "id": "L13",
+      "text": "Scam: zero point nine one. In one pass.",
+      "duration": 2.859
+    },
+    {
+      "id": "L14",
+      "text": "One of them writes. The other decides. Next time: what that number is really worth.",
+      "duration": 4.715
+    }
+  ]
+}

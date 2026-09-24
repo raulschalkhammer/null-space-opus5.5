@@ -20,6 +20,7 @@ import {FPS, HEIGHT, WIDTH} from './shorts/track-layer/timeline';
 import {StyleBlueprint} from './styleframes/StyleBlueprint';
 import {StylePaper} from './styleframes/StylePaper';
 import {StyleRiso} from './styleframes/StyleRiso';
+import {TrackLayerPaper, film} from './shorts/paper-track/Film';
 
 // Block rendering until every webfont is ready, so no frame renders with fallback fonts.
 const fontsReady = delayRender('Loading fonts');
@@ -31,6 +32,7 @@ Promise.all(
 
 export const RemotionRoot: React.FC = () => (
 	<>
+		<Composition id="TrackLayerPaper" component={TrackLayerPaper} durationInFrames={film.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="TrackLayer" component={TrackLayer} durationInFrames={tl.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleA-Riso" component={StyleRiso} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleB-Blueprint" component={StyleBlueprint} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
