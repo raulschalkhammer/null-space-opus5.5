@@ -50,6 +50,10 @@ export const MOODS: Record<SteamMood, Expr> = {
 	dazed: {...BASE, lid: 0.45, low: 0.2, tilt: 6, swirl: 1, smile: -0.1, open: 0.2, mw: 0.8, wob: 0.8, lamp: 0.6, flicker: 1, lean: -3, droop: 3, smoke: 0.5, rate: 0.5, dark: 0.5, speed: 0.2},
 };
 
+const PUFFS = 5; // puffs in the air at once
+const PERIOD = 0.2; // clock units between puffs (one word each)
+const TAPE = 300; // visible tape length
+
 export const lerpExpr = (a: Expr, b: Expr, t: number): Expr => {
 	const o = {} as Expr;
 	for (const k of Object.keys(a) as (keyof Expr)[]) o[k] = a[k] + (b[k] - a[k]) * t;
@@ -122,6 +126,26 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 		.join(' L ')} Z`;
 	const lineD = `M ${up.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L ')}`;
 
+	// one shared word clock drives the smoke and the press, so the tape always shows what the smoke just said
+	const clock = st + 2;
+	const kNow = Math.floor(clock / PERIOD);
+	const prog = (clock - kNow * PERIOD) / PERIOD;
+	const wordAt = (k: number) => words[((k % words.length) + words.length) % words.length];
+	// stack top in the engine's leaning, shaking frame
+	const th = (E.lean * Math.PI) / 180;
+	const O = {x: -110 + 69 * Math.cos(th) + 184 * Math.sin(th) + sx, y: -60 + 69 * Math.sin(th) - 184 * Math.cos(th) + bob + sy};
+	// the tape: drawn tail -> press so the text reads left to right; its ripples travel backwards with the paper
+	const tapeD = `M ${Array.from({length: 25}, (_, i) => {
+		const u = i / 24;
+		const x = -150 - TAPE * (1 - u);
+		const y = -90 + (1 - u) * (2 + 7 * (1 - u)) * Math.sin((1 - u) * 7 - d * 0.16) - 2 * u;
+		return `${x.toFixed(1)} ${y.toFixed(1)}`;
+	}).join(' L ')}`;
+	// on the tape a small mark separates one pass of the sentence from the next
+	const tapeWord = (k: number) => (((k % words.length) + words.length) % words.length === 0 ? '•  ' : '') + wordAt(k);
+	const tapeText = Array.from({length: 6}, (_, j) => tapeWord(kNow - 5 + j)).join(' ');
+	const emerge = Math.min(1, prog * 2.2);
+	const tapeOffset = TAPE - 10 + (1 - emerge * emerge * (3 - 2 * emerge)) * ((tapeWord(kNow).length + 1) * 8.4);
 	const puffLight = livery === 'gpt' ? '#C9CED6' : '#F1E3D6';
 	const puff = mix(puffLight, '#5A5470', E.dark);
 	const toot = E.whistle * (E.whistle > 0.9 ? 1 : Math.max(0, Math.sin(f * 0.22)));
@@ -144,31 +168,58 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 					opacity={0.14 * lamp}
 				/>
 			</g>
-			{/* smoke made of words, rising from the stack */}
-			{words.map((wd, i) => {
-				const a = (st + i / words.length) % 1;
-				const jit = E.shake * 3 * Math.sin(f * 0.9 + i * 2);
-				const x = -38 - 220 * a + 16 * Math.sin(a * 9 + i) + jit - E.droop;
-				const y = -262 - 150 * a * (1 - E.dark * 0.45) + bob * 0.6;
-				const rr = (20 + 26 * a) * E.smoke;
+			{/* smoke made of words: one puff per word, in sentence order, drifting back and up with the train's speed.
+			    Only the newest puffs still carry their word; older ones dissolve into plain smoke. */}
+			{Array.from({length: PUFFS}, (_, j) => {
+				const k = kNow - j;
+				const a = (clock - k * PERIOD) / (PERIOD * PUFFS);
+				if (a < 0 || a >= 1) return null;
+				const wd = wordAt(k);
+				const tw = wd.length * 9.6 + 24;
+				const sc = (0.85 + 0.5 * a) * (0.75 + 0.25 * E.smoke);
+				const drift = 0.55 + 0.45 * Math.min(2, E.speed);
+				const x = O.x - 200 * Math.pow(a, 0.85) * drift + 6 * Math.sin(a * 6 + k) + E.shake * 3 * Math.sin(f * 0.9 + k);
+				const y = O.y - 24 * sc - 170 * (1 - E.dark * 0.4) * (1 - (1 - a) * (1 - a));
+				const puffOp = Math.min(1, a * 10) * Math.pow(1 - a, 1.2);
+				const textOp = a < 0.34 ? 1 : Math.max(0, 1 - (a - 0.34) / 0.2);
 				return (
-					<g key={i} opacity={Math.min(1, a * 4) * (1 - a)}>
-						<circle cx={x} cy={y} r={rr} fill={puff} opacity={0.6} />
-						<circle cx={x - rr * 0.3} cy={y - rr * 0.3} r={rr * 0.45} fill="#FFFFFF" opacity={0.18 * (1 - E.dark)} />
-						<text x={x} y={y + 6} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={(16 + 6 * a) * Math.min(1.2, 0.7 + E.smoke * 0.3)} fill={L.ink} opacity={0.8}>
-							{wd}
-						</text>
+					<g key={k} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${sc.toFixed(3)})`} opacity={puffOp}>
+						<rect x={-tw / 2} y={-17} width={tw} height={34} rx={17} fill={puff} />
+						<circle cx={-tw * 0.18} cy={-15} r={15} fill={puff} />
+						<circle cx={tw * 0.16} cy={-17} r={18} fill={puff} />
+						<circle cx={-tw * 0.22} cy={-19} r={6} fill="#FFFFFF" opacity={0.35 * (1 - E.dark)} />
+						{textOp > 0.01 && (
+							<text y={6} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={17} fill={L.ink} opacity={textOp}>
+								{wd}
+							</text>
+						)}
 					</g>
 				);
 			})}
-			{/* tender: a printing press with turning rollers and a printed ribbon */}
+			{/* tender: a printing press; each word from the smoke is printed onto the tape, which feeds out backwards */}
 			<g transform="translate(-300 0)">
-				<path d={`M -150 -90 ${Array.from({length: 10}, (_, i) => `L ${-160 - i * 30} ${-96 + 8 * Math.sin(d * 0.14 - i * 0.7)}`).join(' ')}`} fill="none" stroke={L.paper} strokeWidth={24} strokeLinecap="round" strokeLinejoin="round" />
-				{['Great', 'question!', 'This'].map((wd, i) => (
-					<text key={wd} x={-190 - i * 90} y={-90 + 8 * Math.sin(d * 0.14 - (i * 3 + 1) * 0.7)} fontFamily={FONT} fontWeight={900} fontSize={15} fill={L.ink} opacity={0.8}>
-						{wd}
+				<defs>
+					<linearGradient id={`tapeFade${uid}`} gradientUnits="userSpaceOnUse" x1={-150 - TAPE} y1={0} x2={-150} y2={0}>
+						<stop offset="0" stopColor="#fff" stopOpacity={0} />
+						<stop offset="0.16" stopColor="#fff" stopOpacity={1} />
+						<stop offset="1" stopColor="#fff" stopOpacity={1} />
+					</linearGradient>
+					<mask id={`tapeMask${uid}`} maskUnits="userSpaceOnUse" x={-160 - TAPE} y={-160} width={TAPE + 40} height={140}>
+						<rect x={-160 - TAPE} y={-160} width={TAPE + 40} height={140} fill={`url(#tapeFade${uid})`} />
+					</mask>
+					<path id={`tape${uid}`} d={tapeD} />
+				</defs>
+				<path d={tapeD} fill="none" stroke={L.lo} strokeWidth={26} strokeLinecap="round" strokeLinejoin="round" opacity={0.35} transform="translate(0 3)" />
+				<path d={tapeD} fill="none" stroke={L.paper} strokeWidth={24} strokeLinecap="round" strokeLinejoin="round" />
+				<g mask={`url(#tapeMask${uid})`}>
+					<text fontFamily={FONT} fontWeight={800} fontSize={15} fill={L.ink} dominantBaseline="central" letterSpacing={0.3}>
+						<textPath href={`#tape${uid}`} startOffset={tapeOffset.toFixed(1)} textAnchor="end">
+							{tapeText}
+						</textPath>
 					</text>
-				))}
+				</g>
+				{/* the press mouth the tape comes out of */}
+				<rect x={-158} y={-104} width={14} height={28} rx={4} fill={L.lo} />
 				<rect x={-150} y={-170} width={190} height={112} rx={10} fill={L.body} />
 				<rect x={-150} y={-170} width={190} height={16} rx={8} fill={L.hi} />
 				<rect x={-150} y={-86} width={190} height={10} fill={L.trim} />
@@ -232,7 +283,7 @@ export const SteamPress: React.FC<{livery: Livery; f: number; s?: number; mood?:
 				{/* smokebox + stack */}
 				<rect x={-24} y={-176} width={56} height={104} rx={12} fill={L.lo} />
 				<path d="M -58 -176 L -64 -236 L -18 -236 L -24 -176 Z" fill={L.lo} />
-				<g transform={`translate(-41 -238) scale(${1 + 0.1 * Math.max(0, Math.sin(st * Math.PI * 2 * words.length))} 1)`}>
+				<g transform={`translate(-41 -238) scale(${1 + 0.14 * Math.max(0, 1 - prog * 4)} ${1 - 0.05 * Math.max(0, 1 - prog * 4)})`}>
 					<rect x={-29} y={-6} width={58} height={12} rx={6} fill={L.body} />
 				</g>
 

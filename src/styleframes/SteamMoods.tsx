@@ -144,7 +144,7 @@ export const SteamActing: React.FC = () => {
 				<Mountains y={560} seed={3} layers={2} shift={cNear.dist * 1.2} />
 				<Terrain line={[[-100, farY + 14], [2020, farY + 14]]} bottom={1200} f={f} seed={2} />
 				<SideTrack pieces={Array.from({length: 15}, (_, i) => ({x: scroll(cFar.dist, 3) - 40 + i * 150, y: farY, angle: 0, len: 151}))} f={f} />
-				<g transform={`translate(1180 ${farY - 3})`}>
+				<g transform={`translate(900 ${farY - 3})`}>
 					<SteamPress livery="gpt" f={f + 17} s={0.8} expr={eFar} dist={cFar.dist} smokeT={cFar.smoke} />
 				</g>
 				<Terrain line={[[-100, nearY + 14], [2020, nearY + 14]]} bottom={1200} f={f} seed={7} />
