@@ -11,7 +11,8 @@ export function ffmpegDir() {
 	return dir;
 }
 export const ffmpegBin = (tool = 'ffmpeg') => path.join(ffmpegDir(), process.platform === 'win32' ? `${tool}.exe` : tool);
-export const ffmpegEnv = () => ({...process.env, LD_LIBRARY_PATH: ffmpegDir()});
+// its shared libraries sit next to it: LD_LIBRARY_PATH finds them on Linux, DYLD_LIBRARY_PATH on macOS
+export const ffmpegEnv = () => ({...process.env, LD_LIBRARY_PATH: ffmpegDir(), DYLD_LIBRARY_PATH: ffmpegDir()});
 
 // The cloud container has no Chrome download access, so it uses its preinstalled headless shell.
 // On a laptop this returns null and Remotion uses (and downloads once) its own browser.
