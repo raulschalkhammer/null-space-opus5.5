@@ -3,29 +3,35 @@
 //   node --experimental-strip-types data-scripts/render-cache.ts ch1 --check      only report which scenes changed
 //   node --experimental-strip-types data-scripts/render-cache.ts ch2 --force=mail,pass   re-render these scenes regardless
 //   node --experimental-strip-types data-scripts/render-cache.ts ch1 --all        re-render every scene
+//   node --experimental-strip-types data-scripts/render-cache.ts ch2 --adopt      trust the clips on disk as current and
+//                                                  store their reference samples (after a render from the same code)
 // How a scene is judged "changed": a quick low-res pass renders a handful of frames per scene (its first frame,
-// the cross-fade, then every SAMPLE frames, and its last frame) and hashes them. Frames are sampled relative to the
-// scene's own start, so a scene that only moved in time (an earlier narration line got longer) is still reused.
+// the cross-fade, then every SAMPLE frames, and its last frame) and compares them with the samples kept from the
+// scene's last render. Rendering noise moves a few pixels by a few shades, so a sample counts as changed only when
+// more than NOISE_BLOCKS 2x2 blocks of pixels differ clearly. Frames are sampled relative to the scene's own start, so a scene that
+// only moved in time (an earlier narration line got longer) is still reused.
 // The chosen clips are then joined without re-encoding and the chapter's current soundtrack is laid on top, so an
 // audio-only change never re-renders video. Output: renders/<chapter>-cached.mp4 (+ a -share copy).
 import {bundle} from '@remotion/bundler';
 import {openBrowser, renderFrames, renderMedia, selectComposition} from '@remotion/renderer';
-import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {buildFlatFilm} from '../src/shorts/flat-track/timeline.ts';
 import {buildContract} from '../src/shorts/jev-contract/timeline.ts';
 import {type Fixture, type VoLine} from '../src/shorts/paper-track/timeline.ts';
 import {chapterList} from '../src/chapters.ts';
+import {changedBlocks} from './png.ts';
 
 const SAMPLE = 12; // one fingerprint frame every half second
 const XF = 12; // cross-fade length, sampled mid-way so a change in the previous scene's tail is seen
-const FP_SCALE = 0.2;
+const FP_SCALE = 0.35;
+const NOISE_BLOCKS = 4; // changed 2x2 pixel blocks allowed per sample before a scene counts as changed
 
 const args = process.argv.slice(2);
 const chId = args.find((a) => !a.startsWith('--')) ?? 'ch1';
 const checkOnly = args.includes('--check');
+const adopt = args.includes('--adopt');
 const all = args.includes('--all');
 const force = new Set(args.find((a) => a.startsWith('--force='))?.slice(8).split(',') ?? []);
 
@@ -38,7 +44,7 @@ if (!ch) throw new Error(`Unknown chapter ${chId}; use ch1 or ch2`);
 
 const dir = `renders/cache/${ch.comp}`;
 mkdirSync(dir, {recursive: true});
-type Entry = {len: number; fp: string[]; file: string};
+type Entry = {len: number; samples: number[]; file: string};
 const manifestPath = `${dir}/manifest.json`;
 const manifest: Record<string, Entry> = existsSync(manifestPath) ? json(manifestPath) : {};
 
@@ -55,27 +61,42 @@ const browser = await openBrowser('chrome', {browserExecutable, logLevel: 'error
 
 // 1. fingerprint every scene
 const samples = (len: number) => [...new Set([0, XF / 2, ...Array.from({length: Math.ceil(len / SAMPLE)}, (_, i) => i * SAMPLE), len - 1])].filter((x) => x < len).sort((a, b) => a - b);
-const fps: Record<string, string[]> = {};
+const fresh: Record<string, Map<number, Buffer>> = {};
 for (const s of ch.scenes) {
 	const len = s.end - s.start;
 	const want = new Set(samples(len).map((x) => x + s.start));
-	const got = new Map<number, string>();
+	const got = new Map<number, Buffer>();
 	// renderFrames takes one stride, so render the stride grid plus the two extra frames in small ranges
 	const ranges: [number, number, number][] = [[s.start, s.end - 1, SAMPLE], [s.start + XF / 2, s.start + XF / 2, 1], [s.end - 1, s.end - 1, 1]];
 	for (const [a, b, n] of ranges) {
 		if (a > b || a >= s.end) continue;
 		await renderFrames({
-			serveUrl, composition, inputProps: {}, outputDir: null, imageFormat: 'jpeg', jpegQuality: 90, scale: FP_SCALE,
+			serveUrl, composition, inputProps: {}, outputDir: null, imageFormat: 'png', scale: FP_SCALE,
 			frameRange: [a, b], everyNthFrame: n, puppeteerInstance: browser, concurrency: 4, logLevel: 'error',
 			onStart: () => undefined,
 			onFrameUpdate: () => undefined,
 			onFrameBuffer: (buf, frame) => {
-				if (want.has(frame)) got.set(frame - s.start, createHash('sha1').update(buf).digest('hex').slice(0, 16));
+				if (want.has(frame)) got.set(frame - s.start, Buffer.from(buf));
 			},
 		});
 	}
-	fps[s.id] = [...got.entries()].sort((a, b) => a[0] - b[0]).map(([k, h]) => `${k}:${h}`);
+	fresh[s.id] = got;
 }
+const fpDir = (id: string) => `${dir}/fp/${id}`;
+const differs = (id: string) => {
+	for (const [k, buf] of fresh[id]) {
+		const f = `${fpDir(id)}/${k}.png`;
+		const n = existsSync(f) ? changedBlocks(readFileSync(f), buf) : Infinity;
+		if (n > NOISE_BLOCKS) return `pictures changed at +${k}${Number.isFinite(n) ? ` (${n} blocks)` : ''}`;
+	}
+	return '';
+};
+const keepSamples = (id: string) => {
+	rmSync(fpDir(id), {recursive: true, force: true});
+	mkdirSync(fpDir(id), {recursive: true});
+	for (const [k, buf] of fresh[id]) writeFileSync(`${fpDir(id)}/${k}.png`, buf);
+	return [...fresh[id].keys()].sort((a, b) => a - b);
+};
 console.log(`fingerprints done (${secs()})`);
 
 // 2. decide what to render
@@ -83,11 +104,18 @@ const plan = ch.scenes.map((s) => {
 	const len = s.end - s.start;
 	const old = manifest[s.id];
 	const file = `${dir}/${s.id}.mp4`;
-	const why = all ? 'all' : force.has(s.id) ? 'forced' : !old || !existsSync(old.file) ? 'new' : old.len !== len ? `length ${old.len}→${len}` : old.fp.join() !== fps[s.id].join() ? 'pictures changed' : '';
+	const why = all ? 'all' : force.has(s.id) ? 'forced' : !old || !existsSync(old.file) ? 'new' : old.len !== len ? `length ${old.len}→${len}` : differs(s.id);
 	return {s, len, file, why};
 });
 for (const p of plan) console.log(`  ${p.why ? '✎' : '✓'} ${p.s.name.padEnd(12)} ${String(p.len).padStart(5)} f  ${p.why || 'cached'}`);
 const dirty = plan.filter((p) => p.why);
+if (adopt) {
+	for (const p of plan) if (existsSync(p.file)) manifest[p.s.id] = {len: p.len, samples: keepSamples(p.s.id), file: p.file};
+	writeFileSync(manifestPath, JSON.stringify(manifest, null, 1));
+	console.log(`adopted ${plan.filter((p) => existsSync(p.file)).length} clip(s) as current`);
+	await browser.close({silent: true});
+	process.exit(0);
+}
 if (checkOnly) {
 	console.log(`${dirty.length} of ${plan.length} scenes would re-render (${dirty.reduce((a, p) => a + p.len, 0)} of ${ch.total} frames)`);
 	await browser.close({silent: true});
@@ -106,7 +134,7 @@ for (const p of dirty) {
 		},
 	});
 	process.stdout.write('\n');
-	manifest[p.s.id] = {len: p.len, fp: fps[p.s.id], file: p.file};
+	manifest[p.s.id] = {len: p.len, samples: keepSamples(p.s.id), file: p.file};
 	writeFileSync(manifestPath, JSON.stringify(manifest, null, 1));
 }
 await browser.close({silent: true});

@@ -8,7 +8,8 @@ An anthology of playful 2D animated shorts about Jev, TypeSafe AI's "System One"
 
 **Scene-cached render.** `node --experimental-strip-types data-scripts/render-cache.ts ch1` renders each scene to its own clip in `renders/cache/<composition>/`. It reuses a clip until that scene's pictures change, joins the clips without re-encoding, and lays the current soundtrack on top.
 - The check is a quick low-res pass that hashes a few frames per scene. The frames are taken relative to the scene's own start, so a scene that only moved in time is reused.
-- `--check` lists the scenes that would re-render. `--force=mail,pass` re-renders named scenes. `--all` re-renders everything.
+- `--check` lists the scenes that would re-render. `--force=mail,pass` re-renders named scenes. `--all` re-renders everything. `--adopt` accepts the clips on disk as current.
+- Rendering noise (scattered pixels, a 1-pixel edge) is ignored; a changed 2×2 area counts. A one-word label change is caught. An edit in a scene also re-renders the next scene when they cross-fade.
 - An audio-only change never re-renders video.
 - Scene boundaries come from `src/chapters.ts`, which the preview's scene strip uses too.
 
