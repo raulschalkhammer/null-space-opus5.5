@@ -6,20 +6,22 @@ Status as of 2026-09-25, branch `claude/hopeful-johnson-aiwzpx`. Read `CLAUDE.md
 
 | Chapter | Composition | Length | State |
 |---|---|---|---|
-| 1. Track Layer (how LLMs write word by word, as trains) | `TrackLayerFlat` | 4:21 | v7 approved direction. Not yet in the scene cache. |
+| 1. Track Layer (how LLMs write word by word, as trains) | `TrackLayerFlat` | 4:21 | v7 approved direction. Cached (13 scenes). |
 | 2. Jev's Contract (fixed questions, one pass, calibration) | `JevContract` | 2:33 | v2. Cached (8 scenes). |
 | 3. A Million Letters (the cost rule p < 1 − review ÷ mistake) | `MillionLetters` | 2:30 | Latest. Cached (11 scenes). Last feedback done: no hands, a real letter, a p gauge, tags on the rope. |
-| 4. The Signal Box | not started | | The chapter 3 end card teases it: Jev as the signalman deciding which messages need an LLM "train". |
+| 4. The Signal Box, and the ending | `SignalBox` | 3:55 | Built from `docs/chapter4-plan.md`. Cached (11 scenes). The last chapter: a cascade (Jev routes, the train writes), then callbacks to chapters 1 to 3 and closing credits. |
 
 - **Screening Room (live preview, all chapters with sound):** https://claude.ai/artifact/RKU1BjQ7BxhakvXAjCkkWd
-- **Plans:** `docs/chapter3-plan.md` has chapter 3's shot list with palettes and cut types, plus the Kurzgesagt pacing analysis. `docs/jev-video-research.md` has the research notes.
+- **Plans:**
+  - `docs/chapter3-plan.md` and `docs/chapter4-plan.md` have the shot lists as built.
+  - `docs/chapter1-plan.md` and `docs/chapter2-plan.md` are a rejected fast-cut rework, kept as a record.
+  - `docs/jev-video-research.md` has the research notes.
 
 ### Open ideas and next steps
-- **Chapter 4, The Signal Box:**
-  - plan it the same way (puzzle, guess, experiment, math), with world and concept alternating
-  - write a shot list and get the user's sign-off before building
-- **Chapter 1** has not been rendered through the cache yet. Its first cached run takes as long as a full render (about 12 min).
-- **Chapter 3's longest hold** is the balance-scale math shot (about 20 s). Extra cuts there would tighten the pacing (currently a new look every 4.3 s, 40% still).
+- **All four chapters are built.** The video runs about 13:20. Chapter 4 ends it with callbacks and closing credits.
+- **Next:**
+  - the user's review of chapter 4
+  - then any polish, and joining the chapters into one film
 - **Numbers are placeholders** until there's a measured Jev run. Some facts could only be checked through secondary sources, because typesafe.ai is blocked from the container.
 
 ## File map

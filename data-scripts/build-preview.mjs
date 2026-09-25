@@ -9,7 +9,7 @@ import path from 'node:path';
 import {ffmpegBin, ffmpegEnv} from './local.mjs';
 
 const OUT = 'preview';
-const TRACKS = ['flat2-track', 'contract-track', 'million-track'];
+const TRACKS = ['flat2-track', 'contract-track', 'million-track', 'signal-track'];
 mkdirSync(`${OUT}/audio`, {recursive: true});
 
 // Soundtracks: MP3 copies (plays in every browser), re-encoded only when the WAV is newer.

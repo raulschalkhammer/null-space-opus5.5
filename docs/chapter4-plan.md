@@ -1,6 +1,6 @@
 # Chapter 4: The Signal Box, and the ending (plan)
 
-Status: **draft for sign-off.** Nothing is built and no narration is recorded yet.
+Status: **built** (signed off 2026-09-25). The narration is recorded, and the chapter is rendered. "As built" at the end lists where the build differs from the plan.
 
 Chapter 3 ended with the promise: the machine reads the million, and people read the letters where it matters. Its end card teases this chapter, with Jev as the signalman who decides which letters need a train.
 
@@ -161,3 +161,21 @@ Everything that stands for something must be recognisable:
    - The callbacks reuse pictures from chapters 1 to 3, so they stay recognisable.
 4. **Length:** about 3:25 with 34 lines. It could be cut to about 2:50 by merging S20 and S21, dropping S02 or S25, and shortening the callbacks.
 5. **The final line (S34):** "The model that doesn't talk may end up deciding who should." Or an alternative you prefer.
+
+## As built
+
+- **Where the code lives:**
+  - `src/shorts/signal-box/`: `timeline.ts` (cues, one start frame per shot, sound cues), `parts.tsx` (the junction, the signal box inside and out, the carts, the semaphore, the reply booth) and `Film.tsx` (the shots).
+  - Narration: `story/signal-box-vo.json`, `public/audio/vo-signal/` and `fixtures/signal-box-vo.json`.
+  - Mix: `make-audio-paper.ts --film=signal`, which writes `signal-track.wav`.
+- **Length:** 3:55 (5,652 frames). The pauses between lines add a little over the estimate, so the whole video is about 13:20.
+- **Shots:**
+  - The camera moves slowly and continuously inside each shot, over a world drawn wider than any frame.
+  - Shots cross-fade; hard cuts only for the "≈ 5×" reveal and the red over-sure letter.
+  - The vignette sits in screen space, so no camera move reaches an edge.
+- **Where the build differs from the plan:**
+  - S19 stays on the diagram board: the tiny Jev term dims and the share term lights up. The dial concept starts at S20, which keeps it to about 12 s.
+  - The 1,000-letter run uses 30 carts, each standing for 33 letters. The counters land on 800 and 200.
+  - The coin piles read "1%" and "99%": 800 × c_Jev against 200 × 444.6 c_Jev, which is 0.9% against 99.1%.
+  - The catch uses blue letters from a new town and a small board reading "7 / 10" beside the gauge at 0.9. **"check"**
+  - The callbacks are the real scenes from chapters 1 to 3, played at mapped times: `Twice` and `ChatWindows` from chapter 1, `PassScene` from chapter 2 and `AnswerScene` from chapter 3.

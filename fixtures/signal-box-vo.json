@@ -1,0 +1,175 @@
+{
+  "voice": "af_heart",
+  "lines": [
+    {
+      "id": "S01",
+      "text": "Last time, Jev read a million letters, and sent the hard ones to people.",
+      "duration": 4.373
+    },
+    {
+      "id": "S02",
+      "text": "But most letters don't just need sorting. They need an answer, written back.",
+      "duration": 4.288
+    },
+    {
+      "id": "S03",
+      "text": "And Jev can't write. That's the whole point of it.",
+      "duration": 2.688
+    },
+    {
+      "id": "S04",
+      "text": "Our trains can. They lay down a reply one word at a time. But every word costs time, and money.",
+      "duration": 6.101
+    },
+    {
+      "id": "S05",
+      "text": "So picture a signal box at the junction. Every letter stops here first.",
+      "duration": 4.373
+    },
+    {
+      "id": "S06",
+      "text": "Inside, Jev reads it in one pass, and sets the points.",
+      "duration": 3.52
+    },
+    {
+      "id": "S07",
+      "text": "Letters it's sure about take the short line. Sorted, answered from a template, done.",
+      "duration": 4.885
+    },
+    {
+      "id": "S08",
+      "text": "The unsure ones take the long line, to a train that can read slowly, and write back.",
+      "duration": 4.971
+    },
+    {
+      "id": "S09",
+      "text": "Here's the puzzle. By TypeSafe's own tests, Jev is up to four hundred and forty-four times cheaper than a chatbot.",
+      "duration": 7.168
+    },
+    {
+      "id": "S10",
+      "text": "Say Jev sends one letter in five on to the train. How much cheaper is the whole system, than using the train for everything? Take a guess.",
+      "duration": 8.875
+    },
+    {
+      "id": "S11",
+      "text": "Four hundred times? Not even close. About five.",
+      "duration": 3.008
+    },
+    {
+      "id": "S12",
+      "text": "Let's run a thousand letters through the box.",
+      "duration": 2.368
+    },
+    {
+      "id": "S13",
+      "text": "Eight hundred take the short line. Each one costs almost nothing.",
+      "duration": 3.797
+    },
+    {
+      "id": "S14",
+      "text": "Two hundred take the long line. And each of those costs a full train ride.",
+      "duration": 4.459
+    },
+    {
+      "id": "S15",
+      "text": "Now count the coins. Nearly all of them were spent on the long line.",
+      "duration": 3.861
+    },
+    {
+      "id": "S16",
+      "text": "Written as math: one letter costs Jev's price, plus the share that rides the train, times the train's price.",
+      "duration": 6.699
+    },
+    {
+      "id": "S17",
+      "text": "Divide by the train's price. Jev's part is one over four hundred and forty-four. Almost nothing. What's left is the share: one in five.",
+      "duration": 9.067
+    },
+    {
+      "id": "S18",
+      "text": "So the whole system costs about a fifth of the train. Five times cheaper.",
+      "duration": 4.245
+    },
+    {
+      "id": "S19",
+      "text": "The four hundred and forty-four barely matters. What matters is how many letters Jev keeps off the train.",
+      "duration": 6.528
+    },
+    {
+      "id": "S20",
+      "text": "Time works the same way. Fast answers for most letters, slow ones only where they're needed.",
+      "duration": 5.696
+    },
+    {
+      "id": "S21",
+      "text": "Send one in ten, and it's about ten times cheaper. One in a hundred, about eighty.",
+      "duration": 5.099
+    },
+    {
+      "id": "S22",
+      "text": "But only letters Jev is truly sure about should stay off the train. And sure only counts if the number is honest.",
+      "duration": 6.933
+    },
+    {
+      "id": "S23",
+      "text": "If Jev is overconfident, a hard letter takes the short line, and nobody writes the careful answer it needed.",
+      "duration": 6.827
+    },
+    {
+      "id": "S24",
+      "text": "So the two aren't rivals. One decides, fast. The other writes, carefully.",
+      "duration": 4.352
+    },
+    {
+      "id": "S25",
+      "text": "TypeSafe calls Jev a System One model. Fast. The trains are the slow System Two.",
+      "duration": 5.547
+    },
+    {
+      "id": "S26",
+      "text": "And the signal box sends each letter to the kind of thinking it needs.",
+      "duration": 3.499
+    },
+    {
+      "id": "S27",
+      "text": "But there's a catch. A number that's honest on one kind of letter can drift on another. So before you trust it, check it on your own letters.",
+      "duration": 7.872
+    },
+    {
+      "id": "S28",
+      "text": "Let's go back to where we started. Ask a chatbot the same question twice, and you might get two different answers.",
+      "duration": 6.528
+    },
+    {
+      "id": "S29",
+      "text": "That's not a glitch. It's how they write: one word at a time, and every word is a small bet.",
+      "duration": 5.525
+    },
+    {
+      "id": "S30",
+      "text": "Jev makes a different bargain. It never writes. It answers a fixed question, in one pass, with a number.",
+      "duration": 6.059
+    },
+    {
+      "id": "S31",
+      "text": "And a number is something you can do math with. You can price it, draw a line, and decide who reads what.",
+      "duration": 6.187
+    },
+    {
+      "id": "S32",
+      "text": "But only if it's honest. Ninety-one percent has to mean right about ninety-one times in a hundred.",
+      "duration": 6.144
+    },
+    {
+      "id": "S33",
+      "text": "So the future probably isn't one machine that does everything. It's a signal box. Fast numbers where they're enough, careful words where they're needed, and people where it matters most.",
+      "duration": 10.859
+    },
+    {
+      "id": "S34",
+      "text": "The model that doesn't talk may end up deciding who should.",
+      "duration": 3.2
+    }
+  ]
+}

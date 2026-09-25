@@ -439,7 +439,7 @@ const MailScene: React.FC<{f: number}> = ({f}) => {
 };
 
 // ---------- 4. one pass: one reading, every flag at once ----------
-const PassScene: React.FC<{f: number}> = ({f}) => {
+export const PassScene: React.FC<{f: number}> = ({f}) => {
 	const lampX = 330;
 	const lampY = 604 + LAMP_Y * 1.3;
 	const letter = {x: 640, y: 640};

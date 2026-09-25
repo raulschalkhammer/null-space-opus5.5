@@ -12,6 +12,7 @@ import {TrainSheetA, TrainSheetB, TrainSheetC} from './styleframes/TrainSheets';
 import {ACT_FRAMES, SteamActing, SteamMoodsClaude, SteamMoodsGpt} from './styleframes/SteamMoods';
 import {JevContract, contract} from './shorts/jev-contract/Film';
 import {MillionLetters, million} from './shorts/million-letters/Film';
+import {SignalBox, signal} from './shorts/signal-box/Film';
 
 // Block rendering until every webfont is ready, so no frame renders with fallback fonts.
 const fontsReady = delayRender('Loading fonts');
@@ -33,6 +34,7 @@ export const RemotionRoot: React.FC = () => (
 		<Composition id="SteamMoodsGpt" component={SteamMoodsGpt} durationInFrames={120} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="JevContract" component={JevContract} durationInFrames={contract.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="MillionLetters" component={MillionLetters} durationInFrames={million.total} fps={FPS} width={WIDTH} height={HEIGHT} />
+		<Composition id="SignalBox" component={SignalBox} durationInFrames={signal.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="SteamActing" component={SteamActing} durationInFrames={ACT_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleA-Riso" component={StyleRiso} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleB-Blueprint" component={StyleBlueprint} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />

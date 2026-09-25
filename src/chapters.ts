@@ -58,11 +58,28 @@ export function millionScenes(S: Record<string, Span>, total: number) {
 	]);
 }
 
+export function signalScenes(S: Record<string, Span>, total: number) {
+	return marks(total, [
+		['title', 'Title', S.title],
+		['intro', 'Letters', S.intro],
+		['box', 'The box', S.box],
+		['puzzle', 'Puzzle', S.puzzle],
+		['run', '1,000 letters', S.run],
+		['math', 'The math', S.math],
+		['honest', 'Honest', S.honest],
+		['partners', 'Partners', S.partners],
+		['ending', 'Callbacks', S.ending],
+		['world', 'Dawn', S.world],
+		['credits', 'Credits', S.credits],
+	]);
+}
+
 type Timed = {S: Record<string, Span>; total: number};
-export function chapterList(flat: Timed, contract: Timed, million: Timed): ChapterInfo[] {
+export function chapterList(flat: Timed, contract: Timed, million: Timed, signal: Timed): ChapterInfo[] {
 	return [
 		{id: 'ch1', n: 1, title: 'Track Layer', comp: 'TrackLayerFlat', audio: 'flat2-track', total: flat.total, scenes: flatScenes(flat.S, flat.total)},
 		{id: 'ch2', n: 2, title: 'Jev’s Contract', comp: 'JevContract', audio: 'contract-track', total: contract.total, scenes: contractScenes(contract.S, contract.total)},
 		{id: 'ch3', n: 3, title: 'A Million Letters', comp: 'MillionLetters', audio: 'million-track', total: million.total, scenes: millionScenes(million.S, million.total)},
+		{id: 'ch4', n: 4, title: 'The Signal Box', comp: 'SignalBox', audio: 'signal-track', total: signal.total, scenes: signalScenes(signal.S, signal.total)},
 	];
 }
