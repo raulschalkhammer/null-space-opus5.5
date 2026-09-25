@@ -6,19 +6,21 @@ Status as of 2026-09-25, branch `claude/hopeful-johnson-aiwzpx`. Read `CLAUDE.md
 
 | Chapter | Composition | Length | State |
 |---|---|---|---|
-| 1. Track Layer (how LLMs write word by word, as trains) | `TrackLayerFlat` | 4:21 | v7 approved direction. Not yet in the scene cache. |
-| 2. Jev's Contract (fixed questions, one pass, calibration) | `JevContract` | 2:33 | v2. Cached (8 scenes). |
+| 1. Track Layer (how LLMs write word by word, as trains) | `TrackLayerFlat` | 4:21 | Reworked into 101 shots in the chapter 3 style (`docs/chapter1-plan.md`). Cached (13 scenes). |
+| 2. Jev's Contract (fixed questions, one pass, calibration) | `JevContract` | 2:33 | Reworked into 58 shots in the chapter 3 style (`docs/chapter2-plan.md`). Cached (8 scenes). |
 | 3. A Million Letters (the cost rule p < 1 − review ÷ mistake) | `MillionLetters` | 2:30 | Latest. Cached (11 scenes). Last feedback done: no hands, a real letter, a p gauge, tags on the rope. |
 | 4. The Signal Box | not started | | The chapter 3 end card teases it: Jev as the signalman deciding which messages need an LLM "train". |
 
 - **Screening Room (live preview, all chapters with sound):** https://claude.ai/artifact/RKU1BjQ7BxhakvXAjCkkWd
-- **Plans:** `docs/chapter3-plan.md` has chapter 3's shot list with palettes and cut types, plus the Kurzgesagt pacing analysis. `docs/jev-video-research.md` has the research notes.
+- **Plans:**
+  - `docs/chapter1-plan.md`, `docs/chapter2-plan.md` and `docs/chapter3-plan.md` have each chapter's shot list with palettes and cut types, the pacing before and after, and what changed in the build.
+  - `docs/chapter3-plan.md` also has the Kurzgesagt pacing analysis.
+  - `docs/jev-video-research.md` has the research notes.
 
 ### Open ideas and next steps
 - **Chapter 4, The Signal Box:**
   - plan it the same way (puzzle, guess, experiment, math), with world and concept alternating
   - write a shot list and get the user's sign-off before building
-- **Chapter 1** has not been rendered through the cache yet. Its first cached run takes as long as a full render (about 12 min).
 - **Chapter 3's longest hold** is the balance-scale math shot (about 20 s). Extra cuts there would tighten the pacing (currently a new look every 4.3 s, 40% still).
 - **Numbers are placeholders** until there's a measured Jev run. Some facts could only be checked through secondary sources, because typesafe.ai is blocked from the container.
 
@@ -33,6 +35,8 @@ Status as of 2026-09-25, branch `claude/hopeful-johnson-aiwzpx`. Read `CLAUDE.md
   - `src/flat/math.tsx`: `Equation`
   - `src/flat/type.tsx`: `Callout`, `Projected`
   - `src/flat/audio.ts`: `track()`
+  - `src/flat/shots.tsx`: `Shots` (a scene as a list of shots, hard cuts, a slow camera move on each), `Zoom` and `Split` (a camera and split panels for any picture, SVG or HTML)
+  - `src/flat/bets.tsx`: the train that lays its answer as word sleepers, with a die per word (chapters 1 and 2)
 - **Characters:** `src/characters/steam.tsx` (the expressive steam trains, with moods and a speech tape) and `src/characters/trains.tsx` (liveries).
 - **Chapter 1:** `src/shorts/flat-track/` (film, station, table, curiosity scenes, news, intro), built on the timeline in `src/shorts/paper-track/timeline.ts`.
 - **Chapter 2:** `src/shorts/jev-contract/` (`timeline.ts`, `Film.tsx`).
@@ -50,7 +54,8 @@ Status as of 2026-09-25, branch `claude/hopeful-johnson-aiwzpx`. Read `CLAUDE.md
   - `frames.mjs` and `contact-sheet.py`: review stills
   - `pacing.py`: shot-rhythm measurement
   - `stills.mjs`: older still renderer
-- **Git-ignored and regenerated:** `renders/`, `preview/`, `public/audio/*.wav` (the mixed tracks).
+- **The Screening Room's source** is `src/preview/main.tsx` and `page.html`. It was missing from the repo until 2026-09-25, because `.gitignore` said `preview/`; it now says `/preview/`.
+- **Git-ignored and regenerated:** `renders/`, `/preview/`, `public/audio/*.wav` (the mixed tracks).
 
 ## Setting up a fresh container
 
@@ -82,7 +87,12 @@ Needs Node 22+, Python 3.10+ and git.
 
 The scripts find Remotion's ffmpeg for your platform and its browser through `data-scripts/local.mjs`.
 - On a laptop, Remotion downloads its own headless Chrome the first time. The container-only browser path is used only when it exists.
-- Tested in the Linux container only. Scripts use `node`/`python` paths as written, so on Windows use WSL or adjust `.venv/bin/python` to `.venv\Scripts\python`.
+- Tested in the Linux container and on an Intel Mac (macOS, Node 25).
+  - On macOS the bundled ffmpeg needs `DYLD_LIBRARY_PATH`, which `local.mjs` and `pacing.py` now set.
+  - A full chapter 1 render takes about 12 minutes there.
+  - Don't run two renders at once: a second browser once stalled the first.
+- Scripts use `node`/`python` paths as written, so on Windows use WSL or adjust `.venv/bin/python` to `.venv\Scripts\python`.
+- To check the Screening Room locally: `.claude/launch.json` serves `preview/` on port 8765.
 
 Then start Claude Code in the repo folder, signed in with your subscription:
 - **Terminal:** `claude`
