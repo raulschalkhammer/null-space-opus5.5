@@ -66,10 +66,10 @@ Rules we take into Chapter 3:
 - **Close-ups:**
   - the letter on the desk
   - Jev's lamp
-  - hands opening a letter
+  - an envelope opening by itself
   - a coin landing in the pan
   - the crank
-  - a finger tracing the hard letter
+  - the hard letter, its words lighting up as they are read
 - **Train cameo.** It crosses the city bridge during the zoom out.
 - **Cut types.**
   - Hard cuts (**H**): on reveals and vignettes.
@@ -92,7 +92,7 @@ Rules we take into Chapter 3:
 | 10 | M10 | The grid tiles out into a field | teal | M |
 | 11 | M10 | A chute pours red letters into a pile. "90,000 a day" | amber + red | H |
 | 12 | M11 | The two panels slam together, then a brass scale in the mailroom. "cost" | amber | H |
-| 13 | M12 | Extreme close-up: hands open a letter | amber | H |
+| 13 | M12 | The reviewer at a desk watches an envelope open by itself; the letter slides out | amber | H |
 | 14 | M12 | Extreme close-up: a €2 coin lands in the pan | amber | H |
 | 15 | M13 | The scale with €2 | amber | H |
 | 16 | M13 | Vignette: a fraud letter filed under billing, red ✕ | amber + red | H |
@@ -114,7 +114,7 @@ Rules we take into Chapter 3:
 | 32 | M26 | Concept: the grid, 90 lit. "90%" | teal | H |
 | 33 | M27 | Harbor: the lamp flickers, 10 more cells go red, grains fall back over the line. "80 / 100", "calibration" | night + red | H |
 | 34 | M28 | Reverse zoom: planet, city, bank window | night | X, M |
-| 35 | M29 | Extreme close-up: a finger follows the hard letter's words | amber | M |
+| 35 | M29 | Close-up: the hard letter, its words lighting up one by one as they are read | amber | M |
 | 36 | – | End card: next time, "The Signal Box" | night | X |
 
 Numbers marked illustrative in the film: the million a day, €2 and €20, €4 and €200, 6,000 people, 170,000, and the dune's shape. The rule "a person reads the letter when p < 1 − review ÷ mistake" is exact.
