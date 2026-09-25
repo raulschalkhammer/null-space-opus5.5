@@ -8,7 +8,7 @@ import {Grain} from '../../styleframes/Shared';
 import vo from '../../../fixtures/million-letters-vo.json';
 import type {VoLine} from '../paper-track/timeline';
 import {clamp01, easeIn, easeInOut, easeOut, lerp, progress} from '../paper-track/timeline';
-import {A, Balance, Coin, CoinStack, Customer, Env, EnvelopeOpen, Gauge, Grid10, LetterBig, Mailroom, MailroomDefs, Panel, Reviewer, RopeLine, RED, Say, Stage, T, cam, pop, zoomTo} from './parts';
+import {A, Balance, LampHead, Coin, CoinStack, Customer, Env, EnvelopeOpen, Gauge, Grid10, LetterBig, Mailroom, MailroomDefs, Panel, Reviewer, RopeLine, RED, Say, Stage, T, cam, pop, zoomTo} from './parts';
 import {BankShot, CITY_BANK, BANK, CityShot, DeskShot, HOME, PlanetShot, TARGET} from './Zoom';
 import {GUESS_PAUSE, MILLION, buildMillion, lineFor} from './timeline';
 
@@ -22,22 +22,6 @@ const Svg: React.FC<{children: React.ReactNode}> = ({children}) => (
 	</svg>
 );
 const fade = (f: number, a: number, len = 8) => easeInOut(progress(f, a, a + len));
-
-// Jev as the lamp head over the mailroom (as in chapter 2), with a readout in its glass.
-const LampHead: React.FC<{x: number; y: number; s: number; f: number; readout?: string; glow?: number}> = ({x, y, s, f, readout, glow = 1}) => (
-	<g transform={`translate(${x} ${y}) scale(${s})`}>
-		<rect x={-5} y={-400} width={10} height={360} fill="#3A40A0" />
-		<circle r={90} fill="url(#gLamp)" opacity={0.9 * glow} />
-		<rect x={-40} y={-40} width={80} height={60} rx={14} fill="#EDEBFF" />
-		<rect x={-30} y={-26} width={60} height={34} rx={8} fill="#FFF1C0" opacity={0.85 + 0.15 * Math.sin(f * 0.2)} />
-		<path d="M -46 -40 L 0 -76 L 46 -40 Z" fill={K.rose} />
-		{readout ? (
-			<text y={0} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={18} fill={A.ink}>
-				{readout}
-			</text>
-		) : null}
-	</g>
-);
 
 // ---------- the dune: how sure Jev is about each of a million letters (600 grains, illustrative) ----------
 const BELOW = [1, 1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 8, 10, 13, 15, 18]; // bins 0.500 .. 0.900 (102 grains = 17%)

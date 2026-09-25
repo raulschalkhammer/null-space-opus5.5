@@ -471,3 +471,19 @@ export const Gauge: React.FC<{x: number; y: number; s?: number; p: number; label
 		</g>
 	);
 };
+
+// Jev as the lamp head over the mailroom (as in chapter 2), with a readout in its glass.
+export const LampHead: React.FC<{x: number; y: number; s: number; f: number; readout?: string; glow?: number}> = ({x, y, s, f, readout, glow = 1}) => (
+	<g transform={`translate(${x} ${y}) scale(${s})`}>
+		<rect x={-5} y={-400} width={10} height={360} fill="#3A40A0" />
+		<circle r={90} fill="url(#gLamp)" opacity={0.9 * glow} />
+		<rect x={-40} y={-40} width={80} height={60} rx={14} fill="#EDEBFF" />
+		<rect x={-30} y={-26} width={60} height={34} rx={8} fill="#FFF1C0" opacity={0.85 + 0.15 * Math.sin(f * 0.2)} />
+		<path d="M -46 -40 L 0 -76 L 46 -40 Z" fill={K.rose} />
+		{readout ? (
+			<text y={0} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={18} fill={A.ink}>
+				{readout}
+			</text>
+		) : null}
+	</g>
+);
