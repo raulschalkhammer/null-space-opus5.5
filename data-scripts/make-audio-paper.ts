@@ -5,18 +5,21 @@ import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {FPS, buildFilm, type Fixture, type VoLine} from '../src/shorts/paper-track/timeline.ts';
 import {buildFlatFilm} from '../src/shorts/flat-track/timeline.ts';
 import {buildContract} from '../src/shorts/jev-contract/timeline.ts';
+import {buildMillion} from '../src/shorts/million-letters/timeline.ts';
 
 // --film=flat2: the flat cut with its cold open (own narration set, synth score, flat2-track.wav)
 const FLAT2 = process.argv.includes('--film=flat2');
 // --film=contract: chapter 2, Jev's Contract (vo-contract, contract-track.wav)
 const CONTRACT = process.argv.includes('--film=contract');
+// --film=million: chapter 3, A Million Letters (vo-million, million-track.wav)
+const MILLION = process.argv.includes('--film=million');
 
 const root = new URL('../', import.meta.url);
 const fx = JSON.parse(readFileSync(new URL('fixtures/track-layer.json', root), 'utf8')) as Fixture;
-const vo = JSON.parse(readFileSync(new URL(CONTRACT ? 'fixtures/jev-contract-vo.json' : FLAT2 ? 'fixtures/track-layer-flat-vo.json' : 'fixtures/track-layer-vo.json', root), 'utf8')).lines as VoLine[];
-const film = CONTRACT ? buildContract(vo) : FLAT2 ? buildFlatFilm(fx, vo) : buildFilm(fx, vo);
+const vo = JSON.parse(readFileSync(new URL(MILLION ? 'fixtures/million-letters-vo.json' : CONTRACT ? 'fixtures/jev-contract-vo.json' : FLAT2 ? 'fixtures/track-layer-flat-vo.json' : 'fixtures/track-layer-vo.json', root), 'utf8')).lines as VoLine[];
+const film = MILLION ? buildMillion(vo) : CONTRACT ? buildContract(vo) : FLAT2 ? buildFlatFilm(fx, vo) : buildFilm(fx, vo);
 // --style=synth swaps the felt piano for soft synth plucks + pads and writes flat-track.wav
-const SYNTH = FLAT2 || CONTRACT || process.argv.includes('--style=synth');
+const SYNTH = FLAT2 || CONTRACT || MILLION || process.argv.includes('--style=synth');
 
 const SR = 44100;
 const N = Math.ceil((film.total / FPS) * SR) + SR;
@@ -92,7 +95,7 @@ function readWav(path: URL) {
 	return {s, rate};
 }
 for (const l of vo) {
-	const path = new URL(`public/audio/${CONTRACT ? 'vo-contract' : FLAT2 ? 'vo-flat' : 'vo'}/${l.id}.wav`, root);
+	const path = new URL(`public/audio/${MILLION ? 'vo-million' : CONTRACT ? 'vo-contract' : FLAT2 ? 'vo-flat' : 'vo'}/${l.id}.wav`, root);
 	if (!existsSync(path)) throw new Error(`missing ${l.id}.wav: run data-scripts/make-vo.py first`);
 	const {s, rate} = readWav(path);
 	const start = Math.round((film.cues[l.id].start / FPS) * SR);
@@ -172,6 +175,15 @@ for (const e of film.sfx) {
 		case 'streamer':
 			for (let k = 0; k < 0.7; k += 0.06) noise(fxBus, {t: t + k, dur: 0.05, g: 0.05, lp0: 4000, hp: 1000, shape: 'tri'});
 			break;
+		case 'coin':
+			tone(fxBus, {t, dur: 0.5, f0: 2350 * (e.pitch ?? 1), g: 0.05 * v, exp: 0.12, harm: [1, 0, 0.35]});
+			tone(fxBus, {t: t + 0.06, dur: 0.4, f0: 3150 * (e.pitch ?? 1), g: 0.03 * v, exp: 0.09});
+			noise(fxBus, {t, dur: 0.05, g: 0.1 * v, lp0: 6000, hp: 2000, exp: 0.01});
+			break;
+		case 'stamp':
+			tone(fxBus, {t, dur: 0.25, f0: 90, f1: 50, g: 0.3, exp: 0.06});
+			noise(fxBus, {t, dur: 0.12, g: 0.2, lp0: 1200, exp: 0.03});
+			break;
 		case 'chime':
 			bell(fxBus, t, 880, 0.12 * v);
 			bell(fxBus, t + 0.14, 1318.5, 0.1 * v);
@@ -246,6 +258,6 @@ pcm.write('data', 36);
 pcm.writeUInt32LE(N * 2, 40);
 for (let i = 0; i < N; i++) pcm.writeInt16LE(Math.round(out[i] * 0.95 * 32767), 44 + i * 2);
 mkdirSync(new URL('public/audio/', root), {recursive: true});
-const outName = CONTRACT ? 'contract-track.wav' : FLAT2 ? 'flat2-track.wav' : SYNTH ? 'flat-track.wav' : 'paper-track.wav';
+const outName = MILLION ? 'million-track.wav' : CONTRACT ? 'contract-track.wav' : FLAT2 ? 'flat2-track.wav' : SYNTH ? 'flat-track.wav' : 'paper-track.wav';
 writeFileSync(new URL(`public/audio/${outName}`, root), pcm);
 console.log(`wrote public/audio/${outName}: ${(N / SR).toFixed(1)} s, ${film.sfx.length} sfx, ${vo.length} narration lines, ${film.total} frames`);

@@ -8,7 +8,7 @@ import {existsSync, mkdirSync, readFileSync, statSync, writeFileSync} from 'node
 import path from 'node:path';
 
 const OUT = 'preview';
-const TRACKS = ['flat2-track', 'contract-track'];
+const TRACKS = ['flat2-track', 'contract-track', 'million-track'];
 mkdirSync(`${OUT}/audio`, {recursive: true});
 
 // Soundtracks: MP3 copies (plays in every browser), re-encoded only when the WAV is newer.

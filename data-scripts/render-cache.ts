@@ -19,6 +19,7 @@ import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'node:f
 import path from 'node:path';
 import {buildFlatFilm} from '../src/shorts/flat-track/timeline.ts';
 import {buildContract} from '../src/shorts/jev-contract/timeline.ts';
+import {buildMillion} from '../src/shorts/million-letters/timeline.ts';
 import {type Fixture, type VoLine} from '../src/shorts/paper-track/timeline.ts';
 import {chapterList} from '../src/chapters.ts';
 import {changedBlocks} from './png.ts';
@@ -39,8 +40,9 @@ const json = (p: string) => JSON.parse(readFileSync(p, 'utf8'));
 const fx = json('fixtures/track-layer.json') as Fixture;
 const flat = buildFlatFilm(fx, json('fixtures/track-layer-flat-vo.json').lines as VoLine[]);
 const contract = buildContract(json('fixtures/jev-contract-vo.json').lines as VoLine[]);
-const ch = chapterList(flat, contract).find((c) => c.id === chId);
-if (!ch) throw new Error(`Unknown chapter ${chId}; use ch1 or ch2`);
+const million = buildMillion(json('fixtures/million-letters-vo.json').lines as VoLine[]);
+const ch = chapterList(flat, contract, million).find((c) => c.id === chId);
+if (!ch) throw new Error(`Unknown chapter ${chId}; use ch1, ch2 or ch3`);
 
 const dir = `renders/cache/${ch.comp}`;
 mkdirSync(dir, {recursive: true});

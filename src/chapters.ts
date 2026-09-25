@@ -42,9 +42,27 @@ export function contractScenes(S: Record<string, Span>, total: number) {
 	]);
 }
 
-export function chapterList(flat: {S: Record<string, Span>; total: number}, contract: {S: Record<string, Span>; total: number}): ChapterInfo[] {
+export function millionScenes(S: Record<string, Span>, total: number) {
+	return marks(total, [
+		['title', 'Title', S.title],
+		['zoom', 'Zoom out', S.zoom],
+		['puzzle', 'Puzzle', S.puzzle],
+		['naive', 'All or none', S.naive],
+		['price', 'Price', S.price],
+		['math', 'The math', S.math],
+		['moves', 'Line moves', S.moves],
+		['answer', 'Dune', S.answer],
+		['calib', 'Promise', S.calib],
+		['close', 'Close', S.close],
+		['endcard', 'End card', S.endcard],
+	]);
+}
+
+type Timed = {S: Record<string, Span>; total: number};
+export function chapterList(flat: Timed, contract: Timed, million: Timed): ChapterInfo[] {
 	return [
 		{id: 'ch1', n: 1, title: 'Track Layer', comp: 'TrackLayerFlat', audio: 'flat2-track', total: flat.total, scenes: flatScenes(flat.S, flat.total)},
 		{id: 'ch2', n: 2, title: 'Jev’s Contract', comp: 'JevContract', audio: 'contract-track', total: contract.total, scenes: contractScenes(contract.S, contract.total)},
+		{id: 'ch3', n: 3, title: 'A Million Letters', comp: 'MillionLetters', audio: 'million-track', total: million.total, scenes: millionScenes(million.S, million.total)},
 	];
 }

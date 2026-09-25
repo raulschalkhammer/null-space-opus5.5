@@ -1,11 +1,11 @@
-# Chapter 3: A Million Letters (plan)
+# Chapter 3: A Million Letters (plan, as built)
 
 Chapter 2 showed one letter being read in one pass. Chapter 3 zooms out to a bank that gets a million letters a day, and asks a single question: how many of them should a human read?
 
 - Storytelling follows Veritasium: a puzzle, you guess, two naive answers, then the math that settles it.
 - The look follows the reference analysis below: a new picture for every line, and no still frames.
 
-Target length is about 3:30. That is roughly 30 narration lines and about 70 distinct shots.
+Built length: 2:30 (3,600 frames), 29 narration lines (M01 to M29), about 40 shots.
 
 ## What the reference does (first 5 minutes, measured)
 
@@ -46,99 +46,75 @@ Rules we take into Chapter 3:
   - a new human reviewer at a desk
 - **Single words on screen.** Only the letters themselves carry sentences.
 
-## Shot plan
+## Palettes
 
-Line ids are C3xx. Numbers marked (illustrative) are placeholders until a measured Jev run.
-
-### 1. Zoom out (about 25 s)
-
-| Line | Narration (draft) | Shots |
+| Palette | Where | Colours |
 |---|---|---|
-| C301 | "One letter. Read once, in a tenth of a second." | 1. Close on the letter from Ch 2 under the lamp. 2. Match cut: the letter shrinks into a lit window. |
-| C302 | "But a bank doesn't get one letter." | 3. Pull back: a whole mailroom floor, then the bank building at night, and every window blinks as a letter is read. |
-| C303 | "It gets thousands an hour. A million a day." | 4. Pull back further to an isometric city at night. Each blink is a decision. 5. Counter: "1,000,000". |
-| C304 | "Every one of them needs a decision." | 6. Orbit shot: the planet at night with streams of light between cities. |
+| Night | the city, the planet, the harbor, the dune | the film's night blues, warm yellow windows |
+| Amber | the mailroom, the reviewer, the desk, the scale | brick `#4A2C3B`, wood `#8A5A3C`, brass `#D9A64A`, lamp `#FFC46B` |
+| Teal | the concept stage (one idea on a glowing tile) | void `#05121A`, tile `#154652`, glow `#2EE6C5` |
+| Red | mistakes only | `#FF4D5E` |
 
-### 2. The puzzle (about 20 s)
+## Rules this plan now follows
 
-| Line | Narration (draft) | Shots |
-|---|---|---|
-| C305 | "So here's the question. Of a million letters, how many should a person read?" | 7. Concept stage: one letter on a plinth, and a small person on a plinth beside it. 8. A dial from 0 to 1,000,000. |
-| C306 | (pause for the guess, 3-2-1) | 9. Countdown ring over the dial, "GUESS". |
+- **World and concept take turns.** No two concept stages in a row. Every concept visit is short: the puzzle dial with its guess countdown (about 5.5 s), the 91/9 grid (about 5 s), the 1 − p insert (about 1.3 s), and the 90% grid (about 4.5 s).
+- **The math lives in the world.**
+  - The equation builds above a brass scale in the mailroom. A coin stack for risk sits against a €2 coin, and Jev's lamp hangs beside them reading out p.
+  - The scale tips as p moves.
+- **The line is physical.** It's a velvet rope on a brass gauge post, raised and lowered by a crank.
+- **The dune is in the harbor.** A million letters (600 grains) pour onto the beach, and the 0.9 line is where the tide stops.
+- **Close-ups:**
+  - the letter on the desk
+  - Jev's lamp
+  - hands opening a letter
+  - a coin landing in the pan
+  - the crank
+  - a finger tracing the hard letter
+- **Train cameo.** It crosses the city bridge during the zoom out.
+- **Cut types.**
+  - Hard cuts (**H**): on reveals and vignettes.
+  - Zooms and match cuts (**M**): between scales.
+  - Cross-fades (**X**): only at a few section changes.
 
-### 3. Two naive answers, in split panels (about 45 s)
+## Shot list
 
-| Line | Narration (draft) | Shots |
-|---|---|---|
-| C307 | "The safe answer: all of them." | 10. Left panel slides in: a queue of reviewers at desks, stretching away. |
-| C308 | "At a few minutes each, that's thousands of people, reading all day, every day." | 11. The queue wraps around the city block, then the whole city. 12. A cost pile of coins grows beside it. Label: "all". |
-| C309 | "The fast answer: none of them. Let the machine decide everything." | 13. Right panel slides in: the lighthouse sweeps letters into slots at full speed. Label: "none". |
-| C310 | "Remember the promise from last time? At ninety-one percent, nine in a hundred are wrong." | 14. The 10×10 grid from Ch 2, with 9 cells turning red. |
-| C311 | "Nine in a hundred, of a million, is ninety thousand mistakes. Every day." | 15. The grid tiles outward into a huge field of cells, with red ones scattered through it. 16. Red letters tumble out of a chute into a pile. "90,000". |
+| # | Lines | Shot | Palette | In |
+|---|---|---|---|---|
+| 1 | M01 | Extreme close-up: one letter on a desk, a band of light reads it once. "1" | amber | X from title |
+| 2 | M01–M02 | The letter shrinks into a lit window; pull back to the bank at night, windows blinking | night | M |
+| 3 | M03 | Pull back to the city. The train crosses the bridge. "1,000,000 a day" | night | M |
+| 4 | M04 | Pull back to the planet; arcs of letters between cities | night | M |
+| 5 | M05 | A heap of letters under a chute, one small reviewer. "1,000,000" | amber | X |
+| 6 | M05 + pause | Concept: a person on a tile, a dial from 0 to 1,000,000, "?", 3-2-1, GUESS | teal | H |
+| 7 | M06–M07 | Rows of reviewers at desks fill in; coin stacks. "all", "≈ 6,000 people" | amber | H |
+| 8 | M08 | The panel splits: the harbor, letters racing into Jev's beam. "none" | night | panel |
+| 9 | M09 | Concept: 100 cells, 91 orange, 9 turn red. "91%", "9" | teal | H |
+| 10 | M10 | The grid tiles out into a field | teal | M |
+| 11 | M10 | A chute pours red letters into a pile. "90,000 a day" | amber + red | H |
+| 12 | M11 | The two panels slam together, then a brass scale in the mailroom. "cost" | amber | H |
+| 13 | M12 | Extreme close-up: hands open a letter | amber | H |
+| 14 | M12 | Extreme close-up: a €2 coin lands in the pan | amber | H |
+| 15 | M13 | The scale with €2 | amber | H |
+| 16 | M13 | Vignette: a fraud letter filed under billing, red ✕ | amber + red | H |
+| 17 | M13 | Vignette: a card, a padlock slams | amber + red | H |
+| 18 | M13 | Vignette: an angry customer, "#@!" | amber + red | H |
+| 19 | M13 | €20 lands, the scale tips hard | amber | H |
+| 20 | M14 | Extreme close-up: Jev's lamp, "p" | amber | H |
+| 21 | M15 | The scale; `(1 − p)` builds above it with a brace, "wrong" | amber | H |
+| 22 | M15 | Insert: the grid with 10 red cells, `1 − p` | teal | H |
+| 23 | M15–M17 | `· 20` "mistake", `vs 2` "review"; p moves 0.95, then 0.8; the scale tips; "Jev" or "person"; `>` locks in | amber | H |
+| 24 | M18 | p settles at 0.9, the scale balances; `p < 0.9` | amber | continuous |
+| 25 | M19 | The rope rises on the gauge to 0.9 with a clank; €2 and €20 tags hang on it. "0.9" | amber | H |
+| 26 | M20 | Extreme close-up: the crank turns, "€20" tag | amber | H |
+| 27 | M21 | Newsletters: the rope drops to 0.5, letters wave through. `1 − 2/4 = 0.5` | amber | H |
+| 28 | M22 | The panel splits: card and customer, the rope climbs to 0.99. `1 − 2/200 = 0.99` | amber + red | panel |
+| 29 | M23 | Harbor: grains pour from the lamp into a dune over 0.5 to 1.0 | night | X |
+| 30 | M24 | The 0.9 line; the tide covers everything below; those letters float to the reviewers' pier. "Jev", "people" | night | continuous |
+| 31 | M25 | The reviewers' room: three rows where the endless queue used to be. "170,000", crossed-out "1,000,000" and "0" | amber | H |
+| 32 | M26 | Concept: the grid, 90 lit. "90%" | teal | H |
+| 33 | M27 | Harbor: the lamp flickers, 10 more cells go red, grains fall back over the line. "80 / 100", "calibration" | night + red | H |
+| 34 | M28 | Reverse zoom: planet, city, bank window | night | X, M |
+| 35 | M29 | Extreme close-up: a finger follows the hard letter's words | amber | M |
+| 36 | – | End card: next time, "The Signal Box" | night | X |
 
-### 4. Every mistake has a price (about 30 s)
-
-| Line | Narration (draft) | Shots |
-|---|---|---|
-| C312 | "Neither answer is right, because neither one counts the cost." | 17. The two panels slam together into one. Concept stage: a balance scale on a plinth. |
-| C313 | "A person reading a letter costs something. Say two euros." | 18. The reviewer at the desk; extreme close-up of hands opening a letter. 19. A coin labelled "€2" drops onto the left pan. |
-| C314 | "A mistake costs more. A fraud report filed under billing. A frozen card. An angry customer. Say twenty euros." | 20. Three quick vignettes, about 1.5 s each: a letter in the wrong slot, a card with a padlock, a steaming speech bubble. 21. "€20" drops onto the right pan. |
-
-### 5. The math (about 45 s)
-
-| Line | Narration (draft) | Shots |
-|---|---|---|
-| C315 | "Now take one letter, where Jev is p sure." | 22. Concept stage: the lighthouse with a gauge reading p. |
-| C316 | "If we let Jev decide, the chance it's wrong is one minus p, and a mistake costs twenty." | 23. The equation builds term by term (KaTeX, colour-coded, with braces): `(1 − p)` "wrong" × `€20` "mistake". |
-| C317 | "If we ask a person, it costs two. Every time." | 24. The right side appears: `€2` "review". The balance scale sits under the equation and tips as p changes. |
-| C318 | "Ask a person only when a mistake would cost more than the review." | 25. `(1 − p) · 20 > 2`, then it simplifies: `p < 0.9`. |
-| C319 | "Ninety percent. That line isn't a feeling. It falls out of two prices." | 26. The dashed line from the Ch 2 tubes rises to 0.9 and locks with a clank. "0.9". |
-
-### 6. The line moves (about 25 s)
-
-| Line | Narration (draft) | Shots |
-|---|---|---|
-| C320 | "Change the prices, and the line moves." | 27. A slider for mistake cost, on a concept stage. |
-| C321 | "Sorting newsletters? A mistake costs almost nothing, so let the machine take nearly all of it." | 28. Slider low, the line drops to about 0.5. Split panel: an inbox of newsletters. |
-| C322 | "Freezing someone's card? Now almost nothing gets through without a person." | 29. Slider high, the line climbs to 0.99. Split panel: a card and a worried customer. |
-
-### 7. The answer (about 30 s)
-
-| Line | Narration (draft) | Shots |
-|---|---|---|
-| C323 | "Back to our million letters. Here's how sure Jev is about each one." | 30. The grains from the Ch 2 tubes pour into one long dune: a histogram of confidence from 0 to 1, drawn to scale (illustrative). |
-| C324 | "Everything above the line, Jev handles. Everything below goes to a person." | 31. The 0.9 line cuts the dune. Grains above it fly to slots, grains below fly to desks. |
-| C325 | "About a hundred and seventy thousand letters. Not a million. Not zero." | 32. Counter "170,000" (illustrative). The reviewer queue from panel 10 shrinks to a few rows of desks. |
-
-### 8. Why the promise matters (about 25 s)
-
-| Line | Narration (draft) | Shots |
-|---|---|---|
-| C326 | "All of this only works if ninety percent really means ninety percent." | 33. The 10×10 grid again, with 90 lit. |
-| C327 | "If Jev says ninety but is right only eighty times in a hundred, the math sends the wrong letters to the wrong place." | 34. The lighthouse beam flickers and 10 more cells go red. 35. Grains that crossed the line tumble back. "calibration". |
-
-### 9. Close (about 20 s)
-
-| Line | Narration (draft) | Shots |
-|---|---|---|
-| C328 | "So the machine reads the million." | 36. Reverse of the opening: orbit, then city, then the bank, then the mailroom (fast match cuts). |
-| C329 | "And people read the letters where they matter." | 37. Close-up: the reviewer at the desk opens the hard letter from Ch 2 ("charged twice…"). |
-| C330 | (end card) | 38. "A Million Letters", then a teaser for the next chapter. |
-
-That is about 38 planned beats. With the ambient layers and the split-panel sub-shots it should measure close to one new look every 3 s.
-
-## New visual pieces to build
-
-1. **City at night (isometric).** Blinking windows driven by a seeded rng, plus a parallax sky. Reused for the zoom out and the close.
-2. **Planet at night.** City lights and arcs between cities.
-3. **Concept plinth.** A small glowing tile in a dark void, reused for the puzzle, the scale and the slider.
-4. **Split-panel frame.** 2 or 3 panels that slide in, each with its own camera.
-5. **Reviewer character.** An original human at a desk, with a hands close-up variant.
-6. **Balance scale.** Two pans, coins, and tilt driven by p.
-7. **Confidence dune.** A histogram made of grains, drawn to scale, with a movable line.
-8. **Reused pieces.** Jev's lighthouse, the letter, the 10×10 grid and the Ch 2 tubes.
-
-## Checks before building
-
-- The prices (€2 and €20), the million a day and the 170,000 are illustrative. The rule "ask a person when p < 1 − review ÷ mistake" is exact.
-- Each scene is reviewed in the Screening Room preview first. The final cut uses the scene-cached render.
+Numbers marked illustrative in the film: the million a day, €2 and €20, €4 and €200, 6,000 people, 170,000, and the dune's shape. The rule "a person reads the letter when p < 1 − review ÷ mistake" is exact.
