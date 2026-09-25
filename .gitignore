@@ -5,3 +5,5 @@ out/
 *.log
 public/audio/*.wav
 preview/
+models/
+.venv/
