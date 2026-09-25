@@ -4,19 +4,21 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Player, type PlayerRef} from '@remotion/player';
 import '../fonts';
-import {chapterList, type ChapterInfo} from '../chapters';
-import {TrackLayerFlat, film} from '../shorts/flat-track/Film';
-import {JevContract, contract} from '../shorts/jev-contract/Film';
-import {MillionLetters, million} from '../shorts/million-letters/Film';
-import {SignalBox, signal} from '../shorts/signal-box/Film';
+import {chapterList, finalChapters, type ChapterInfo} from '../chapters';
+import {film} from '../shorts/flat-track/Film';
+import {contract} from '../shorts/jev-contract/Film';
+import {million} from '../shorts/million-letters/Film';
+import {signal} from '../shorts/signal-box/Film';
+import {Final1, Final2, Final3, Final4, edls} from '../shorts/final/Film';
 
 declare const __BUILT_AT__: string;
 
 // the soundtracks sit next to the page, in audio/
 (window as unknown as {remotion_staticBase: string}).remotion_staticBase = '.';
 
-const CHAPTERS = chapterList(film, contract, million, signal);
-const COMPS: Record<string, React.FC> = {TrackLayerFlat, JevContract, MillionLetters, SignalBox};
+// the final cut of each chapter (src/final.ts)
+const CHAPTERS = finalChapters(chapterList(film, contract, million, signal), edls);
+const COMPS: Record<string, React.FC> = {Final1, Final2, Final3, Final4};
 
 const pad = (n: number, w = 2) => String(n).padStart(w, '0');
 // m:ss.ff at 24 fps

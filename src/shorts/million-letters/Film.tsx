@@ -138,11 +138,6 @@ const Card: React.FC<{f: number; next?: boolean}> = ({f, next}) => {
 					</>
 				)}
 			</div>
-			{next ? (
-				<div style={{position: 'absolute', bottom: 34, width: '100%', textAlign: 'center', fontFamily: FONT, fontWeight: 700, fontSize: 18, color: K.mute, opacity: t}}>
-					Draft · illustrative numbers · Resemble AI · Remotion
-				</div>
-			) : null}
 		</AbsoluteFill>
 	);
 };
@@ -869,7 +864,7 @@ const CloseScene: React.FC<{f: number}> = ({f}) => {
 
 // Scenes, with how each one enters: a cross-fade (xf frames) or a hard cut (0).
 type Scene = {span: {start: number; end: number}; xf: number; render: (f: number) => React.ReactNode};
-export const MillionLetters: React.FC = () => {
+export const MillionLetters: React.FC<{silent?: boolean}> = ({silent}) => {
 	const f = useCurrentFrame();
 	const scenes: Scene[] = [
 		{span: S.title, xf: 0, render: (x) => <Card f={x} />},
@@ -898,10 +893,7 @@ export const MillionLetters: React.FC = () => {
 				);
 			})}
 			<Grain id="millionGrain" opacity={0.06} freq={0.8} seed={(f % 5) + 1} />
-			{f < S.endcard.start ? (
-				<div style={{position: 'absolute', right: 40, top: 34, fontFamily: FONT, fontWeight: 800, fontSize: 13, letterSpacing: 3, color: K.mute, border: `2px solid ${K.indigoHi}`, borderRadius: 14, padding: '4px 12px', opacity: 0.8}}>DRAFT · ILLUSTRATIVE NUMBERS</div>
-			) : null}
-			<Audio src={track('million-track')} />
+			{silent ? null : <Audio src={track('million-track')} />}
 		</AbsoluteFill>
 	);
 };

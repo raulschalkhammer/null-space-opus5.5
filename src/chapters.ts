@@ -1,6 +1,7 @@
 // The chapters and their scenes, as frame ranges. Shared by the browser preview (scene strip) and the
 // render cache (one cached clip per scene). Import-light so Node can load it with --experimental-strip-types.
 import type {Span} from './shorts/paper-track/timeline.ts';
+import {type Edl, invFrame} from './final.ts';
 
 export type SceneMark = {id: string; name: string; start: number; end: number};
 export type ChapterInfo = {id: string; n: number; title: string; comp: string; audio: string; total: number; scenes: SceneMark[]};
@@ -82,4 +83,16 @@ export function chapterList(flat: Timed, contract: Timed, million: Timed, signal
 		{id: 'ch3', n: 3, title: 'A Million Letters', comp: 'MillionLetters', audio: 'million-track', total: million.total, scenes: millionScenes(million.S, million.total)},
 		{id: 'ch4', n: 4, title: 'The Signal Box', comp: 'SignalBox', audio: 'signal-track', total: signal.total, scenes: signalScenes(signal.S, signal.total)},
 	];
+}
+
+// The final cut of the chapters (src/final.ts): what the Screening Room plays and render-cache renders by default.
+// Scenes are carried over through the edit list; the title and end-card scenes fall away.
+export function finalChapters(full: ChapterInfo[], edls: Record<string, Edl>): ChapterInfo[] {
+	const comp: Record<string, string> = {ch1: 'Final1', ch2: 'Final2', ch3: 'Final3', ch4: 'Final4'};
+	return full.map((c) => {
+		const e = edls[c.id];
+		let sc = c.scenes.filter((x) => x.id !== 'title' && x.id !== 'endcard').map((x) => ({...x, name: x.id === 'credits' ? 'Ending' : x.name, start: invFrame(e.v, x.start)}));
+		sc = sc.map((x, i) => ({...x, end: i + 1 < sc.length ? sc[i + 1].start : e.total})).filter((x) => x.end > x.start);
+		return {...c, comp: comp[c.id], audio: e.out, total: e.total, scenes: sc};
+	});
 }

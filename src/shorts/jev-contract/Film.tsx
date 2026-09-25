@@ -707,17 +707,12 @@ const Card: React.FC<{f: number; next?: boolean}> = ({f, next}) => {
 					</>
 				)}
 			</div>
-			{next ? (
-				<div style={{position: 'absolute', bottom: 34, width: '100%', textAlign: 'center', fontFamily: FONT, fontWeight: 700, fontSize: 18, color: K.mute, opacity: t}}>
-					Draft · illustrative numbers · Resemble AI · Remotion
-				</div>
-			) : null}
 		</AbsoluteFill>
 	);
 };
 
 type Scene = {span: {start: number; end: number}; render: (f: number) => React.ReactNode};
-export const JevContract: React.FC = () => {
+export const JevContract: React.FC<{silent?: boolean}> = ({silent}) => {
 	const f = useCurrentFrame();
 	const {XF} = contract;
 	const scenes: Scene[] = [
@@ -742,10 +737,7 @@ export const JevContract: React.FC = () => {
 				);
 			})}
 			<Grain id="contractGrain" opacity={0.06} freq={0.8} seed={(f % 5) + 1} />
-			{f < S.endcard.start ? (
-				<div style={{position: 'absolute', right: 40, top: 34, fontFamily: FONT, fontWeight: 800, fontSize: 13, letterSpacing: 3, color: K.mute, border: `2px solid ${K.indigoHi}`, borderRadius: 14, padding: '4px 12px', opacity: 0.8}}>DRAFT · ILLUSTRATIVE NUMBERS</div>
-			) : null}
-			<Audio src={track('contract-track')} />
+			{silent ? null : <Audio src={track('contract-track')} />}
 		</AbsoluteFill>
 	);
 };

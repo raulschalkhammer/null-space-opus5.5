@@ -651,26 +651,15 @@ const SHOTS: ShotDef[] = [
 		render: (f) => (
 <Panorama f={f} trainsGo={1} />
 		),
-		overlay: (f) => {
-			const t = easeOut(progress(f, H.credits + 10, H.credits + 34), 2);
-			const line = (s: string, size: number, color: string, mt = 14) => <div style={{fontWeight: 800, fontSize: size, color, marginTop: mt}}>{s}</div>;
-			return (
-				<>
-				<AbsoluteFill style={{background: '#0B1030', opacity: 0.78 * t}} />
-				<div style={{position: 'absolute', top: 330, width: '100%', textAlign: 'center', fontFamily: FONT, opacity: t}}>
-					{line('THE MODEL THAT DOESN’T TALK', 28, K.teal, 0)}
-					{line('Narration: Resemble AI', 30, K.white, 44)}
-					{line('Made with Remotion', 30, K.white)}
-					{line('Jev’s speed and price: TypeSafe’s own tests', 26, K.mute, 40)}
-					{line('Every other number is illustrative', 26, K.mute)}
-				</div>
-				</>
-			);
-		},
+		overlay: () => (
+			<div style={{position: 'absolute', top: 150, width: '100%', textAlign: 'center', fontFamily: FONT}}>
+				<div style={{fontWeight: 900, fontSize: 120, color: K.white, lineHeight: 1.05, textShadow: '0 6px 30px rgba(40,20,60,0.6)'}}>The Model That Doesn’t Talk</div>
+			</div>
+		),
 	},
 ];
 
-export const SignalBox: React.FC = () => {
+export const SignalBox: React.FC<{silent?: boolean}> = ({silent}) => {
 	const f = useCurrentFrame();
 	return (
 		<AbsoluteFill style={{background: K.night, overflow: 'hidden'}}>
@@ -680,10 +669,7 @@ export const SignalBox: React.FC = () => {
 				<Vignette />
 			</svg>
 			<Grain id="signalGrain" opacity={0.06} freq={0.8} seed={(f % 5) + 1} />
-			{f < H.credits ? (
-				<div style={{position: 'absolute', right: 40, top: 34, fontFamily: FONT, fontWeight: 800, fontSize: 13, letterSpacing: 3, color: K.mute, border: `2px solid ${K.indigoHi}`, borderRadius: 14, padding: '4px 12px', opacity: 0.8}}>DRAFT · ILLUSTRATIVE NUMBERS</div>
-			) : null}
-			<Audio src={track('signal-track')} />
+			{silent ? null : <Audio src={track('signal-track')} />}
 		</AbsoluteFill>
 	);
 };

@@ -22,7 +22,8 @@ import {buildContract} from '../src/shorts/jev-contract/timeline.ts';
 import {buildMillion} from '../src/shorts/million-letters/timeline.ts';
 import {buildSignal} from '../src/shorts/signal-box/timeline.ts';
 import {type Fixture, type VoLine} from '../src/shorts/paper-track/timeline.ts';
-import {chapterList} from '../src/chapters.ts';
+import {chapterList, finalChapters} from '../src/chapters.ts';
+import {buildEdls} from '../src/final.ts';
 import {changedBlocks} from './png.ts';
 import {browserExecutable as findBrowser, ffmpegBin, ffmpegEnv} from './local.mjs';
 
@@ -44,8 +45,10 @@ const flat = buildFlatFilm(fx, json('fixtures/track-layer-flat-vo.json').lines a
 const contract = buildContract(json('fixtures/jev-contract-vo.json').lines as VoLine[]);
 const million = buildMillion(json('fixtures/million-letters-vo.json').lines as VoLine[]);
 const signal = buildSignal(json('fixtures/signal-box-vo.json').lines as VoLine[]);
-const ch = chapterList(flat, contract, million, signal).find((c) => c.id === chId);
-if (!ch) throw new Error(`Unknown chapter ${chId}; use ch1, ch2 or ch3`);
+// the final cut by default; --full renders the whole chapter, with its title and end card
+const full = chapterList(flat, contract, million, signal);
+const ch = (args.includes('--full') ? full : finalChapters(full, buildEdls(flat, contract, million, signal, json('fixtures/final-cuts.json')))).find((c) => c.id === chId);
+if (!ch) throw new Error(`Unknown chapter ${chId}; use ch1, ch2, ch3 or ch4`);
 
 const dir = `renders/cache/${ch.comp}`;
 mkdirSync(dir, {recursive: true});

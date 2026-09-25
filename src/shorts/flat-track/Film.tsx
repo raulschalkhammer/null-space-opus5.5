@@ -185,18 +185,13 @@ const TitleCard: React.FC<{f: number; next?: boolean}> = ({f, next}) => {
 					</>
 				)}
 			</div>
-			{next ? (
-				<div style={{position: 'absolute', bottom: 34, width: '100%', textAlign: 'center', fontFamily: FONT, fontWeight: 700, fontSize: 18, color: K.mute, opacity: t}}>
-					Draft · illustrative numbers · Resemble AI · Remotion
-				</div>
-			) : null}
 		</AbsoluteFill>
 	);
 };
 
 type Scene = {span: Span; render: (f: number) => React.ReactNode; zoomOut?: boolean};
 
-export const TrackLayerFlat: React.FC = () => {
+export const TrackLayerFlat: React.FC<{silent?: boolean}> = ({silent}) => {
 	const f = useCurrentFrame();
 	const {S, XF, cues} = film;
 	const scenes: Scene[] = [
@@ -246,10 +241,7 @@ export const TrackLayerFlat: React.FC = () => {
 				);
 			})}
 			<Grain id="flatGrain" opacity={0.06} freq={0.8} seed={(f % 5) + 1} />
-			{film.fx.status !== 'measured' && f < S.endcard.start ? (
-				<div style={{position: 'absolute', right: 40, top: 34, fontFamily: FONT, fontWeight: 800, fontSize: 13, letterSpacing: 3, color: K.mute, border: `2px solid ${K.indigoHi}`, borderRadius: 14, padding: '4px 12px', opacity: 0.8}}>DRAFT · ILLUSTRATIVE NUMBERS</div>
-			) : null}
-			<Audio src={track('flat2-track')} />
+			{silent ? null : <Audio src={track('flat2-track')} />}
 		</AbsoluteFill>
 	);
 };

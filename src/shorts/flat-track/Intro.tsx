@@ -69,14 +69,13 @@ export const Hook: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 		const rad = 330 + r() * 170;
 		return {x: Math.cos(a) * rad, y: Math.sin(a) * rad * 0.8, at: cues.H03.start + 6 + i * 2.2 + r() * 4, color: [K.white, '#BFF5EA', '#FFD9B0', '#D9D4FF'][i % 4], s: 0.55 + r() * 0.5};
 	});
-	const planetIn = cues.H03.start - 10;
+	const planetIn = cues.H03.start - 40; // the final cut opens here, on the planet
 	const zoomIn = easeInOut(progress(f, cues.H04.start - 6, cues.H04.start + 16));
 	const cam = lerp(1, 1.08, progress(f, planetIn, cues.H04.start));
 	const qs = ['Should I sign this?', 'Is this rash normal?', 'Is this email a scam?'];
 	const qPos = [{x: 470, y: 250}, {x: 960, y: 150}, {x: 1450, y: 250}];
 	return (
 		<AbsoluteFill>
-			{f < planetIn + 16 ? <Twice film={film} f={f} out={progress(f, planetIn, planetIn + 16)} /> : null}
 			{f >= planetIn ? (
 			<AbsoluteFill style={{transform: `scale(${cam * (1 + 5 * easeIn(zoomIn, 2))})`, transformOrigin: `${qPos[2].x}px ${qPos[2].y}px`, opacity: progress(f, planetIn, planetIn + 16) * (1 - progress(f, cues.H04.start + 6, cues.H04.start + 16))}}>
 				<svg width={1920} height={1080} style={{position: 'absolute'}}>

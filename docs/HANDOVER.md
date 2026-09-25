@@ -18,6 +18,12 @@ Status as of 2026-09-25, branch `claude/hopeful-johnson-aiwzpx`. Read `CLAUDE.md
   - `docs/jev-video-research.md` has the research notes.
 
 ### Open ideas and next steps
+- **The final cut** (since 2026-09-26) is what the Screening Room plays and `render-cache` renders by default:
+  - `src/final.ts` has the edit lists: no title or end cards, and no "Last time…" or "That's next time.". Chapter 1 opens on the planet, and chapter 4 ends on the title.
+  - `src/shorts/final/Film.tsx` has `Final1` to `Final4` and `FinalFilm` (all four joined).
+  - `data-scripts/make-final-audio.ts` cuts the soundtracks into `chN-final.wav` and measures the chapter 1 cut in `fixtures/final-cuts.json`. Run it after every re-mix.
+  - `render-cache.ts chN --full` still renders a whole chapter.
+- The narration voice is Resemble AI "Ethan" (`bee581c1`).
 - **All four chapters are built.** The video runs about 13:20. Chapter 4 ends it with callbacks and closing credits.
 - **Next:**
   - the user's review of chapter 4
