@@ -4,7 +4,7 @@ out/
 .env
 *.log
 public/audio/*.wav
-preview/
+/preview/
 models/
 .venv/
 *.bundle
