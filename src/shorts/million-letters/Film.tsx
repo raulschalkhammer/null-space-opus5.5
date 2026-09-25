@@ -8,7 +8,7 @@ import {Grain} from '../../styleframes/Shared';
 import vo from '../../../fixtures/million-letters-vo.json';
 import type {VoLine} from '../paper-track/timeline';
 import {clamp01, easeIn, easeInOut, easeOut, lerp, progress} from '../paper-track/timeline';
-import {A, Balance, Coin, CoinStack, Customer, Env, Gauge, Grid10, HandsWithLetter, LetterBig, Mailroom, MailroomDefs, Panel, PointingHand, Reviewer, RopeLine, RED, Say, Stage, T, cam, pop, zoomTo} from './parts';
+import {A, Balance, Coin, CoinStack, Customer, Env, EnvelopeOpen, Gauge, Grid10, LetterBig, Mailroom, MailroomDefs, Panel, Reviewer, RopeLine, RED, Say, Stage, T, cam, pop, zoomTo} from './parts';
 import {BankShot, CITY_BANK, BANK, CityShot, DeskShot, HOME, PlanetShot, TARGET} from './Zoom';
 import {GUESS_PAUSE, MILLION, buildMillion, lineFor} from './timeline';
 
@@ -479,9 +479,12 @@ const PriceScene: React.FC<{f: number}> = ({f}) => {
 				<Svg>
 					<MailroomDefs />
 					<rect x={-60} y={-60} width={2040} height={1200} fill="url(#gAmberWall)" />
-					<circle cx={1300} cy={200} r={600} fill="url(#gAmberLamp)" />
-					<rect x={-60} y={640} width={2040} height={500} fill="url(#gDesk)" />
-					<HandsWithLetter f={f} open={easeInOut(progress(f, hands + 6, coinEcu - 6))} />
+					<circle cx={1250} cy={260} r={640} fill="url(#gAmberLamp)" />
+					{/* the reviewer at the desk, watching a letter open */}
+					<Reviewer x={560} y={790} s={2.6} f={f} look={1} desk={false} />
+					<rect x={-60} y={700} width={2040} height={500} fill="url(#gDesk)" />
+					<rect x={-60} y={700} width={2040} height={14} fill={A.woodHi} />
+					<EnvelopeOpen x={1240} y={820} s={1.15} open={easeInOut(progress(f, hands + 4, coinEcu - 4))} />
 					<Vignette />
 				</Svg>
 			</AbsoluteFill>
@@ -821,6 +824,7 @@ const CalibScene: React.FC<{f: number}> = ({f}) => {
 };
 
 // ---------- 9. back down to one person and one letter ----------
+const HARD_WORDS = 'My card was charged twice, and now I can’t find it.'.split(' ');
 const CloseScene: React.FC<{f: number}> = ({f}) => {
 	const a = S.close.start;
 	const b = at('M28', 0.4);
@@ -847,7 +851,7 @@ const CloseScene: React.FC<{f: number}> = ({f}) => {
 			</AbsoluteFill>
 		);
 	}
-	// extreme close-up: a finger follows the hard letter's words
+	// close-up: the hard letter, its words lighting up one by one as a person reads it
 	const trace = progress(f, cues.M29.start + 6, S.close.end - 20);
 	const out = progress(f, S.close.end - 16, S.close.end + 10);
 	return (
@@ -861,16 +865,19 @@ const CloseScene: React.FC<{f: number}> = ({f}) => {
 			</Svg>
 			<div style={{position: 'absolute', left: 500, top: 330, width: 920, transform: 'rotate(-3deg)', fontFamily: FONT, color: K.navy}}>
 				<div style={{fontWeight: 800, fontSize: 26, color: '#7A7AA8', letterSpacing: 1}}>to: support</div>
-				<div style={{fontWeight: 900, fontSize: 54, lineHeight: 1.25, marginTop: 18}}>My card was charged twice, and now I can’t find it.</div>
+				<div style={{fontWeight: 900, fontSize: 54, lineHeight: 1.35, marginTop: 18}}>
+					{HARD_WORDS.map((w, i) => {
+						// each word lights up as it is read, and stays marked
+						const k = clamp01(trace * (HARD_WORDS.length + 1) - i);
+						return (
+							<span key={i} style={{position: 'relative', display: 'inline-block', marginRight: 14}}>
+								<span style={{position: 'absolute', left: -6, right: -6, top: '8%', bottom: '4%', borderRadius: 8, background: A.lamp, opacity: 0.55 * k, transform: `scaleX(${k})`, transformOrigin: 'left'}} />
+								<span style={{position: 'relative'}}>{w}</span>
+							</span>
+						);
+					})}
+				</div>
 			</div>
-			<Svg>
-				{(() => {
-					// the fingertip runs just under the last line, so the words stay readable (the card is tilted by -3 degrees)
-					const x = lerp(520, 1040, easeInOut(trace));
-					const y = 528 - (x - 500) * 0.052 + 3 * Math.sin(f * 0.25);
-					return <PointingHand x={x} y={y} s={0.9} />;
-				})()}
-			</Svg>
 			<AbsoluteFill style={{background: '#05060F', opacity: out}} />
 		</AbsoluteFill>
 	);

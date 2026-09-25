@@ -259,33 +259,28 @@ export const Customer: React.FC<{x: number; y: number; s?: number; f: number}> =
 	</g>
 );
 
-// Hands in extreme close-up, holding a letter that opens (open 0..1).
-export const HandsWithLetter: React.FC<{f: number; open: number; text?: boolean}> = ({f, open}) => {
-	const sway = 4 * Math.sin(f * 0.05);
+// An envelope on a desk that opens by itself: the flap folds back and the letter slides out (open 0..1).
+export const EnvelopeOpen: React.FC<{x: number; y: number; s?: number; open: number}> = ({x, y, s = 1, open}) => {
+	const flap = Math.max(-1, 1 - 2 * Math.min(1, open / 0.5)); // 1 closed, -1 folded back
+	const slide = easeOut(clamp01((open - 0.45) / 0.55), 3);
 	return (
-		<g transform={`translate(960 ${640 + sway})`}>
-			{/* envelope */}
-			<rect x={-420} y={-230} width={840} height={520} rx={24} fill={A.paper} />
-			<path d={`M -420 -222 L 0 ${lerp(60, -420, open)} L 420 -222`} fill={A.paperLo} stroke="#C9B8A0" strokeWidth={8} strokeLinejoin="round" />
-			<circle cx={290} cy={-110} r={36} fill={K.rose} opacity={1 - open} />
-			{/* the letter sliding out */}
-			{open > 0.4 ? (
-				<g transform={`translate(0 ${lerp(0, -200, (open - 0.4) / 0.6)})`}>
-					<rect x={-330} y={-250} width={660} height={300} rx={10} fill="#FFFDF6" />
-					{[0, 1, 2, 3].map((i) => (
-						<rect key={i} x={-280} y={-200 + i * 56} width={i === 3 ? 300 : 560} height={18} rx={9} fill="#D8CCB6" />
-					))}
-				</g>
-			) : null}
-			{/* hands */}
-			{[-1, 1].map((side) => (
-				<g key={side} transform={`translate(${side * 470} 120) scale(${side} 1)`}>
-					<path d="M 160 260 L 60 40 Q 40 -10 -10 0 L -80 30 Q -110 50 -80 70 L -40 70 L 20 200 Z" fill={A.sleeve} />
-					<path d="M -40 -40 Q -110 -60 -130 -10 Q -140 30 -100 50 L 30 60 Q 70 40 50 -10 Z" fill={A.skin} />
-					<path d="M -120 -30 Q -170 -40 -176 -10 Q -178 16 -130 14 Z" fill={A.skin} />
-					<path d="M -110 -10 Q -140 0 -128 12" fill="none" stroke={A.skinLo} strokeWidth={5} strokeLinecap="round" />
-				</g>
-			))}
+		<g transform={`translate(${x} ${y}) scale(${s})`}>
+			<ellipse cx={0} cy={140} rx={300} ry={30} fill="#2A1510" opacity={0.3} />
+			{/* the back of the envelope */}
+			<rect x={-260} y={-150} width={520} height={290} rx={14} fill={A.paperLo} />
+			{/* the letter, rising out */}
+			<g transform={`translate(0 ${lerp(20, -210, slide)})`} opacity={open > 0.45 ? 1 : 0}>
+				<rect x={-220} y={-130} width={440} height={260} rx={8} fill="#FFFDF6" />
+				{[0, 1, 2, 3].map((i) => (
+					<rect key={i} x={-180} y={-96 + i * 44} width={i === 3 ? 200 : 360} height={14} rx={7} fill="#D8CCB6" />
+				))}
+			</g>
+			{/* the front pocket */}
+			<path d="M -260 -60 L 0 60 L 260 -60 L 260 140 L -260 140 Z" fill={A.paper} />
+			<path d="M -260 140 L -40 30 M 260 140 L 40 30" stroke={A.paperLo} strokeWidth={4} />
+			{/* the flap, folding back */}
+			<path d={`M -260 -150 L 0 ${-150 + 170 * flap} L 260 -150 Z`} fill={flap > 0 ? A.paper : A.paperLo} stroke="#C9B8A0" strokeWidth={4} strokeLinejoin="round" />
+			{flap > 0.2 ? <circle cx={0} cy={-150 + 150 * flap} r={24} fill={K.rose} /> : null}
 		</g>
 	);
 };
@@ -476,24 +471,3 @@ export const Gauge: React.FC<{x: number; y: number; s?: number; p: number; label
 		</g>
 	);
 };
-
-// A hand with its index finger pointing; the fingertip is at (0, 0), the arm comes in from below right.
-export const PointingHand: React.FC<{x: number; y: number; s?: number; r?: number}> = ({x, y, s = 1, r = -24}) => (
-	<g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
-		{/* sleeve */}
-		<path d="M -70 300 L 110 300 L 130 620 L -90 620 Z" fill={A.sleeve} />
-		<path d="M -76 300 L 116 300 L 116 330 L -76 330 Z" fill={A.sleeveLo} />
-		{/* palm and curled fingers */}
-		<path d="M -60 150 Q -80 230 -60 300 L 100 300 Q 124 230 104 160 Q 90 120 40 124 L -20 124 Q -54 124 -60 150 Z" fill={A.skin} />
-		{[0, 1, 2].map((i) => (
-			<ellipse key={i} cx={30 + i * 26} cy={150 + i * 8} rx={20} ry={26} fill={A.skin} stroke={A.skinLo} strokeWidth={4} />
-		))}
-		{/* thumb */}
-		<path d="M -58 190 Q -100 170 -96 130 Q -92 108 -70 116 Q -44 140 -34 176 Z" fill={A.skin} stroke={A.skinLo} strokeWidth={4} />
-		{/* index finger, joined to the palm */}
-		<path d="M -22 150 L -22 18 Q -22 -4 0 -4 Q 22 -4 22 18 L 22 150 Z" fill={A.skin} />
-		<path d="M -22 150 L -22 18 Q -22 -4 0 -4 Q 22 -4 22 18 L 22 150" fill="none" stroke={A.skinLo} strokeWidth={4} />
-		<path d="M -12 12 Q 0 4 12 12 L 12 26 Q 0 30 -12 26 Z" fill="#F4D6C0" />
-		<path d="M -14 80 Q 0 86 14 80" fill="none" stroke={A.skinLo} strokeWidth={3} strokeLinecap="round" />
-	</g>
-);
