@@ -7,3 +7,4 @@ public/audio/*.wav
 preview/
 models/
 .venv/
+*.bundle
