@@ -1,5 +1,6 @@
 import React from 'react';
-import {AbsoluteFill, Audio, staticFile, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Audio, useCurrentFrame} from 'remotion';
+import {track} from '../../flat/audio';
 import {FONT, FlatDefs, FlatLighthouse, K, LAMP_Y, Motes, Stars, Vignette} from '../../flat/kit';
 import {Callout, Projected} from '../../flat/type';
 import {Equation} from '../../flat/math';
@@ -780,7 +781,7 @@ export const JevContract: React.FC = () => {
 			{f < S.endcard.start ? (
 				<div style={{position: 'absolute', right: 40, top: 34, fontFamily: FONT, fontWeight: 800, fontSize: 13, letterSpacing: 3, color: K.mute, border: `2px solid ${K.indigoHi}`, borderRadius: 14, padding: '4px 12px', opacity: 0.8}}>DRAFT · ILLUSTRATIVE NUMBERS</div>
 			) : null}
-			<Audio src={staticFile('audio/contract-track.wav')} />
+			<Audio src={track('contract-track')} />
 		</AbsoluteFill>
 	);
 };

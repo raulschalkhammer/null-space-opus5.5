@@ -1,0 +1,50 @@
+// The chapters and their scenes, as frame ranges. Shared by the browser preview (scene strip) and the
+// render cache (one cached clip per scene). Import-light so Node can load it with --experimental-strip-types.
+import type {Span} from './shorts/paper-track/timeline.ts';
+
+export type SceneMark = {id: string; name: string; start: number; end: number};
+export type ChapterInfo = {id: string; n: number; title: string; comp: string; audio: string; total: number; scenes: SceneMark[]};
+
+// Scenes cut the chapter at each scene's start; a scene runs until the next one starts (cross-fades included).
+function marks(total: number, list: [string, string, Span | undefined][]): SceneMark[] {
+	const on = list.filter((x): x is [string, string, Span] => !!x[2]).sort((a, b) => a[2].start - b[2].start);
+	return on.map(([id, name, s], i) => ({id, name, start: s.start, end: i + 1 < on.length ? on[i + 1][2].start : total}));
+}
+
+export function flatScenes(S: Record<string, Span>, total: number) {
+	return marks(total, [
+		['hook', 'Cold open', S.hook],
+		['news', 'Jev news', S.news],
+		['title', 'Title', S.title],
+		['station', 'Station', S.letter],
+		['forks', 'Forks', S.fork],
+		['guess', 'Guess', S.guess],
+		['chain', 'Chain rule', S.chain],
+		['shannon', 'Shannon', S.shannon],
+		['marble', 'Marble', S.marble],
+		['runs', '100 runs', S.runs],
+		['lean', 'Lean', S.lean],
+		['valley', 'Valley', S.derail],
+		['endcard', 'End card', S.endcard],
+	]);
+}
+
+export function contractScenes(S: Record<string, Span>, total: number) {
+	return marks(total, [
+		['title', 'Title', S.title],
+		['open', 'Open', S.open],
+		['contract', 'Contract', S.contract],
+		['mail', 'Mailroom', S.mail],
+		['pass', 'One pass', S.pass],
+		['tubes', 'Tubes', S.tri],
+		['close', 'Promise', S.close],
+		['endcard', 'End card', S.endcard],
+	]);
+}
+
+export function chapterList(flat: {S: Record<string, Span>; total: number}, contract: {S: Record<string, Span>; total: number}): ChapterInfo[] {
+	return [
+		{id: 'ch1', n: 1, title: 'Track Layer', comp: 'TrackLayerFlat', audio: 'flat2-track', total: flat.total, scenes: flatScenes(flat.S, flat.total)},
+		{id: 'ch2', n: 2, title: 'Jev’s Contract', comp: 'JevContract', audio: 'contract-track', total: contract.total, scenes: contractScenes(contract.S, contract.total)},
+	];
+}

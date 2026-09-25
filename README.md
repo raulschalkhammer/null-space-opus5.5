@@ -2,6 +2,16 @@
 
 An anthology of playful 2D animated shorts about Jev, TypeSafe AI's "System One" model, built in code with [Remotion](https://www.remotion.dev). The research and production plan is in [`docs/jev-video-research.md`](docs/jev-video-research.md).
 
+## Reviewing and rendering without waiting
+
+**Screening Room (no render at all).** `node data-scripts/build-preview.mjs` bundles the chapters into one page (`preview/index.html`, with MP3 copies of the soundtracks in `preview/audio/`). The page plays the film live in the browser with sound. It has a clickable scene strip, frame stepping, a loop for one scene, and a "copy this moment" line for feedback. Rebuilding takes about 10 s, then republish the page.
+
+**Scene-cached render.** `node --experimental-strip-types data-scripts/render-cache.ts ch1` renders each scene to its own clip in `renders/cache/<composition>/`. It reuses a clip until that scene's pictures change, joins the clips without re-encoding, and lays the current soundtrack on top.
+- The check is a quick low-res pass that hashes a few frames per scene. The frames are taken relative to the scene's own start, so a scene that only moved in time is reused.
+- `--check` lists the scenes that would re-render. `--force=mail,pass` re-renders named scenes. `--all` re-renders everything.
+- An audio-only change never re-renders video.
+- Scene boundaries come from `src/chapters.ts`, which the preview's scene strip uses too.
+
 ## Short no. 1: Track Layer (flat-vector cut, narrated): current
 
 About 2:54. Opens cold on a planet of people asking chatbots questions, ChatGPT and Claude answering one word (one bet) at a time, and the news that TypeSafe released Jev; then two expressive steam engines, inspired by ChatGPT and Claude, meet at the station, and we ride with one as it lays its answer as track where probability is width, derails, and a fairness beat notes that real models usually catch this email while the mechanism is real. Jev's lighthouse answers with pennants as wide as its odds.
@@ -18,7 +28,7 @@ Code: `src/shorts/flat-track/` and `src/flat/kit.tsx` (reuses the geometry and t
 
 ## Chapter 2: Jev's Contract (flat, narrated): draft
 
-About 2:30. Jev as a contract: the questions and every allowed answer are fixed before reading; a mailroom whose wall has no slot for the train's "Miscellaneous-ish"; one pass answering every question at once (a product that rhymes with the chain rule); the probability triangle with a guess-first pause, and a hexagon that routes unsure letters to a person; the promise that 0.91 means 91 of 100, which sets up calibration.
+About 2:30. Jev as a contract: a signal mast whose questions and allowed answers are fixed (and padlocked) before reading; a mailroom whose wall has no slot for the train's "Miscellaneous-ish"; one pass answering every question at once (a product that rhymes with the chain rule); 100 grains poured into three tubes with a guess-first pause, and a 60% line that routes unsure letters to a person; the promise that 0.91 means 91 of 100, which sets up calibration.
 
 ```
 python data-scripts/make-vo.py kokoro-v1.0.onnx voices-v1.0.bin story/jev-contract-vo.json public/audio/vo-contract fixtures/jev-contract-vo.json

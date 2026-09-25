@@ -4,3 +4,4 @@ out/
 .env
 *.log
 public/audio/*.wav
+preview/

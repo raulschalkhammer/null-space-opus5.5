@@ -1,0 +1,19 @@
+// Webfonts and KaTeX styles, shared by the Remotion root and the browser preview.
+import '@fontsource/gochi-hand/400.css';
+import '@fontsource/patrick-hand/400.css';
+import '@fontsource/caveat/400.css';
+import '@fontsource/caveat/700.css';
+import '@fontsource/fraunces/600.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/700.css';
+import '@fontsource/fraunces/400-italic.css';
+import '@fontsource/bricolage-grotesque/500.css';
+import '@fontsource/bricolage-grotesque/700.css';
+import '@fontsource/bricolage-grotesque/800.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource/ibm-plex-serif/400-italic.css';
+import '@fontsource/nunito/700.css';
+import '@fontsource/nunito/800.css';
+import '@fontsource/nunito/900.css';
+import 'katex/dist/katex.min.css';
