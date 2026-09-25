@@ -1,4 +1,4 @@
-# Chapter 4: The Signal Box (plan)
+# Chapter 4: The Signal Box, and the ending (plan)
 
 Status: **draft for sign-off.** Nothing is built and no narration is recorded yet.
 
@@ -6,7 +6,9 @@ Chapter 3 ended with the promise: the machine reads the million, and people read
 
 **The idea:** a fast model that routes, plus a slow model that writes. Most letters get Jev's instant answer, and only the unsure ones ride the train. The surprise is in the arithmetic. However cheap Jev is, the system's cost is set by how many letters still take the train.
 
-Length: about 2:40, 27 narration lines (S01 to S27).
+Chapter 4 is the **last chapter**. After the signal box, a closing section of about 45 s ties the whole video together and ends it.
+
+Length: about 3:25 with 34 narration lines (S01 to S34). The whole video then runs about 12:50.
 
 ## Story (Veritasium shape)
 
@@ -17,7 +19,9 @@ Length: about 2:40, 27 narration lines (S01 to S27).
 5. **Experiment.** 1,000 letters through the box, with a coin counter on each line. Nearly all the coins end up on the long line.
 6. **Math, in the world.** It builds on the signal box's track diagram board.
 7. **The lever.** Keep more letters off the train and the saving grows. But only letters Jev is truly sure about may stay off, which ties back to calibration.
-8. **Ending.** Partners: System One decides, System Two writes. Then a tease of the catch: honest numbers in a new town.
+8. **Partners.** System One decides, System Two writes.
+9. **The catch, briefly.** A number that is honest on one kind of letter can drift on another, so check it on your own letters. This is folded in here, not saved for another chapter.
+10. **Conclusion.** Back to the cold open's question (the same question asked twice, two answers). What each chapter showed, and the answer to chapter 1's closing question: can we trust that number? Final line, then closing credits.
 
 ## The math
 
@@ -71,7 +75,15 @@ Time works the same way with 193.6×: 1 in 5 gives about 4.9× faster.
 | S24 | So the two aren't rivals. One decides, fast. The other writes, carefully. |
 | S25 | TypeSafe calls Jev a System One model. Fast. The trains are the slow System Two. |
 | S26 | And the signal box sends each letter to the kind of thinking it needs. |
-| S27 | But there's a catch. All of this assumed Jev's numbers stay honest. Move to a new town, with new letters, and they might not. That's next time. |
+| S27 | But there's a catch. A number that's honest on one kind of letter can drift on another. So before you trust it, check it on your own letters. |
+| | **Conclusion** |
+| S28 | Let's go back to where we started. Ask a chatbot the same question twice, and you might get two different answers. |
+| S29 | That's not a glitch. It's how they write: one word at a time, and every word is a small bet. |
+| S30 | Jev makes a different bargain. It never writes. It answers a fixed question, in one pass, with a number. |
+| S31 | And a number is something you can do math with. You can price it, draw a line, and decide who reads what. |
+| S32 | But only if it's honest. Ninety-one percent has to mean right about ninety-one times in a hundred. |
+| S33 | So the future probably isn't one machine that does everything. It's a signal box. Fast numbers where they're enough, careful words where they're needed, and people where it matters most. |
+| S34 | The model that doesn't talk may end up deciding who should. |
 
 - **Kokoro, voice af_heart at speed 0.94:** `story/signal-box-vo.json`, `public/audio/vo-signal/`, `fixtures/signal-box-vo.json`.
 - **The rules on narration numbers:**
@@ -101,7 +113,7 @@ Everything that stands for something must be recognisable:
 
 ## Pacing (the new rules in `CLAUDE.md`)
 
-- **Fewer, longer shots.** About 17 shots at 8 to 12 s each. The camera moves slowly and continuously inside each one.
+- **Fewer, longer shots.** About 23 shots at 8 to 12 s each. The camera moves slowly and continuously inside each one.
 - **Cuts:**
   - Cross-fades or continuous camera moves between shots.
   - A hard cut only for a real reveal: "About five", and the overconfident letter in S23.
@@ -130,11 +142,22 @@ Everything that stands for something must be recognisable:
 | 14 | S22 | The junction: the gauge from chapter 3 on Jev's lamp. Only letters above the line take the short line | night rail | X |
 | 15 | S23 | A hard letter, over-sure, takes the short line. It goes red, and a template reply that doesn't fit is stamped on it | night rail + red | **H** |
 | 16 | S24–S26 | Wide at dawn: the signal box sets the points, the Claude train pulls out with the hard letters, and the short line hums. **"System One"** by the box, **"System Two"** by the train | night rail, first light | X |
-| 17 | S27 | Pull back: a second town's lights on the horizon, with different letters arriving. End card: next time, **"The Catch"** | night rail | X |
+| 17 | S27 | Pull back: a second town's lights on the horizon, with a new kind of letter arriving. Jev's gauge needle wavers, and a small brass test weight is hung on it (checking on your own letters). **"check"** | night rail | X |
+| | | **Conclusion: callbacks, one per chapter, long shots joined by cross-fades** | | |
+| 18 | S28–S29 | Chapter 1's two chat windows, same question and two answers, then the train laying its words as track with a die over each word | screen, then dusk rail | X |
+| 19 | S30–S31 | Chapter 2's signal mast unfurling every flag at once, then chapter 3's brass scale settling at 0.9 | night, then amber | X |
+| 20 | S32 | Chapter 3's grid of 100 cells: 91 lit. **"91 / 100"** | teal | X |
+| 21 | S33 | The whole world at sunrise in one slow pull back. The harbor and the lighthouse, the city and the bank with its reviewers, and the junction with the signal box. Both trains pull out, and the letters flow down all three kinds of track | night turning to dawn | X |
+| 22 | S34 | The lighthouse lamp dims to a steady glow over the junction. Title: **"The Model That Doesn't Talk"** | dawn | X |
+| 23 | – | Closing credits (about 8 s): narration by Kokoro-82M; made with Remotion; "Jev's speed and price claims: TypeSafe's own tests"; "every other number is illustrative" | dawn | X |
 
 ## Decisions for you
 
 1. **Two lines or three?** This plan has two: Jev's short line and the train's long line. Chapter 3's reviewer could return as a third platform for costly mistakes, but that adds a beat.
 2. **The puzzle numbers:** 444.6× and "one letter in five", giving about 5×. Or pick a different r.
-3. **The next chapter:** "The Catch", about the numbers drifting in a new town (Molas' critique: calibration depends on the data). Or another direction.
-4. **Length:** about 2:40 with 27 lines. It could be cut to about 2:00 by merging S20 and S21, and dropping S02 or S25.
+3. **The ending:**
+   - It lives inside chapter 4 as its last section, so chapter 4's end card becomes the closing credits.
+   - It could also be a short chapter 5 of its own.
+   - The callbacks reuse pictures from chapters 1 to 3, so they stay recognisable.
+4. **Length:** about 3:25 with 34 lines. It could be cut to about 2:50 by merging S20 and S21, dropping S02 or S25, and shortening the callbacks.
+5. **The final line (S34):** "The model that doesn't talk may end up deciding who should." Or an alternative you prefer.
