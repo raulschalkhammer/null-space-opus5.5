@@ -11,7 +11,7 @@ const pop = (f: number, at: number, len = 10) => {
 };
 
 // ---------- the planet of questions ----------
-export const Planet: React.FC<{f: number}> = ({f}) => {
+const Planet: React.FC<{f: number}> = ({f}) => {
 	const R = 290;
 	const drift = (f * 0.6) % 1400;
 	const r = rng(21);
@@ -53,7 +53,7 @@ export const Planet: React.FC<{f: number}> = ({f}) => {
 	);
 };
 
-export const Bubble: React.FC<{x: number; y: number; s: number; color: string; dots?: boolean}> = ({x, y, s, color, dots = true}) => (
+const Bubble: React.FC<{x: number; y: number; s: number; color: string; dots?: boolean}> = ({x, y, s, color, dots = true}) => (
 	<g transform={`translate(${x} ${y}) scale(${s})`}>
 		<rect x={-34} y={-22} width={68} height={40} rx={18} fill={color} />
 		<path d="M -14 16 L -22 30 L -2 16 Z" fill={color} />
@@ -116,7 +116,7 @@ const TWICE = {
 	q: 'Should I sign this contract?',
 	a: ['Yes, this looks like a standard lease. The terms are typical, so signing it seems reasonable.', 'I’d hold off. Clause 4 lets them raise the rent at any time, which is unusual for a lease.'],
 };
-export const Twice: React.FC<{film: FlatFilm; f: number; out: number}> = ({film, f, out}) => {
+const Twice: React.FC<{film: FlatFilm; f: number; out: number}> = ({film, f, out}) => {
 	const {cues} = film;
 	const h2 = cues.H02;
 	const at = (u: number) => h2.start + (h2.end - h2.start) * u;
@@ -192,7 +192,7 @@ const ANSWERS = [
 	{name: 'ChatGPT', text: 'This looks like a classic phishing scam. Real prizes rarely demand you click within 24 hours, and you never entered a cruise contest…'},
 	{name: 'Claude', text: 'Yes, this is very likely a scam. The urgency, the capital letters and a prize you never signed up for are all red flags…'},
 ];
-export const ChatWindows: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
+const ChatWindows: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 	const {cues, streamStart} = film;
 	const inK = easeOut(progress(f, cues.H04.start + 6, cues.H04.start + 20), 3);
 	const bet = easeInOut(progress(f, cues.H04.end - 40, cues.H04.end - 20));

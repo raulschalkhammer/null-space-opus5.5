@@ -3,7 +3,6 @@ import {FONT, FlatLighthouse, Hills, K, LAMP_Y, Motes, Stars} from '../../flat/k
 import {SteamPress} from '../../characters/steam';
 import {WHEEL_DIST, moodAt, speechAt, stationKeysGpt, storyKeys} from './trainMood';
 import {Callout, Projected} from '../../flat/type';
-import {RED} from '../million-letters/parts';
 import {Clouds, Fireflies, Foliage, Moon, Mountains, Reeds, Rock, WorldDefs} from '../../flat/world';
 import {Lake, Mist, RailDefs, SideTrack, Steam, Terrain, WaterFront} from '../../flat/rail';
 import {type Film, clamp01, easeIn, easeInOut, easeOut, lerp, onTwos, progress} from '../paper-track/timeline';
@@ -303,7 +302,7 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 											const x = a.x + (b.x - a.x) * t;
 											const y = a.y + (b.y - a.y) * t + drop * (j === 1 ? 1 : 0.5);
 											const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
-											return <ellipse key={`${i}-${j}`} cx={x} cy={y} rx={j % 2 ? 12 : 13} ry={j % 2 ? 4 : 7} transform={`rotate(${ang + (broken ? brk * (j - 1) * 30 : 0)} ${x} ${y})`} fill="none" stroke={broken && hot ? RED : '#C9CCFF'} strokeWidth={4} opacity={k * 0.9} />;
+											return <ellipse key={`${i}-${j}`} cx={x} cy={y} rx={j % 2 ? 12 : 13} ry={j % 2 ? 4 : 7} transform={`rotate(${ang + (broken ? brk * (j - 1) * 30 : 0)} ${x} ${y})`} fill="none" stroke={broken && hot ? K.rose : '#C9CCFF'} strokeWidth={4} opacity={k * 0.9} />;
 										});
 									})}
 									{pts.map((pt, i) => {
@@ -312,8 +311,8 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 										const bad = i === 6;
 										return (
 											<g key={`n${i}`} transform={`translate(${pt.x} ${pt.y}) scale(${k * (bad && hot ? 1.35 : 1)})`}>
-												{bad && hot ? <circle r={46} fill={RED} opacity={0.4} filter="url(#glowBig)" /> : null}
-												<text y={10} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={bad ? RED : K.white} style={halo}>
+												{bad && hot ? <circle r={46} fill={K.rose} opacity={0.4} filter="url(#glowBig)" /> : null}
+												<text y={10} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={30} fill={bad ? K.rose : K.white} style={halo}>
 													{Math.round(pt.prob * 100)}%
 												</text>
 											</g>
@@ -325,7 +324,7 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					: null}
 				{cues.L10b && f >= cues.L10b.start + 6 && f < cues.L10b.start + 116 ? (
 					<g opacity={1 - progress(f, cues.L10b.start + 100, cues.L10b.start + 116)}>
-						<Callout from={{x: loco.x - 110, y: loco.y - 200}} to={{x: loco.x - 40, y: loco.y - 470}} title="caught" k={progress(f, cues.L10b.start + 6, cues.L10b.start + 40)} size={38} anchor="end" icon="check" />
+						<Callout from={{x: loco.x - 110, y: loco.y - 200}} to={{x: loco.x - 40, y: loco.y - 470}} title="usually caught" k={progress(f, cues.L10b.start + 6, cues.L10b.start + 40)} size={38} anchor="end" icon="check" />
 					</g>
 				) : null}
 				{/* the tender follows the track on its own, so the train bends over the edge of the bank */}

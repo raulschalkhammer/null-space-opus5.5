@@ -1,6 +1,6 @@
 # Chapter 1: Track Layer (shot list for the rework)
 
-Status: **built** (signed off 2026-09-25). The shot list below is the plan; "As built" at the end lists where the build differs.
+Status: **draft for sign-off.** Nothing here is built yet.
 
 The narration (H01 to L14) and its timing stay exactly as they are. What changes is the picture: chapter 1 gets the chapter 3 rules (see `docs/chapter3-plan.md` and `CLAUDE.md`) and more shots than chapter 3 has. The approved pieces stay the centre of their scenes: the steam trains and their expressions, the forks with branch widths, the guess beat, Shannon's study, the marble machine and the 100 runs, the swamp. They get more angles, close-ups and cuts around them.
 
@@ -12,7 +12,6 @@ Measured with `data-scripts/pacing.py` on the cached render (`renders/ch1-TrackL
 |---|---|---|---|---|
 | Chapter 1 before (last handover) | 18.7 s | 50.7 s | 63% | 0 |
 | Chapter 1 before (fresh render, this machine) | 20.1 s | 50.7 s | 62% | 0 |
-| **Chapter 1 after (as built)** | **2.8 s** | **8.2 s** | **3%** | **73** |
 | Chapter 3 (for comparison) | 4.3 s | about 20 s | 40% | |
 | Kurzgesagt reference | 2.7 s | 18.5 s | 7% | 25 in 5:22 |
 | **Chapter 1 target** | **3 s or less** | **about 8 s** | **under 20%** | |
@@ -212,44 +211,3 @@ Times are seconds into the chapter. "Line" is the narration line the shot plays 
 - **Scale changes:** window to city to planet (6, 7), cab window into the title (23, 24), tile to sleeper (63), sleeper to planet (64), machine to planet (76).
 - **On-screen words** are single words or numbers. The only sentences are the chat replies in the cold open, the email card, the letters Shannon's subjects guess, and the words the train lays as track.
 - **Numbers:** 193.6× and 444.6× carry "TypeSafe's own tests". Every other number is illustrative, and the badge stays.
-
-## As built
-
-The build has **102 shots**, counting the title and the end card (`src/shorts/flat-track/Film.tsx`, one `Shots` list per scene, from `src/flat/shots.tsx`).
-
-**How the shots are made.**
-- Most shots re-frame the existing worlds, which keep their own animation and timing, with a `Zoom` (a camera on any picture) or a `Split` (panels for any picture).
-- The ride-along track can also be seen from a high or a low angle.
-- New inserts:
-  - the concept stages
-  - the fog shot
-  - the calendar leaf and the nameplate
-  - Shannon's page
-  - the planet crossed by little tracks
-- Every shot carries a slow camera move. Shots change on hard cuts, and cross-fades are left only at the section changes.
-
-**Where the build differs from the list above:**
-- **Shot 4** is a split panel: the two first lines side by side, extreme close-up, and **"different"**.
-- **Shot 6** pulls out of a lit window of chapter 3's night city.
-- **Shot 18** is a split: the train laying words on the left, and the lighthouse with its in-world callout **"193.6× faster"** on the right.
-- **Shot 19** keeps the two coin stacks side by side in the harbor, with **"444.6× cheaper"**, instead of a split.
-- **Added 21b:** a close-up on **"$40,000,000"** among the falling coins.
-- **Shots 23 and 24** push into the train on the track of words, then white out into the title. **"inside"**
-- **Shot 32 (the fog)** and **shots 33, 34 and 55** use a side-on dusk rail where the train lays its words as sleepers. Shot 55 is that close-up, rather than a close-up in the chain-rule wide.
-- **Shot 59** is a new insert: Shannon's page, its letters hidden, the first ones guessed.
-- **Shots 60 and 63 are two shots each.** 60 is two close-ups along the tiles. 63 shows the tiles joining into words, then the match cut to a word sleeper.
-- **Shots 66, 68 and 79** are close-ups on the branch labels and on the train, rather than high and low angles. The angles looked too much like the wide shot to count as new pictures.
-- **Shots 84 and 86** are three and two shots.
-- **Changed after the first pacing measurement** (the metric saw long holds where shots shared one colour):
-  - Shot 12 ("Each word, a small bet") cuts to the dice over the track of words.
-  - Shot 73a is new: a reaction close-up of the train, nervous, during the silent run.
-  - Shot 87 is a short concept stage: a chain of links on the tile, and the one red link breaks.
-  - The cold open's close-ups are tighter, and its concept stage has big bright bubbles.
-- **Also changed:**
-  - "usually caught" is now **"caught ✓"**.
-  - The one bad link in the chain is red (`#FF4D5E`), the colour kept for mistakes.
-- **Words added:** **"chain"** (88) and **"1 pass"** (93).
-- **Shared code:**
-  - The track of word sleepers from chapter 2 moved to `src/flat/bets.tsx`, so both chapters use it.
-  - The news scene's date and company headline became the calendar leaf ("15") and the nameplate ("TypeSafe").
-  - The claims read "193.6×" and "444.6×" with the "TypeSafe's own tests" tag.

@@ -8,7 +8,6 @@ import {Clouds, Moon, Mountains, WorldDefs} from '../../flat/world';
 import {SteamPress} from '../../characters/steam';
 import {GUESS_PAUSE, clamp01, easeIn, easeInOut, easeOut, lerp, progress} from '../paper-track/timeline';
 import type {FlatFilm} from './timeline';
-import {RED} from '../million-letters/parts';
 import {withLook} from './trainMood';
 
 // Curiosity beats: the viewer guesses before the reveal, a historical moment, and an on-screen experiment.
@@ -280,7 +279,7 @@ const DRAWS = (() => {
 	return bag;
 })();
 
-export const RunsScene: React.FC<{film: FlatFilm; f: number; red?: boolean}> = ({film, f, red}) => {
+export const RunsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 	const {cues} = film;
 	const r1 = cues.R01;
 	const r2 = cues.R02;
@@ -367,7 +366,7 @@ export const RunsScene: React.FC<{film: FlatFilm; f: number; red?: boolean}> = (
 				{marbles.map((m, n) =>
 					m ? (
 						<g key={n}>
-							<circle cx={m.x} cy={m.y} r={MR} fill={m.lane === 3 ? (red ? RED : K.orange) : '#E8B06A'} />
+							<circle cx={m.x} cy={m.y} r={MR} fill={m.lane === 3 ? K.orange : '#E8B06A'} />
 							<circle cx={m.x - 3.5} cy={m.y - 3.5} r={3.5} fill="#FFF3D6" opacity={0.9} />
 						</g>
 					) : null,

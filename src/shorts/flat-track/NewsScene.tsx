@@ -130,47 +130,6 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 				<g transform={`translate(${LH.x} ${LH.y}) scale(${LH.s})`}>
 					<FlatLighthouse on={lamp} />
 				</g>
-				{/* the maker's nameplate by the lighthouse door */}
-				<g transform={`translate(${LH.x} ${LH.y - 22})`}>
-					<rect x={-44} y={-12} width={88} height={24} rx={5} fill="#C9A35A" />
-					<rect x={-40} y={-8} width={80} height={16} rx={3} fill="#2A2350" />
-					<text y={5} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={13} fill="#FFE9A0">
-						TypeSafe
-					</text>
-				</g>
-				{/* a paper tag tied to the gallery rail, for the claims */}
-				{(() => {
-					const k = easeOut(progress(f, beatA[0] + 20, beatA[0] + 34)) * (1 - progress(f, n4.start, n4.start + 12));
-					if (k <= 0) return null;
-					return (
-						<g transform={`translate(${LAMP.x + 40} ${LAMP.y + 44}) rotate(${6 * Math.sin(f * 0.07)})`} opacity={k}>
-							<line x1={0} y1={0} x2={0} y2={30} stroke="#DCD2F0" strokeWidth={2} />
-							<rect x={-6} y={30} width={150} height={42} rx={6} fill="#F3EEE3" />
-							<text x={69} y={48} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={13} fill={K.navy}>TypeSafe’s</text>
-							<text x={69} y={64} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={13} fill={K.navy}>own tests</text>
-						</g>
-					);
-				})()}
-				{/* the date: a calendar leaf flutters down into the sky */}
-				{(() => {
-					const k = progress(f, n1.start + 4, n1.start + 40);
-					const out = progress(f, n3.start - 10, n3.start + 6);
-					if (k <= 0 || out >= 1) return null;
-					const y = lerp(-260, 250, easeOut(k, 2));
-					const r = 14 * Math.sin(k * 7) * (1 - k) - 4;
-					return (
-						<g transform={`translate(${330 + 40 * Math.sin(k * 5) * (1 - k)} ${y}) rotate(${r})`} opacity={1 - out}>
-							<rect x={-110} y={-130} width={220} height={260} rx={12} fill="#F3EEE3" />
-							<rect x={-110} y={-130} width={220} height={62} rx={12} fill={K.rose} />
-							<rect x={-110} y={-86} width={220} height={18} fill={K.rose} />
-							{[-70, -30, 10, 50].map((x) => (
-								<circle key={x} cx={x + 10} cy={-130} r={7} fill="#2A2350" />
-							))}
-							<text y={-84} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} letterSpacing={4} fill="#FFFFFF">SEP</text>
-							<text y={96} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={150} fill={K.navy}>15</text>
-						</g>
-					);
-				})()}
 				<Fireflies f={f} x={1380} y={560} w={500} h={160} count={10} />
 				{/* beat A: the race (speed claim) */}
 				{(() => {
@@ -190,7 +149,7 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 								</g>
 							))}
 							<line x1={fastX - 320} y1={850} x2={fastX} y2={850} stroke="#FFF1B8" strokeWidth={10} strokeLinecap="round" opacity={0.95} filter="url(#glow)" />
-							<Callout from={{x: 1150, y: 850}} to={{x: 1210, y: 780}} title="193.6×" sub="faster" k={progress(f, beatA[0] + 10, beatA[0] + 40)} color="#FFF1B8" size={42} />
+							<Callout from={{x: 1150, y: 850}} to={{x: 1210, y: 780}} title="193× faster*" k={progress(f, beatA[0] + 10, beatA[0] + 40)} color="#FFF1B8" size={42} />
 						</g>
 					);
 				})()}
@@ -216,7 +175,7 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 									Jev
 								</text>
 							</g>
-							<Callout from={{x: 752, y: 832}} to={{x: 880, y: 700}} title="444.6×" sub="cheaper" k={progress(f, beatB[0] + 14, beatB[0] + 44)} color={K.yellow} size={42} />
+							<Callout from={{x: 752, y: 832}} to={{x: 880, y: 700}} title="445× cheaper*" k={progress(f, beatB[0] + 14, beatB[0] + 44)} color={K.yellow} size={42} />
 						</g>
 					);
 				})()}
@@ -242,6 +201,12 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 				<Motes f={f} color={K.yellow} count={16} seed={7} />
 				<Vignette />
 			</svg>
+			{/* date + company, set straight into the sky */}
+			<div style={{position: 'absolute', left: 120, top: 120, opacity: 1 - progress(f, n3.start - 10, n3.start + 6)}}>
+				<Kinetic text="SEPTEMBER 15, 2026" k={progress(f, n1.start + 4, n1.start + 40)} size={30} spacing={8} color={K.teal} stagger={0.02} />
+				<div style={{height: 12}} />
+				<Kinetic text="TypeSafe AI" k={progress(f, n1.start + 34, n1.start + 70)} size={78} />
+			</div>
 			{/* forty million, counting up */}
 			{f >= beatC[0] ? (
 				<div style={{position: 'absolute', left: 0, right: 0, top: 110, textAlign: 'center', opacity: inOut(beatC[0], beatC[1])}}>
