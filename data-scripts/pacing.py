@@ -9,10 +9,11 @@ import glob, os, subprocess, sys, tempfile
 import numpy as np
 from PIL import Image
 
-FF = 'node_modules/@remotion/compositor-linux-x64-gnu'
+# Remotion's compositor ffmpeg for this machine (linux, darwin or win32)
+FF = next(d for d in sorted(glob.glob('node_modules/@remotion/compositor-*')) if os.path.exists(os.path.join(d, 'ffmpeg')) or os.path.exists(os.path.join(d, 'ffmpeg.exe')))
 for video in sys.argv[1:]:
     with tempfile.TemporaryDirectory() as tmp:
-        subprocess.run([f'{FF}/ffmpeg', '-y', '-hide_banner', '-loglevel', 'error', '-i', video, '-r', '6', '-s', '96x54', f'{tmp}/%05d.png'], check=True, env={**os.environ, 'LD_LIBRARY_PATH': FF})
+        subprocess.run([os.path.join(FF, 'ffmpeg'), '-y', '-hide_banner', '-loglevel', 'error', '-i', video, '-r', '6', '-s', '96x54', f'{tmp}/%05d.png'], check=True, env={**os.environ, 'LD_LIBRARY_PATH': FF})
         A = np.stack([np.asarray(Image.open(f).convert('RGB'), dtype=np.float32) for f in sorted(glob.glob(f'{tmp}/*.png'))])
     # a new "look": the picture differs strongly from where the current look started (at most one per 2 s)
     anchor, looks = 0, [0]

@@ -23,6 +23,7 @@ import {buildMillion} from '../src/shorts/million-letters/timeline.ts';
 import {type Fixture, type VoLine} from '../src/shorts/paper-track/timeline.ts';
 import {chapterList} from '../src/chapters.ts';
 import {changedBlocks} from './png.ts';
+import {browserExecutable as findBrowser, ffmpegBin, ffmpegEnv} from './local.mjs';
 
 const SAMPLE = 12; // one fingerprint frame every half second
 const XF = 12; // cross-fade length, sampled mid-way so a change in the previous scene's tail is seen
@@ -50,9 +51,8 @@ type Entry = {len: number; samples: number[]; file: string};
 const manifestPath = `${dir}/manifest.json`;
 const manifest: Record<string, Entry> = existsSync(manifestPath) ? json(manifestPath) : {};
 
-const FF = 'node_modules/@remotion/compositor-linux-x64-gnu';
-const ffmpeg = (a: string[]) => execFileSync(`${FF}/ffmpeg`, ['-y', '-hide_banner', '-loglevel', 'error', ...a], {env: {...process.env, LD_LIBRARY_PATH: FF}, stdio: 'inherit'});
-const browserExecutable = process.env.REMOTION_BROWSER || '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
+const ffmpeg = (a: string[]) => execFileSync(ffmpegBin(), ['-y', '-hide_banner', '-loglevel', 'error', ...a], {env: ffmpegEnv(), stdio: 'inherit'});
+const browserExecutable = findBrowser();
 
 const t0 = Date.now();
 const secs = () => `${((Date.now() - t0) / 1000).toFixed(0)}s`;

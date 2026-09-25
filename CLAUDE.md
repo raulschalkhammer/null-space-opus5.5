@@ -45,13 +45,13 @@ It's built in Remotion (React, 24 fps, 1920×1080) in a flat-vector style, with 
    - include the audio files when they're new: `files: {"audio/<track>.mp3": "preview/audio/<track>.mp3"}`
    - from a new conversation, `read` the artifact first, then publish with `url` so the link stays the same
 5. **Send the share copy** with SendUserFile: `renders/<chapter>-cached-share.mp4`.
-6. **Commit** with clear messages. Push to `claude/hopeful-johnson-aiwzpx` if GitHub access works (see the handover doc).
+6. **Commit** with clear messages and push to `claude/hopeful-johnson-aiwzpx`.
 
 - **Keep the user posted:** a short status line while long jobs run.
 - **Be exact about what you checked.** Say whether you looked at stills or watched motion; you can't hear audio.
 - **Ask before larger creative changes.** Small fixes you just make.
 
-## Environment gotchas (cloud container)
+## Environment gotchas (cloud container; on a laptop see docs/HANDOVER.md)
 
 - **Chromium:** set `REMOTION_BROWSER=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell` for `npx remotion render`, otherwise Remotion tries to download Chrome and gets a 403. The repo scripts already default to this path.
 - **ffmpeg:** use Remotion's copy, `node_modules/@remotion/compositor-linux-x64-gnu/ffmpeg` (and ffprobe), with `LD_LIBRARY_PATH` set to that folder. It's a minimal build:

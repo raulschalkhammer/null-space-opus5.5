@@ -6,18 +6,18 @@ import {build} from 'esbuild';
 import {execFileSync} from 'node:child_process';
 import {existsSync, mkdirSync, readFileSync, statSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
+import {ffmpegBin, ffmpegEnv} from './local.mjs';
 
 const OUT = 'preview';
 const TRACKS = ['flat2-track', 'contract-track', 'million-track'];
 mkdirSync(`${OUT}/audio`, {recursive: true});
 
 // Soundtracks: MP3 copies (plays in every browser), re-encoded only when the WAV is newer.
-const FF = 'node_modules/@remotion/compositor-linux-x64-gnu';
 for (const t of TRACKS) {
 	const src = `public/audio/${t}.wav`;
 	const dst = `${OUT}/audio/${t}.mp3`;
 	if (existsSync(dst) && statSync(dst).mtimeMs > statSync(src).mtimeMs) continue;
-	execFileSync(`${FF}/ffmpeg`, ['-y', '-loglevel', 'error', '-i', src, '-vn', '-c:a', 'libmp3lame', '-b:a', '128k', dst], {env: {...process.env, LD_LIBRARY_PATH: FF}});
+	execFileSync(ffmpegBin(), ['-y', '-loglevel', 'error', '-i', src, '-vn', '-c:a', 'libmp3lame', '-b:a', '128k', dst], {env: ffmpegEnv()});
 	console.log('audio', dst);
 }
 

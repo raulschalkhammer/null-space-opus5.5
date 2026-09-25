@@ -73,9 +73,27 @@ npx tsc --noEmit
 - **Renders:** `node --experimental-strip-types data-scripts/render-cache.ts ch1|ch2|ch3` writes `renders/<ch>-<Comp>-cached.mp4` plus a `-share.mp4`. The first run of each chapter renders every scene.
 - **Preview:** run `node data-scripts/build-preview.mjs`, then republish `preview/index.html` to the Screening Room URL above.
 
+## Running on your own computer (uses your subscription, not a cloud container)
+
+Needs Node 22+, Python 3.10+ and git.
+
+1. Clone the repo, then `git checkout claude/hopeful-johnson-aiwzpx`.
+2. Run the setup from "Setting up a fresh container" above.
+
+The scripts find Remotion's ffmpeg for your platform and its browser through `data-scripts/local.mjs`.
+- On a laptop, Remotion downloads its own headless Chrome the first time. The container-only browser path is used only when it exists.
+- Tested in the Linux container only. Scripts use `node`/`python` paths as written, so on Windows use WSL or adjust `.venv/bin/python` to `.venv\Scripts\python`.
+
+Then start Claude Code in the repo folder, signed in with your subscription:
+- **Terminal:** `claude`
+- **Desktop app:** open the folder.
+- **From your phone:** run `claude remote-control` in the folder, and the session shows up in the Claude app.
+
+CLAUDE.md loads automatically.
+
 ## Git and GitHub
 
-Pushing from the original session always failed with 403, because the Claude GitHub App isn't installed on `raulschalkhammer/null-space-opus5.5`. Its commits were handed over as a git bundle (`null-space.bundle`). If the user uploads it, restore it with:
+The branch is on GitHub: `claude/hopeful-johnson-aiwzpx` (the Claude GitHub App is installed). A git bundle (`null-space.bundle`) was also handed over as a backup. To restore from it:
 
 ```
 git bundle verify /path/to/null-space.bundle
@@ -83,4 +101,4 @@ git fetch /path/to/null-space.bundle claude/hopeful-johnson-aiwzpx
 git checkout -B claude/hopeful-johnson-aiwzpx FETCH_HEAD
 ```
 
-If the GitHub App has been installed since, push the branch right away so the work lives on GitHub: `git push -u origin claude/hopeful-johnson-aiwzpx`.
+Commit and push to `claude/hopeful-johnson-aiwzpx` after each round of work.

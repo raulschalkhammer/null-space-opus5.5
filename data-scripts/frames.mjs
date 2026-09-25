@@ -6,6 +6,7 @@ import {bundle} from '@remotion/bundler';
 import {openBrowser, renderFrames, renderStill, selectComposition} from '@remotion/renderer';
 import {mkdirSync} from 'node:fs';
 import path from 'node:path';
+import {browserExecutable as findBrowser} from './local.mjs';
 
 const args = process.argv.slice(2);
 const [comp, out] = args.filter((a) => !a.startsWith('--'));
@@ -15,7 +16,7 @@ const every = opt('every', 0);
 const scale = opt('scale', 0.5);
 if (!comp || !out) throw new Error('usage: node data-scripts/frames.mjs <Composition> <outDir> [frames...] [--every=N] [--scale=0.5]');
 
-const browserExecutable = process.env.REMOTION_BROWSER || '/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell';
+const browserExecutable = findBrowser();
 mkdirSync(out, {recursive: true});
 const serveUrl = await bundle({entryPoint: path.resolve('src/index.ts')});
 const composition = await selectComposition({serveUrl, id: comp, browserExecutable, logLevel: 'error'});
