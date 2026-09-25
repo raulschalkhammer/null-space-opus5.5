@@ -659,7 +659,7 @@ const SHOTS: ShotDef[] = [
 				<AbsoluteFill style={{background: '#0B1030', opacity: 0.78 * t}} />
 				<div style={{position: 'absolute', top: 330, width: '100%', textAlign: 'center', fontFamily: FONT, opacity: t}}>
 					{line('THE MODEL THAT DOESN’T TALK', 28, K.teal, 0)}
-					{line('Narration: Kokoro-82M', 30, K.white, 44)}
+					{line('Narration: Resemble AI', 30, K.white, 44)}
 					{line('Made with Remotion', 30, K.white)}
 					{line('Jev’s speed and price: TypeSafe’s own tests', 26, K.mute, 40)}
 					{line('Every other number is illustrative', 26, K.mute)}

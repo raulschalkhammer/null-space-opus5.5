@@ -45,7 +45,8 @@ Status as of 2026-09-25, branch `claude/hopeful-johnson-aiwzpx`. Read `CLAUDE.md
   - `Film.tsx`: the scenes
 - **Narration:** the scripts are in `story/*-vo.json`. The per-line WAVs are in `public/audio/vo-flat/`, `vo-contract/` and `vo-million/` (tracked in git). Their durations are in `fixtures/*-vo.json`, and the timelines are driven by those durations.
 - **Tools in `data-scripts/`:**
-  - `make-vo.py`: Kokoro TTS
+  - `make-vo-resemble.py`: the narration, with the Resemble AI voice `bee581c1` (the key comes from `RESEMBLE_API_KEY` in the environment, never a file)
+  - `make-vo.py`: the old Kokoro narration, no longer used
   - `make-audio-paper.ts`: the mix, run with `--film=flat2`, `--film=contract` or `--film=million`
   - `render-cache.ts`: per-scene cached renders, with `png.ts`
   - `build-preview.mjs`: the Screening Room
@@ -68,11 +69,12 @@ for f in flat2 contract million; do node --experimental-strip-types data-scripts
 npx tsc --noEmit
 ```
 
-- **New narration:** the voice is af_heart at speed 0.94.
+- **New narration:** the voice is Resemble AI voice `bee581c1` (since 2026-09-26; Kokoro before that).
   1. Edit `story/<chapter>-vo.json`.
-  2. Run `.venv/bin/python data-scripts/make-vo.py models/kokoro-v1.0.onnx models/voices-v1.0.bin story/<file> public/audio/<dir> fixtures/<file>`.
-  3. Re-run the mix.
-- **Renders:** `node --experimental-strip-types data-scripts/render-cache.ts ch1|ch2|ch3` writes `renders/<ch>-<Comp>-cached.mp4` plus a `-share.mp4`. The first run of each chapter renders every scene.
+  2. With `RESEMBLE_API_KEY` set in the environment, run `.venv/bin/python data-scripts/make-vo-resemble.py bee581c1 story/<file> public/audio/<dir> fixtures/<file>`. Add `--only=ID,ID` to redo single lines.
+  3. Re-run the mix, then re-render: the timelines follow the new durations.
+  - The folders: chapter 1 `vo-flat`, chapter 2 `vo-contract`, chapter 3 `vo-million`, chapter 4 `vo-signal`.
+- **Renders:** `node --experimental-strip-types data-scripts/render-cache.ts ch1|ch2|ch3|ch4` writes `renders/<ch>-<Comp>-cached.mp4` plus a `-share.mp4`. The first run of each chapter renders every scene.
 - **Preview:** run `node data-scripts/build-preview.mjs`, then republish `preview/index.html` to the Screening Room URL above.
 
 ## Running on your own computer (uses your subscription, not a cloud container)

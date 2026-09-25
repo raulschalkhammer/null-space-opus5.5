@@ -5,7 +5,7 @@ An educational video (10 to 15 minutes, in chapters) about Jev, TypeSafe AI's "S
 - how it differs from LLMs
 - a practical application
 
-It's built in Remotion (React, 24 fps, 1920×1080) in a flat-vector style, with Kokoro narration. Read `docs/HANDOVER.md` first for the current state, the setup and the next steps.
+It's built in Remotion (React, 24 fps, 1920×1080) in a flat-vector style, with narration by a Resemble AI voice (bee581c1). Read `docs/HANDOVER.md` first for the current state, the setup and the next steps.
 
 ## The user's standing rules (hard constraints)
 

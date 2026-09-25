@@ -709,7 +709,7 @@ const Card: React.FC<{f: number; next?: boolean}> = ({f, next}) => {
 			</div>
 			{next ? (
 				<div style={{position: 'absolute', bottom: 34, width: '100%', textAlign: 'center', fontFamily: FONT, fontWeight: 700, fontSize: 18, color: K.mute, opacity: t}}>
-					Draft · illustrative numbers · Kokoro-82M · Remotion
+					Draft · illustrative numbers · Resemble AI · Remotion
 				</div>
 			) : null}
 		</AbsoluteFill>

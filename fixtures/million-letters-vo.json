@@ -1,150 +1,150 @@
 {
-  "voice": "af_heart",
+  "voice": "resemble:bee581c1",
   "lines": [
     {
       "id": "M01",
       "text": "One letter. Read once, in a fraction of a second.",
-      "duration": 3.072
+      "duration": 3.3
     },
     {
       "id": "M02",
       "text": "But a bank doesn't get one letter.",
-      "duration": 1.749
+      "duration": 1.734
     },
     {
       "id": "M03",
       "text": "It gets thousands every hour. A million every day.",
-      "duration": 3.157
+      "duration": 3.48
     },
     {
       "id": "M04",
       "text": "And every single one of them needs a decision.",
-      "duration": 2.709
+      "duration": 2.492
     },
     {
       "id": "M05",
       "text": "So here's the puzzle. Out of a million letters, how many should a person read?",
-      "duration": 4.331
+      "duration": 4.645
     },
     {
       "id": "M06",
       "text": "The safe answer: all of them.",
-      "duration": 1.771
+      "duration": 2.137
     },
     {
       "id": "M07",
       "text": "At a few minutes a letter, that's thousands of people, reading all day, every day.",
-      "duration": 4.544
+      "duration": 5.262
     },
     {
       "id": "M08",
       "text": "The fast answer: none of them. Let the machine decide everything.",
-      "duration": 3.819
+      "duration": 3.935
     },
     {
       "id": "M09",
       "text": "But remember the promise. At ninety-one percent, nine letters in a hundred are wrong.",
-      "duration": 4.992
+      "duration": 5.355
     },
     {
       "id": "M10",
       "text": "Nine in a hundred, out of a million, is ninety thousand mistakes. Every single day.",
-      "duration": 5.077
+      "duration": 6.038
     },
     {
       "id": "M11",
       "text": "Neither answer is right, because neither one counts the cost.",
-      "duration": 3.477
+      "duration": 3.442
     },
     {
       "id": "M12",
       "text": "A person reading a letter costs something. Let's say, two euros.",
-      "duration": 3.819
+      "duration": 4.504
     },
     {
       "id": "M13",
       "text": "A mistake costs more. A fraud report filed under billing. A frozen card. An angry customer. Say, twenty euros.",
-      "duration": 8.107
+      "duration": 8.367
     },
     {
       "id": "M14",
       "text": "Now take one letter that Jev is p sure about.",
-      "duration": 2.752
+      "duration": 3.034
     },
     {
       "id": "M15",
       "text": "If Jev decides, it's wrong with a chance of one minus p. And a mistake costs twenty.",
-      "duration": 5.589
+      "duration": 5.601
     },
     {
       "id": "M16",
       "text": "If a person reads it, it costs two. Every time.",
-      "duration": 3.051
+      "duration": 3.721
     },
     {
       "id": "M17",
       "text": "So a person should read it only when the risk costs more than the review.",
-      "duration": 3.819
+      "duration": 4.365
     },
     {
       "id": "M18",
       "text": "One minus p, times twenty, is more than two. So p is below zero point nine.",
-      "duration": 5.568
+      "duration": 5.936
     },
     {
       "id": "M19",
       "text": "Ninety percent. That line isn't a feeling. It falls out of two prices.",
-      "duration": 4.459
+      "duration": 4.525
     },
     {
       "id": "M20",
       "text": "Change the prices, and the line moves.",
-      "duration": 2.261
+      "duration": 2.68
     },
     {
       "id": "M21",
       "text": "Sorting newsletters? Mistakes are cheap. The line drops, and the machine takes almost everything.",
-      "duration": 5.845
+      "duration": 6.137
     },
     {
       "id": "M22",
       "text": "Freezing someone's card? Mistakes are expensive. The line climbs, and almost everything goes to a person.",
-      "duration": 6.72
+      "duration": 6.719
     },
     {
       "id": "M23",
       "text": "Back to our million letters. Here's how sure Jev is about each one.",
-      "duration": 3.776
+      "duration": 4.035
     },
     {
       "id": "M24",
       "text": "Everything above the line, Jev handles. Everything below it goes to a person.",
-      "duration": 4.736
+      "duration": 4.732
     },
     {
       "id": "M25",
       "text": "That's about a hundred and seventy thousand letters. Not a million. Not zero.",
-      "duration": 4.757
+      "duration": 4.878
     },
     {
       "id": "M26",
       "text": "All of this only works if ninety percent really means ninety percent.",
-      "duration": 4.224
+      "duration": 3.999
     },
     {
       "id": "M27",
       "text": "If Jev says ninety, but it's right only eighty times in a hundred, the math sends letters to the wrong place.",
-      "duration": 6.4
+      "duration": 6.555
     },
     {
       "id": "M28",
       "text": "So the machine reads the million.",
-      "duration": 1.707
+      "duration": 1.874
     },
     {
       "id": "M29",
       "text": "And people read the letters where they matter.",
-      "duration": 2.048
+      "duration": 2.066
     }
   ]
 }
