@@ -56,8 +56,12 @@ export function buildContract(vo: VoLine[]) {
 	sfx.push({f: 20, kind: 'chime', v: 0.6});
 	sfx.push({f: at('C01', 0.75), kind: 'lamp'});
 	sfx.push({f: S.contract.start + 20, kind: 'paperRise'});
-	[0.34, 0.55, 0.8].forEach((u) => sfx.push({f: at('C03', u), kind: 'pop', pitch: 1}));
-	sfx.push({f: cues.C03.end + 4, kind: 'clack', pitch: 0.8});
+	// three parts of the mast lowered by crane: a creak on the way down, a clank when they seat
+	[0.3, 0.47, 0.7].forEach((u, i) => {
+		sfx.push({f: at('C03', u) + 4, kind: 'creak', v: 0.5});
+		sfx.push({f: at('C03', u) + 30, kind: 'clack', pitch: 0.7 + i * 0.1});
+	});
+	sfx.push({f: at('C03', 0.9) + 4, kind: 'clack', pitch: 0.55});
 	sfx.push({f: at('C04', 0.45), kind: 'flutter', dur: 30});
 	sfx.push({f: at('C04', 0.62), kind: 'sweep'});
 	sfx.push({f: mailDrop, kind: 'clack', pitch: 1.2});
@@ -68,10 +72,11 @@ export function buildContract(vo: VoLine[]) {
 	sfx.push({f: at('C05', 0.55), kind: 'creak'});
 	sfx.push({f: at('C05', 0.62), kind: 'cut'});
 	sfx.push({f: cues.C06.start + 8, kind: 'sweep'});
-	sfx.push({f: at('C06', 0.4), kind: 'chime', v: 0.7});
+	sfx.push({f: at('C06', 0.42), kind: 'streamer'});
+	sfx.push({f: at('C06', 0.44), kind: 'chime', v: 0.7});
 	sfx.push({f: at('C07', 0.2), kind: 'paperRise'});
 	for (let i = 0; i < 3; i++) sfx.push({f: cues.C08.end + 6 + i * 24, kind: 'tick', pitch: 1 + i * 0.1});
-	sfx.push({f: at('C09', 0.62), kind: 'roll', dur: 30});
+	[0.22, 0.42, 0.64].forEach((u, i) => sfx.push({f: at('C09', u), kind: 'roll', dur: i === 2 ? 36 : 24}));
 	sfx.push({f: at('C10', 0.62), kind: 'chime', pitch: 1.5});
 	sfx.push({f: at('C10', 0.62) + 8, kind: 'chime', pitch: 1.5, v: 0.7});
 	sfx.push({f: at('C11', 0.1), kind: 'lamp'});

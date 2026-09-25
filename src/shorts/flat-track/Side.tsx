@@ -96,9 +96,9 @@ export const FlatStation: React.FC<{film: Film; f: number}> = ({film, f}) => {
 				{/* who the train stands for: a callout, not a box */}
 				{film.cues.L02 && f >= film.cues.L02.start + 26 && f < film.cues.L02.end + 14 ? (
 					<g opacity={1 - progress(f, film.cues.L02.end, film.cues.L02.end + 14)}>
-						<Callout from={{x: locoX - 60, y: 600}} to={{x: locoX - 250, y: 400}} title="like Claude" sub="a language model" k={progress(f, film.cues.L02.start + 26, film.cues.L02.start + 60)} size={44} anchor="end" />
+						<Callout from={{x: locoX - 60, y: 600}} to={{x: locoX - 250, y: 400}} title="Claude" k={progress(f, film.cues.L02.start + 26, film.cues.L02.start + 60)} size={44} anchor="end" />
 						<g opacity={1 - progress(f, film.cues.L02.end - 70, film.cues.L02.end - 56)}>
-							<Callout from={{x: gptX - 60, y: 590}} to={{x: gptX + 60, y: 430}} title="like ChatGPT" sub="another one" k={progress(f, film.cues.L02.start + 40, film.cues.L02.start + 74)} size={44} />
+							<Callout from={{x: gptX - 60, y: 590}} to={{x: gptX + 60, y: 430}} title="ChatGPT" k={progress(f, film.cues.L02.start + 40, film.cues.L02.start + 74)} size={44} />
 						</g>
 					</g>
 				) : null}
@@ -256,7 +256,7 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					</g>
 				) : null}
 				{tagK > 0 ? <path d={`M ${lamp.x} ${lamp.y} L 1260 120 L 1560 90 Z`} fill="#FFE9A0" opacity={0.18 * tagK} style={{mixBlendMode: 'screen'}} /> : null}
-				<Projected x={1400} y={130} text={pYes.toFixed(2)} size={110} k={tagK} sub="P(SCAM) · ONE PASS" />
+				<Projected x={1400} y={130} text={pYes.toFixed(2)} size={110} k={tagK} sub="SCAM" />
 				{/* the lake at the foot of the lighthouse hill */}
 				<Lake bank={BANK} level={WATER} right={2500} bottom={1500} f={f} reflectX={[lamp.x, 560]} lamp={f >= J ? lampOn : 0} />
 				<Mist x={1300} y={WATER - 14} w={1200} f={f} />
@@ -324,7 +324,7 @@ export const FlatValley: React.FC<{film: Film; f: number}> = ({film, f}) => {
 					: null}
 				{cues.L10b && f >= cues.L10b.start + 6 && f < cues.L10b.start + 116 ? (
 					<g opacity={1 - progress(f, cues.L10b.start + 100, cues.L10b.start + 116)}>
-						<Callout from={{x: loco.x - 110, y: loco.y - 200}} to={{x: loco.x - 40, y: loco.y - 470}} title="real models usually catch this one" sub="the scene is exaggerated, the mechanism is not" k={progress(f, cues.L10b.start + 6, cues.L10b.start + 40)} size={38} anchor="end" icon="check" />
+						<Callout from={{x: loco.x - 110, y: loco.y - 200}} to={{x: loco.x - 40, y: loco.y - 470}} title="usually caught" k={progress(f, cues.L10b.start + 6, cues.L10b.start + 40)} size={38} anchor="end" icon="check" />
 					</g>
 				) : null}
 				{/* the tender follows the track on its own, so the train bends over the edge of the bank */}

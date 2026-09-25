@@ -77,7 +77,10 @@ export function trainAt(film: Film, route: ForkGeo[], f: number, start: number) 
 	}
 	const g = route[k];
 	let Z = Zc;
-	if (X > g.x && X < g.x + BRANCH) Z = lerp(g.chosen.z0 + g.chosen.w / 2, Zc, smooth((X - g.x) / BRANCH));
+	const mouth = g.chosen.z0 + g.chosen.w / 2;
+	// through the switch: from the centre rail over to the chosen branch, then along its curve back to the centre
+	if (X > g.x - ROUTE.WAIT && X <= g.x) Z = lerp(Zc, mouth, smooth((X - (g.x - ROUTE.WAIT)) / ROUTE.WAIT));
+	else if (X > g.x && X < g.x + BRANCH) Z = lerp(mouth, Zc, smooth((X - g.x) / BRANCH));
 	const cum = f >= (film.forkTimes.find((x) => x.k === k)?.land ?? Infinity) ? g.cumAfter : g.cumBefore;
 	return {X, Z, cum, k};
 }

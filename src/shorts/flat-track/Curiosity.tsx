@@ -3,6 +3,7 @@ import {AbsoluteFill} from 'remotion';
 import {rng} from '../../fx/rough';
 import {FONT, FlatDefs, K, Motes, Stars, Vignette} from '../../flat/kit';
 import {Callout} from '../../flat/type';
+import {Equation} from '../../flat/math';
 import {Clouds, Moon, Mountains, WorldDefs} from '../../flat/world';
 import {SteamPress} from '../../characters/steam';
 import {GUESS_PAUSE, clamp01, easeIn, easeInOut, easeOut, lerp, progress} from '../paper-track/timeline';
@@ -84,21 +85,14 @@ export const GuessScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => 
 				<g transform={`translate(${x0 - 20} ${cy + 112})`}>
 					<SteamPress livery="claude" f={f} s={0.52} expr={expr} speech={[]} dist={0} smokeT={f * 0.012} />
 				</g>
-				{final > 0 ? (
-					<g transform={`translate(${x0 + N * seg + 10} ${cy})`}>
-						<Callout from={{x: 0, y: 0}} to={{x: -40, y: 220}} title="≈ 1%" sub="0.8 multiplied 20 times = 0.0115" k={final} size={50} anchor="end" />
-					</g>
-				) : null}
 				<Motes f={f} />
 				<Vignette />
 			</svg>
 			<div style={{position: 'absolute', left: 120, top: 110}}>
 				<Kin k={pop(f, at(0.1))} size={30} color={K.teal}>
-					<span style={{letterSpacing: 6}}>QUICK TEST</span>
+					<span style={{letterSpacing: 6}}>GUESS</span>
 				</Kin>
-				<Kin k={pop(f, at(0.28))}>every word: a safe bet, 80%</Kin>
-				<Kin k={pop(f, at(0.62))}>
-					a sentence of 20 words:{' '}
+				<Kin k={pop(f, at(0.62))} size={80}>
 					<span style={{color: K.orangeHi}}>{f < g2.start + 6 ? '?' : `${(cum * 100).toFixed(cum > 0.1 ? 0 : 2)}%`}</span>
 				</Kin>
 			</div>
@@ -111,7 +105,18 @@ export const GuessScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => 
 							{Math.max(1, 3 - count)}
 						</text>
 					</svg>
-					<div style={{textAlign: 'center', fontWeight: 800, fontSize: 22, color: K.mute, marginTop: 6}}>take a guess</div>
+				</div>
+			) : null}
+			{final > 0 ? (
+				<div style={{position: 'absolute', left: 0, right: 0, top: 820, textAlign: 'center'}}>
+					<Equation
+						size={70}
+						terms={[
+							{tex: '0.8^{20}', k: final, color: K.orangeHi, label: 'words', labelK: final},
+							{tex: '\\approx', k: final, color: K.mute},
+							{tex: '0.0115', k: final},
+						]}
+					/>
 				</div>
 			) : null}
 		</AbsoluteFill>
@@ -183,7 +188,6 @@ export const ShannonScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) =
 				<g transform="translate(830 110)">
 					<rect x={-14} y={-14} width={448} height={268} rx={12} fill="#7A4E3A" />
 					<rect x={0} y={0} width={420} height={240} rx={6} fill="#2E4A48" />
-					<text x={24} y={44} fontFamily={FONT} fontWeight={800} fontSize={24} fill="#DCE8E0" opacity={0.85}>how often each letter appears</text>
 					{['E', 'T', 'A', 'O', 'I', 'N', 'S', 'H'].map((ch, i) => {
 						const h = [12.7, 9.1, 8.2, 7.5, 7.0, 6.7, 6.3, 6.1][i] * 11;
 						const k = easeOut(progress(f, S.shannon.start + 10 + i * 3, S.shannon.start + 30 + i * 3));
@@ -210,7 +214,7 @@ export const ShannonScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) =
 					<path d="M 40 -90 Q 120 -60 160 -20" stroke="#2A2350" strokeWidth={26} strokeLinecap="round" fill="none" />
 					<path d="M -44 -196 A 44 44 0 0 1 30 -226" fill="none" stroke="#C9A35A" strokeWidth={4} opacity={0.7} />
 				</g>
-				<Callout from={{x: 740, y: 430}} to={{x: 560, y: 300}} title="Claude Shannon, 1951" sub="Bell Labs · father of information theory" k={progress(f, at1(0.25), at1(0.45))} size={40} anchor="end" />
+				<Callout from={{x: 740, y: 430}} to={{x: 560, y: 300}} title="Shannon" sub="1951" k={progress(f, at1(0.25), at1(0.45))} size={40} anchor="end" />
 				{/* the guessing game: one tile per letter, the number of guesses it took underneath */}
 				{layout.map(({ch, i, w}) => {
 					const t = tileStart + i * per;
@@ -239,14 +243,14 @@ export const ShannonScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) =
 					);
 				})}
 				<text x={960} y={960} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={22} fill={K.mute} opacity={easeOut(progress(f, tileStart + 30, tileStart + 50)) * (1 - words)}>
-					guesses needed for each letter (illustrative)
+					guesses
 				</text>
 				<Motes f={f} color={K.yellow} count={16} seed={5} />
 				<Vignette />
 			</svg>
 			<div style={{position: 'absolute', left: 1020, top: 700, opacity: easeOut(progress(f, at2(0.1), at2(0.22))) * (1 - words)}}>
 				<Kin k={1} size={30} color={K.teal}>
-					<span style={{letterSpacing: 4}}>MOSTLY 1s: LANGUAGE IS PREDICTABLE</span>
+					<span style={{letterSpacing: 4}}>PREDICTABLE</span>
 				</Kin>
 			</div>
 		</AbsoluteFill>
@@ -351,7 +355,7 @@ export const RunsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 								{l.t}
 							</text>
 							<text x={x} y={tubeBot + 80} textAnchor="middle" fontFamily={FONT} fontWeight={800} fontSize={20} fill={K.mute}>
-								{Math.round(l.p * 100)}% odds
+								{Math.round(l.p * 100)}%
 							</text>
 							<text x={x} y={tubeTop - 18 - (i === 3 ? 0 : 0)} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={isHot ? K.orangeHi : K.white} opacity={f >= t0 ? 1 : 0}>
 								{landed[i]}
@@ -367,21 +371,17 @@ export const RunsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 						</g>
 					) : null,
 				)}
-				{hot > 0 ? <Callout from={{x: tubeX(3), y: tubeBot - 60}} to={{x: tubeX(3) + 290, y: 380}} title="4 of 100" sub="rare is not never" k={hot} size={46} /> : null}
+				{hot > 0 ? <Callout from={{x: tubeX(3), y: tubeBot - 60}} to={{x: tubeX(3) + 290, y: 380}} title="4 / 100" k={hot} size={46} /> : null}
 				<Motes f={f} />
 				<Vignette />
 			</svg>
 			<div style={{position: 'absolute', left: 110, top: 110}}>
-				<Kin k={pop(f, r1.start + 20)} size={30} color={K.teal}>
-					<span style={{letterSpacing: 6}}>THE EXPERIMENT</span>
-				</Kin>
-				<Kin k={pop(f, r1.start + 60)}>same junction,</Kin>
-				<Kin k={pop(f, r1.end - 20)}>
+				<Kin k={pop(f, r1.end - 20)} size={72}>
 					<span style={{color: K.orangeHi}}>100 runs</span>
 				</Kin>
 			</div>
 			<div style={{position: 'absolute', left: 112, top: 300, fontFamily: FONT, fontWeight: 700, fontSize: 18, color: K.mute, opacity: progress(f, t0, t0 + 20)}}>
-				simulated at the odds shown
+				simulated
 			</div>
 		</AbsoluteFill>
 	);

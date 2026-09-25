@@ -146,7 +146,7 @@ const Twice: React.FC<{film: FlatFilm; f: number; out: number}> = ({film, f, out
 						<div style={{display: 'flex', alignItems: 'center', gap: 12}}>
 							<div style={{width: 14, height: 14, borderRadius: 7, background: K.teal}} />
 							<div style={{fontWeight: 900, fontSize: 28, color: K.white}}>A chatbot</div>
-							<div style={{fontWeight: 800, fontSize: 20, color: w ? K.orangeHi : K.mute, marginLeft: 'auto', letterSpacing: 2}}>{w ? 'ASKED AGAIN' : 'ASKED ONCE'}</div>
+							<div style={{fontWeight: 800, fontSize: 20, color: w ? K.orangeHi : K.mute, marginLeft: 'auto', letterSpacing: 2}}>{w ? 'AGAIN' : 'ONCE'}</div>
 						</div>
 						<div style={{marginTop: 18, marginLeft: 'auto', width: 'fit-content', background: K.indigoHi, color: K.white, borderRadius: 22, padding: '10px 18px', fontWeight: 800, fontSize: 26, boxShadow: sameQ > 0 ? `0 0 ${30 * sameQ}px rgba(74,227,200,${0.6 * sameQ})` : undefined}}>{TWICE.q}</div>
 						<div style={{marginTop: 24, fontWeight: 700, fontSize: 32, lineHeight: 1.5, color: K.white, minHeight: 200}}>
@@ -168,12 +168,12 @@ const Twice: React.FC<{film: FlatFilm; f: number; out: number}> = ({film, f, out
 				<g opacity={sameQ * (1 - diff * 0.4)}>
 					<path d={`M 960 150 L ${lerp(960, 836, sameQ)} 286 M 960 150 L ${lerp(960, 1420, sameQ)} 296`} stroke={K.teal} strokeWidth={3} fill="none" strokeLinecap="round" />
 					<circle cx={960} cy={150} r={6} fill={K.teal} />
-					<text x={960} y={128} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={K.white}>same question</text>
+					<text x={960} y={128} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={K.white}>same</text>
 				</g>
 				<g opacity={diff}>
 					<path d="M 960 860 L 520 720 M 960 860 L 1380 720" stroke={K.orange} strokeWidth={3} fill="none" strokeLinecap="round" />
 					<circle cx={960} cy={860} r={6} fill={K.orange} />
-					<text x={960} y={905} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={K.white}>different answer</text>
+					<text x={960} y={905} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={34} fill={K.white}>different</text>
 				</g>
 				{which > 0 ? (
 					<g transform={`translate(960 520) scale(${which})`}>
@@ -183,7 +183,6 @@ const Twice: React.FC<{film: FlatFilm; f: number; out: number}> = ({film, f, out
 					</g>
 				) : null}
 			</svg>
-			<div style={{position: 'absolute', top: 170, left: 150, fontFamily: FONT, fontWeight: 700, fontSize: 18, color: K.mute, opacity: 0.8}}>illustrative replies</div>
 		</AbsoluteFill>
 	);
 };
@@ -216,7 +215,6 @@ const ChatWindows: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 							<div style={{display: 'flex', alignItems: 'center', gap: 12}}>
 								<div style={{width: 14, height: 14, borderRadius: 7, background: w ? K.orange : K.teal}} />
 								<div style={{fontWeight: 900, fontSize: 28, color: K.white}}>{a.name}</div>
-								<div style={{fontWeight: 700, fontSize: 18, color: K.mute, marginLeft: 'auto'}}>illustrative reply</div>
 							</div>
 							<div style={{marginTop: 18, marginLeft: 'auto', width: 'fit-content', maxWidth: '80%', background: K.indigoHi, color: K.white, borderRadius: 22, padding: '10px 18px', fontWeight: 800, fontSize: 24}}>Is this email a scam?</div>
 							<div style={{marginTop: 22, fontWeight: 700, fontSize: 30, lineHeight: 1.55, color: K.white, minHeight: 280}}>

@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Audio, staticFile, useCurrentFrame} from 'remotion';
-import {FONT, FlatDefs, FlatLighthouse, FlatSubtitle, Hills, K, Motes, SansFormula, Stars, Vignette} from '../../flat/kit';
+import {FONT, FlatDefs, FlatLighthouse, Hills, K, Motes, Stars, Vignette} from '../../flat/kit';
+import {Equation, type Term} from '../../flat/math';
 import {Grain} from '../../styleframes/Shared';
 import fixture from '../../../fixtures/track-layer.json';
 import vo from '../../../fixtures/track-layer-flat-vo.json';
@@ -87,7 +88,7 @@ const Magnified: React.FC<{f: number; k: number; span: Span; context: string; po
 				</svg>
 				<div style={{textShadow: '0 4px 16px rgba(5,8,32,0.7)'}}>
 					<div style={{fontWeight: 900, fontSize: 84, color: K.white, lineHeight: 0.95}}>{Math.round(1 / real.cumBefore).toLocaleString('en-US')}×</div>
-					<div style={{fontWeight: 800, fontSize: 24, color: K.mute}}>zoomed in: the real track is only {fmt(real.cumBefore)} wide</div>
+					<div style={{fontWeight: 800, fontSize: 24, color: K.mute, letterSpacing: 4}}>ZOOM</div>
 				</div>
 			</div>
 		</>
@@ -100,30 +101,36 @@ const ChainPanel: React.FC<{f: number}> = ({f}) => {
 	const k = easeOut(progress(f, a + 4, a + 22), 3) * (1 - easeIn(progress(f, S.chain.end - 6, S.chain.end + 8)));
 	if (k <= 0) return null;
 	const n = 6;
-	const shown = Math.floor(progress(f, a + 10, a + 10 + n * 8) * n + 0.001);
-	const eqK = easeOut(progress(f, cues.L06.start + 10, cues.L06.start + 28), 2);
-	const nameK = easeOut(progress(f, cues.L06.start + 36, cues.L06.start + 50), 2);
+	const fk = (i: number) => easeOut(progress(f, a + 10 + i * 8, a + 18 + i * 8), 3);
+	const res = easeOut(progress(f, a + 10 + n * 8, a + 22 + n * 8), 3);
+	const l6 = cues.L06;
+	const e1 = easeOut(progress(f, l6.start + 6, l6.start + 20), 3);
+	const e2 = easeOut(progress(f, l6.start + 16, l6.start + 30), 3);
+	const e3 = easeOut(progress(f, l6.start + 26, l6.start + 40), 3);
+	const lab = easeOut(progress(f, l6.start + 44, l6.start + 60), 2);
+	const row1: Term[] = [];
+	route.slice(0, n).forEach((g, i) => {
+		if (i) row1.push({tex: '\\times', k: fk(i), color: K.mute});
+		row1.push({tex: fmt(g.chosen.p), k: fk(i), pop: Math.sin(Math.PI * fk(i))});
+	});
+	row1.push({tex: '=', k: res, color: K.mute}, {tex: fmt(route[n - 1].cumAfter), k: res, color: K.orangeHi, pop: Math.sin(Math.PI * res)});
 	return (
-		<div style={{position: 'absolute', left: 150, right: 150, top: 60, opacity: k, transform: `translateY(${(1 - k) * -30}px)`, textAlign: 'center', fontFamily: FONT, color: K.white, textShadow: '0 4px 20px rgba(5,8,32,0.8)'}}>
-			<div style={{position: 'absolute', left: '10%', right: '10%', top: -40, height: 380, borderRadius: '50%', background: 'radial-gradient(ellipse at center, rgba(8,10,40,0.55) 0%, rgba(8,10,40,0) 70%)', zIndex: -1}} />
-			<div style={{fontWeight: 800, fontSize: 22, letterSpacing: 2, color: K.mute}}>THE CHANCE OF THE WHOLE SENTENCE</div>
-			<div style={{fontWeight: 900, fontSize: 64, marginTop: 6, whiteSpace: 'nowrap'}}>
-				{route.slice(0, n).map((g, i) => (
-					<span key={i} style={{display: 'inline-block', opacity: i < shown ? 1 : 0, transform: `translateY(${i < shown ? 0 : 30}px) scale(${i === shown - 1 ? 1.12 : 1})`}}>
-						{i ? <span style={{color: K.mute, fontWeight: 700, margin: '0 16px'}}>×</span> : null}
-						{fmt(g.chosen.p)}
-					</span>
-				))}
-				<span style={{opacity: shown >= n ? 1 : 0.15}}>
-					<span style={{color: K.mute, fontWeight: 700, margin: '0 16px'}}>=</span>
-					<span style={{color: K.orangeHi}}>{fmt(route[n - 1].cumAfter)}</span>
-				</span>
+		<div style={{position: 'absolute', left: 0, right: 0, top: 70, opacity: k, textAlign: 'center'}}>
+			<div style={{position: 'absolute', left: '15%', right: '15%', top: -60, height: 460, borderRadius: '50%', background: 'radial-gradient(ellipse at center, rgba(8,10,40,0.6) 0%, rgba(8,10,40,0) 70%)'}} />
+			<div style={{position: 'relative'}}>
+				<Equation size={58} terms={row1} />
 			</div>
-			<div style={{height: 3, borderRadius: 2, background: `linear-gradient(90deg, transparent, ${K.teal}, transparent)`, margin: '22px 160px 20px', opacity: eqK}} />
-			<div style={{opacity: eqK, transform: `translateY(${(1 - eqK) * 10}px)`}}>
-				<SansFormula size={54} />
+			<div style={{position: 'relative', marginTop: 34, opacity: e1}}>
+				<Equation
+					size={78}
+					terms={[
+						{tex: 'P(\\text{sentence})', k: e1, color: K.orangeHi},
+						{tex: '=', k: e1, color: K.mute},
+						{tex: '\\prod_{t}', k: e2, color: K.teal, label: 'multiply', labelK: lab},
+						{tex: 'P(w_t \\mid w_{<t})', k: e3, label: 'next word', labelK: lab},
+					]}
+				/>
 			</div>
-			<div style={{opacity: nameK, marginTop: 18, fontWeight: 900, fontSize: 26, letterSpacing: 10, color: K.teal, transform: `scale(${0.9 + 0.1 * nameK})`}}>THE CHAIN RULE</div>
 		</div>
 	);
 };
@@ -179,7 +186,7 @@ const TitleCard: React.FC<{f: number; next?: boolean}> = ({f, next}) => {
 			</div>
 			{next ? (
 				<div style={{position: 'absolute', bottom: 34, width: '100%', textAlign: 'center', fontFamily: FONT, fontWeight: 700, fontSize: 18, color: K.mute, opacity: t}}>
-					Draft · word odds and Jev’s answer are illustrative placeholders · voice: Kokoro-82M · made with Remotion
+					Draft · illustrative numbers · Kokoro-82M · Remotion
 				</div>
 			) : null}
 		</AbsoluteFill>
@@ -225,7 +232,6 @@ export const TrackLayerFlat: React.FC = () => {
 		)},
 		{span: S.endcard, render: (x) => <TitleCard f={x - S.endcard.start} next />},
 	];
-	const line = film.vo.find((l) => f >= cues[l.id].start - 2 && f < cues[l.id].end + 8);
 	return (
 		<AbsoluteFill style={{background: K.night}}>
 			{scenes.map((sc, i) => {
@@ -238,7 +244,6 @@ export const TrackLayerFlat: React.FC = () => {
 					</AbsoluteFill>
 				);
 			})}
-			{line ? <FlatSubtitle text={line.text} /> : null}
 			<Grain id="flatGrain" opacity={0.06} freq={0.8} seed={(f % 5) + 1} />
 			{film.fx.status !== 'measured' && f < S.endcard.start ? (
 				<div style={{position: 'absolute', right: 40, top: 34, fontFamily: FONT, fontWeight: 800, fontSize: 13, letterSpacing: 3, color: K.mute, border: `2px solid ${K.indigoHi}`, borderRadius: 14, padding: '4px 12px', opacity: 0.8}}>DRAFT · ILLUSTRATIVE NUMBERS</div>

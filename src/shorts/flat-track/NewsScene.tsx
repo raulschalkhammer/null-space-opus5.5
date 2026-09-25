@@ -125,7 +125,7 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 							);
 						})
 					: null}
-				<Projected x={1530} y={206} text={film.fx.jev.p.toFixed(2)} size={130} k={num * (1 - progress(f, n4.start, n4.start + 20))} sub="P(SCAM)" />
+				<Projected x={1530} y={206} text={film.fx.jev.p.toFixed(2)} size={130} k={num * (1 - progress(f, n4.start, n4.start + 20))} sub="SCAM" />
 				<Cliff />
 				<g transform={`translate(${LH.x} ${LH.y}) scale(${LH.s})`}>
 					<FlatLighthouse on={lamp} />
@@ -149,10 +149,7 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 								</g>
 							))}
 							<line x1={fastX - 320} y1={850} x2={fastX} y2={850} stroke="#FFF1B8" strokeWidth={10} strokeLinecap="round" opacity={0.95} filter="url(#glow)" />
-							<Callout from={{x: 1150, y: 850}} to={{x: 1210, y: 780}} title="up to 100× faster*" k={progress(f, beatA[0] + 10, beatA[0] + 40)} color="#FFF1B8" size={42} />
-							<text x={slowX - 320} y={752} fontFamily={FONT} fontWeight={800} fontSize={24} fill={K.white} opacity={0.8 * clamp01((t - 14) / 10)}>
-								today: word, by word, by word…
-							</text>
+							<Callout from={{x: 1150, y: 850}} to={{x: 1210, y: 780}} title="193× faster*" k={progress(f, beatA[0] + 10, beatA[0] + 40)} color="#FFF1B8" size={42} />
 						</g>
 					);
 				})()}
@@ -172,13 +169,13 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 								))}
 								<Coin x={680} y={916} s={easeOut(progress(f, beatB[0] + 8, beatB[0] + 18))} />
 								<text x={400} y={900} textAnchor="end" fontFamily={FONT} fontWeight={800} fontSize={24} fill={K.white} opacity={0.8}>
-									a chatbot
+									chatbot
 								</text>
 								<text x={720} y={906} fontFamily={FONT} fontWeight={800} fontSize={24} fill={K.white} opacity={0.8}>
 									Jev
 								</text>
 							</g>
-							<Callout from={{x: 752, y: 832}} to={{x: 880, y: 700}} title="up to 100× cheaper*" k={progress(f, beatB[0] + 14, beatB[0] + 44)} color={K.yellow} size={42} />
+							<Callout from={{x: 752, y: 832}} to={{x: 880, y: 700}} title="445× cheaper*" k={progress(f, beatB[0] + 14, beatB[0] + 44)} color={K.yellow} size={42} />
 						</g>
 					);
 				})()}
@@ -209,7 +206,6 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 				<Kinetic text="SEPTEMBER 15, 2026" k={progress(f, n1.start + 4, n1.start + 40)} size={30} spacing={8} color={K.teal} stagger={0.02} />
 				<div style={{height: 12}} />
 				<Kinetic text="TypeSafe AI" k={progress(f, n1.start + 34, n1.start + 70)} size={78} />
-				<div style={{fontFamily: FONT, fontWeight: 800, fontSize: 26, color: K.mute, marginTop: 10, opacity: easeOut(progress(f, n1.start + 60, n1.start + 80))}}>releases a model that doesn’t write</div>
 			</div>
 			{/* forty million, counting up */}
 			{f >= beatC[0] ? (
@@ -217,11 +213,11 @@ export const NewsScene: React.FC<{film: FlatFilm; f: number}> = ({film, f}) => {
 					<div style={{fontFamily: FONT, fontWeight: 900, fontSize: 124, color: K.yellow, textShadow: '0 0 40px rgba(255,212,92,0.55)'}}>
 						${Math.round(40 * easeOut(progress(f, beatC[0], beatC[0] + 34), 3)).toString()},000,000
 					</div>
-					<div style={{fontFamily: FONT, fontWeight: 800, fontSize: 26, letterSpacing: 6, color: K.white, opacity: 0.85}}>RAISED ON THAT BET</div>
+					<div style={{fontFamily: FONT, fontWeight: 800, fontSize: 26, letterSpacing: 6, color: K.white, opacity: 0.85}}>SEED</div>
 				</div>
 			) : null}
 			<div style={{position: 'absolute', right: 60, top: 76, fontFamily: FONT, fontWeight: 700, fontSize: 19, color: K.mute, opacity: easeOut(progress(f, beatA[0] + 20, beatA[0] + 34)) * (1 - progress(f, n4.start, n4.start + 12))}}>
-				* the company’s own claims, “up to”, for certain tasks
+				* TypeSafe’s own tests
 			</div>
 		</AbsoluteFill>
 	);

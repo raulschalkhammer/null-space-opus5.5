@@ -60,6 +60,8 @@ const ForkRibbons: React.FC<{c: TCam; geo: ForkGeo; reveal: number; decided: num
 					<g key={i} opacity={op}>
 						{hot ? <path d={d} fill={K.orange} filter="url(#glowBig)" opacity={0.55} /> : null}
 						<path d={d} fill={fill} />
+						{/* switch rails: every branch diverges from the centre rail before the mouth, so the train can drive across */}
+						<Rails c={c} x0={x - ROUTE.WAIT} zc0={Zc} x1={x} zc1={b.z0 + w / 2} w={w} u1={reveal} hot={hot} />
 						<Rails c={c} x0={x} zc0={b.z0 + w / 2} x1={x + BRANCH} zc1={b.z1 + w / 2} w={w} u1={reveal} hot={hot} />
 						{!b.chosen && reveal > 0.99 ? (
 							<>
@@ -167,7 +169,7 @@ export const FlatTableWorld: React.FC<{
 			if (b.chosen || b.p < 0.07) return;
 			const p = proj(c, geo.x + BRANCH + STUB + 60 + j * 175, b.z1 + b.w / 2);
 			const pop = easeOut(progress(f, revealAt(i) + 8 + j * 2, revealAt(i) + 18 + j * 2), 2);
-			if (pop > 0.01) upright.push({Z: b.z1 + b.w / 2, node: <Marker key={`l${i}-${j}`} x={p.x} y={p.y} s={p.s * 2.2 * pop} title={b.other ? 'others' : b.t.trim() || '␣'} sub={pct(b.p)} opacity={1 - 0.8 * st.decided} />});
+			if (pop > 0.01) upright.push({Z: b.z1 + b.w / 2, node: <Marker key={`l${i}-${j}`} x={p.x} y={p.y} s={p.s * 2.2 * pop} title={b.other ? 'others' : b.t.trim() || '␣'} sub={pct(b.p)} opacity={1 - st.decided} />});
 		});
 		const ch = geo.chosen;
 		const glow = glowCards >= i;
@@ -205,7 +207,7 @@ export const FlatTableWorld: React.FC<{
 						{fmt(train.cum)}
 					</text>
 					<text x={-26} y={-78} textAnchor="end" fontFamily={FONT} fontWeight={800} fontSize={20} fill={K.mute} style={{paintOrder: 'stroke', stroke: 'rgba(8,10,40,0.7)', strokeWidth: 6}}>
-						chance so far
+						chance
 					</text>
 				</g>
 			) : null}
