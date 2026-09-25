@@ -8,7 +8,7 @@ import {Grain} from '../../styleframes/Shared';
 import vo from '../../../fixtures/million-letters-vo.json';
 import type {VoLine} from '../paper-track/timeline';
 import {clamp01, easeIn, easeInOut, easeOut, lerp, progress} from '../paper-track/timeline';
-import {A, Balance, Coin, CoinStack, Customer, Env, Grid10, HandsWithLetter, Mailroom, MailroomDefs, Panel, Reviewer, RopeLine, RED, Say, Stage, T, Tag, cam, pop, zoomTo} from './parts';
+import {A, Balance, Coin, CoinStack, Customer, Env, Gauge, Grid10, HandsWithLetter, LetterBig, Mailroom, MailroomDefs, Panel, PointingHand, Reviewer, RopeLine, RED, Say, Stage, T, cam, pop, zoomTo} from './parts';
 import {BankShot, CITY_BANK, BANK, CityShot, DeskShot, HOME, PlanetShot, TARGET} from './Zoom';
 import {GUESS_PAUSE, MILLION, buildMillion, lineFor} from './timeline';
 
@@ -584,18 +584,24 @@ const MathScene: React.FC<{f: number}> = ({f}) => {
 	const insB = at('M15', 0.6);
 	const rope = cues.M19.start;
 	if (f < wide) {
-		// extreme close-up: Jev's lamp, and the p it holds
-		const push = lerp(1, 1.1, progress(f, S.math.start, wide));
+		// close-up: one real letter under Jev's lamp, and the gauge that says how sure Jev is
+		const push = lerp(1, 1.08, progress(f, S.math.start, wide));
+		const scan = progress(f, S.math.start + 6, S.math.start + 26);
+		const pNow = lerp(0.5, 0.95, easeOut(progress(f, at('M14', 0.45), at('M14', 0.85)), 3)) + 0.004 * Math.sin(f * 0.4);
 		return (
 			<AbsoluteFill>
 				<Svg>
 					<g transform={`translate(960 540) scale(${push}) translate(-960 -540)`}>
 						<Mailroom f={f} holes={false} lamps={[]}>
-							<LampHead x={960} y={560} s={4.6} f={f} readout="p" />
+							<path d="M 700 250 L 420 860 L 1140 860 L 860 250 Z" fill={A.lamp} opacity={0.18 * Math.min(1, scan * 3)} />
+							<LampHead x={780} y={200} s={1.4} f={f} />
+							<rect x={200} y={820} width={1540} height={40} rx={10} fill="url(#gDesk)" />
+							<LetterBig x={780} y={640} s={1.3} r={-3} glow={scan > 0 && scan < 1 ? Math.sin(Math.PI * scan) : 0.2} />
+							<Gauge x={1440} y={560} s={1.25} p={pNow} />
 						</Mailroom>
 					</g>
 				</Svg>
-				<Say x={1500} y={420} k={pop(f, at('M14', 0.62))} text="p" size={160} color={K.yellow} weight={800} />
+				<Say x={1440} y={200} k={pop(f, at('M14', 0.55))} text="sure?" size={64} color={K.yellow} />
 			</AbsoluteFill>
 		);
 	}
@@ -620,14 +626,8 @@ const MathScene: React.FC<{f: number}> = ({f}) => {
 		return (
 			<AbsoluteFill>
 				<Svg>
-					<Mailroom f={f} lamps={[520, 1400]}>
-						<RopeLine x0={420} x1={1340} floor={900} v={v} f={f} crank={progress(f, at('M19', 0.02), at('M19', 0.28)) * 3} />
-						{f >= at('M19', 0.7) ? (
-							<>
-								<Tag x={700} y={yOnRope(0.9) + 60} text="€2" f={f} s={pop(f, at('M19', 0.7))} />
-								<Tag x={1000} y={yOnRope(0.9) + 60} text="€20" f={f + 20} s={pop(f, at('M19', 0.78))} />
-							</>
-						) : null}
+					<Mailroom f={f} lamps={[520, 1400]} holes={false}>
+						<RopeLine x0={420} x1={1340} floor={900} v={v} f={f} crank={progress(f, at('M19', 0.02), at('M19', 0.28)) * 3} tags={[{at: 0.33, text: '€2', s: pop(f, at('M19', 0.7))}, {at: 0.62, text: '€20', s: pop(f, at('M19', 0.78))}]} />
 					</Mailroom>
 				</Svg>
 				<Say x={1640} y={250} k={pop(f, at('M19', 0.3))} text="0.9" size={150} color={K.yellow} />
@@ -647,7 +647,9 @@ const MathScene: React.FC<{f: number}> = ({f}) => {
 		<AbsoluteFill>
 			<Svg>
 				<Mailroom f={f} lamps={[380, 1540]} holes={false}>
-					<LampHead x={250} y={420} s={1.5} f={f} readout={p.toFixed(2)} />
+					<LampHead x={250} y={250} s={1.1} f={f} />
+					<LetterBig x={250} y={420} s={0.5} r={-4} glow={0.3} />
+					<Gauge x={250} y={680} s={0.8} p={p} />
 					<rect x={360} y={830} width={1200} height={40} rx={10} fill="url(#gDesk)" />
 					<Balance x={960} y={440} s={0.9} tilt={-tilt} labels={['risk', 'review']} labelK={e3} left={<CoinStack x={0} y={0} n={risk * 2} w={80} />} right={e3 > 0 ? <Coin x={0} y={-40} s={0.9} label="€2" /> : null} />
 				</Mailroom>
@@ -668,11 +670,10 @@ const MathScene: React.FC<{f: number}> = ({f}) => {
 					<Equation size={96} terms={[{tex: 'p < 0.9', k: e4, color: K.yellow, pop: 1 - progress(f, at('M18', 0.62), at('M18', 0.85))}]} />
 				</div>
 			) : null}
-			{decide && e4 <= 0 ? <Say x={decide === 'Jev' ? 1560 : 360} y={decide === 'Jev' ? 560 : 640} k={1} text={decide} size={56} color={decide === 'Jev' ? K.yellow : A.lamp} /> : null}
+			{decide && e4 <= 0 ? <Say x={960} y={930} k={1} text={decide} size={56} color={decide === 'Jev' ? K.yellow : A.lamp} /> : null}
 		</AbsoluteFill>
 	);
 };
-const yOnRope = (p: number) => 900 - 40 - ((p - 0.5) / 0.5) * (520 - 60);
 
 // ---------- 6. the line moves ----------
 const MovesScene: React.FC<{f: number}> = ({f}) => {
@@ -682,10 +683,9 @@ const MovesScene: React.FC<{f: number}> = ({f}) => {
 		return (
 			<AbsoluteFill>
 				<Svg>
-					<g transform={cam(1340, 400, 2.4)}>
+					<g transform={cam(1340, 470, 2.2)}>
 						<Mailroom f={f} lamps={[1340]}>
-							<RopeLine x0={420} x1={1340} floor={900} v={0.9 + 0.01 * Math.sin(f * 0.3)} f={f} crank={f * 0.02} />
-							<Tag x={1240} y={420} text="€20" f={f} />
+							<RopeLine x0={420} x1={1340} floor={900} v={0.9 + 0.01 * Math.sin(f * 0.3)} f={f} crank={f * 0.02} tags={[{at: 0.86, text: '€20'}]} />
 						</Mailroom>
 					</g>
 				</Svg>
@@ -706,8 +706,7 @@ const MovesScene: React.FC<{f: number}> = ({f}) => {
 							const u = ((f * 0.03 + i / 26) % 1) * flood;
 							return <Env key={i} x={lerp(520 + ((i * 41) % 400), 1700, u)} y={760 - ((i * 23) % 120) - 200 * Math.sin(Math.PI * u)} s={0.8} r={((i * 17) % 40) - 20} tint={['#9FD8C8', '#F2C66A', '#E0A0C0', '#A8B8F0'][i % 4]} />;
 						})}
-						<RopeLine x0={420} x1={1340} floor={900} v={vCheap} f={f} crank={progress(f, at('M21', 0.42), at('M21', 0.62)) * -2} />
-						<Tag x={1180} y={yOnRope(vCheap) + 50} text="€4" f={f} />
+						<RopeLine x0={420} x1={1340} floor={900} v={vCheap} f={f} crank={progress(f, at('M21', 0.42), at('M21', 0.62)) * -2} tags={[{at: 0.5, text: '€4'}]} />
 					</Mailroom>
 				</Panel>
 				{split > 0 ? (
@@ -719,8 +718,7 @@ const MovesScene: React.FC<{f: number}> = ({f}) => {
 								<rect x={-120} y={-44} width={240} height={30} fill="#233A6E" />
 								<rect x={30} y={10} width={80} height={62} rx={12} fill={RED} />
 							</g>
-							<RopeLine x0={420} x1={1340} floor={900} v={vDear} f={f} crank={progress(f, at('M22', 0.42), at('M22', 0.62)) * 3} />
-							<Tag x={1180} y={yOnRope(vDear) + 50} text="€200" f={f} red />
+							<RopeLine x0={420} x1={1340} floor={900} v={vDear} f={f} crank={progress(f, at('M22', 0.42), at('M22', 0.62)) * 3} tags={[{at: 0.5, text: '€200', red: true}]} />
 						</Mailroom>
 					</Panel>
 				) : null}
@@ -866,11 +864,12 @@ const CloseScene: React.FC<{f: number}> = ({f}) => {
 				<div style={{fontWeight: 900, fontSize: 54, lineHeight: 1.25, marginTop: 18}}>My card was charged twice, and now I can’t find it.</div>
 			</div>
 			<Svg>
-				<g transform={`translate(${lerp(560, 1330, trace)} ${520 + 6 * Math.sin(f * 0.2)}) rotate(-20)`}>
-					<path d="M 0 0 Q -14 -8 -12 -40 L -8 -250 Q 0 -270 16 -250 L 20 -40 Q 18 -4 0 0 Z" fill={A.skin} transform="translate(0 20)" />
-					<path d="M -60 60 Q -80 -60 0 -80 Q 90 -70 80 40 L 60 260 L -40 260 Z" fill={A.skin} transform="translate(0 180)" />
-					<path d="M -70 380 L -50 200 L 90 200 L 110 380 Z" fill={A.sleeve} transform="translate(0 180)" />
-				</g>
+				{(() => {
+					// the fingertip runs just under the last line, so the words stay readable (the card is tilted by -3 degrees)
+					const x = lerp(520, 1040, easeInOut(trace));
+					const y = 528 - (x - 500) * 0.052 + 3 * Math.sin(f * 0.25);
+					return <PointingHand x={x} y={y} s={0.9} />;
+				})()}
 			</Svg>
 			<AbsoluteFill style={{background: '#05060F', opacity: out}} />
 		</AbsoluteFill>

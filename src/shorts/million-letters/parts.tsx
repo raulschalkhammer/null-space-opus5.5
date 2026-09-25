@@ -356,17 +356,31 @@ export const Panel: React.FC<{id: string; x: number; w: number; children: React.
 );
 
 // The line, made physical: a brass gauge post with a velvet rope whose height marks the threshold.
-export const RopeLine: React.FC<{x0: number; x1: number; floor: number; v: number; lo?: number; hi?: number; h?: number; f: number; crank?: number}> = ({x0, x1, floor, v, lo = 0.5, hi = 1, h = 520, f, crank = 0}) => {
+export type RopeTag = {at: number; text: string; red?: boolean; s?: number};
+export const RopeLine: React.FC<{x0: number; x1: number; floor: number; v: number; lo?: number; hi?: number; h?: number; f: number; crank?: number; tags?: RopeTag[]}> = ({x0, x1, floor, v, lo = 0.5, hi = 1, h = 520, f, crank = 0, tags = []}) => {
 	const yOf = (p: number) => floor - 40 - ((p - lo) / (hi - lo)) * (h - 60);
 	const ry = yOf(v);
+	const sag = 70 + 6 * Math.sin(f * 0.1);
+	// a point on the rope: the quadratic curve from post to post, t in 0..1
+	const on = (t: number) => ({x: lerp(x0, x1, t), y: ry + 2 * (1 - t) * t * sag});
 	return (
 		<g>
 			{/* the far post */}
 			<rect x={x0 - 12} y={ry - 20} width={24} height={floor - ry + 20} rx={8} fill={A.brassLo} />
 			<circle cx={x0} cy={ry - 24} r={18} fill={A.brassHi} />
 			{/* the rope */}
-			<path d={`M ${x0} ${ry} Q ${(x0 + x1) / 2} ${ry + 70 + 6 * Math.sin(f * 0.1)} ${x1} ${ry}`} fill="none" stroke="#B0243A" strokeWidth={16} strokeLinecap="round" />
-			<path d={`M ${x0} ${ry - 4} Q ${(x0 + x1) / 2} ${ry + 64 + 6 * Math.sin(f * 0.1)} ${x1} ${ry - 4}`} fill="none" stroke="#E25563" strokeWidth={5} strokeLinecap="round" opacity={0.7} />
+			<path d={`M ${x0} ${ry} Q ${(x0 + x1) / 2} ${ry + sag} ${x1} ${ry}`} fill="none" stroke="#B0243A" strokeWidth={16} strokeLinecap="round" />
+			<path d={`M ${x0} ${ry - 4} Q ${(x0 + x1) / 2} ${ry + sag - 6} ${x1} ${ry - 4}`} fill="none" stroke="#E25563" strokeWidth={5} strokeLinecap="round" opacity={0.7} />
+			{/* price tags, tied onto the rope itself */}
+			{tags.map((t, i) => {
+				const pt = on(t.at);
+				return t.s === 0 ? null : (
+					<g key={i}>
+						<Tag x={pt.x} y={pt.y + 62} text={t.text} f={f + i * 20} s={t.s ?? 1} red={t.red} />
+						<circle cx={pt.x} cy={pt.y} r={7} fill={A.paperLo} />
+					</g>
+				);
+			})}
 			{/* the gauge post */}
 			<rect x={x1 - 22} y={floor - h} width={44} height={h} rx={10} fill={A.brass} />
 			{[0.5, 0.6, 0.7, 0.8, 0.9, 1.0].filter((p) => p >= lo && p <= hi).map((p) => (
@@ -397,5 +411,89 @@ export const Tag: React.FC<{x: number; y: number; text: string; f: number; s?: n
 		<text x={0} y={88} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={42} fill={red ? '#FFFFFF' : A.ink}>
 			{text}
 		</text>
+	</g>
+);
+
+// A letter you can read as a letter: address lines, a stamp, a postmark.
+export const LetterBig: React.FC<{x: number; y: number; s?: number; r?: number; glow?: number}> = ({x, y, s = 1, r = 0, glow = 0}) => (
+	<g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
+		{glow > 0 ? <rect x={-230} y={-150} width={460} height={300} rx={30} fill={A.lamp} opacity={0.45 * glow} filter="url(#glowBig)" /> : null}
+		<rect x={-200} y={-124} width={400} height={248} rx={12} fill="#2A1510" opacity={0.25} transform="translate(8 10)" />
+		<rect x={-200} y={-124} width={400} height={248} rx={12} fill={A.paper} />
+		<rect x={-200} y={-124} width={400} height={248} rx={12} fill="none" stroke={A.paperLo} strokeWidth={4} />
+		{/* airmail border */}
+		{Array.from({length: 15}, (_, i) => (
+			<rect key={i} x={-196 - 69 + 6 + i * 25} y={-120} width={12} height={8} fill={i % 2 ? '#4F6FB0' : '#C8463C'} transform={`skewX(-30)`} opacity={0.85} />
+		))}
+		{/* stamp */}
+		<g transform="translate(140 -58)">
+			<rect x={-38} y={-44} width={76} height={88} fill="#FFFFFF" />
+			{Array.from({length: 8}, (_, i) => (
+				<g key={i}>
+					<circle cx={-38 + i * 10.8} cy={-44} r={3.5} fill={A.paperLo} />
+					<circle cx={-38 + i * 10.8} cy={44} r={3.5} fill={A.paperLo} />
+				</g>
+			))}
+			<rect x={-30} y={-36} width={60} height={72} fill={K.orange} />
+			<path d="M -12 18 L -6 -14 L 6 -14 L 12 18 Z" fill="#FFFFFF" />
+			<path d="M -8 -14 L 0 -24 L 8 -14 Z" fill={K.rose} />
+		</g>
+		{/* postmark */}
+		<g transform="translate(70 -58)" opacity={0.55}>
+			<circle r={30} fill="none" stroke={A.ink} strokeWidth={3} />
+			{[-10, 0, 10].map((dy) => (
+				<path key={dy} d={`M 36 ${dy} q 12 -8 24 0 t 24 0 t 24 0`} fill="none" stroke={A.ink} strokeWidth={3} />
+			))}
+		</g>
+		{/* address */}
+		{[0, 1, 2].map((i) => (
+			<rect key={i} x={-120} y={10 + i * 30} width={[190, 150, 110][i]} height={12} rx={6} fill="#8C7CA8" opacity={0.8} />
+		))}
+		<rect x={-170} y={-70} width={120} height={10} rx={5} fill="#B8AAC8" />
+		<rect x={-170} y={-52} width={90} height={10} rx={5} fill="#B8AAC8" />
+	</g>
+);
+
+// A confidence gauge: how sure Jev is, from 0 to 1.
+export const Gauge: React.FC<{x: number; y: number; s?: number; p: number; label?: string}> = ({x, y, s = 1, p, label = 'p'}) => {
+	const a = Math.PI * (1 - p);
+	return (
+		<g transform={`translate(${x} ${y}) scale(${s})`}>
+			<path d="M -150 0 A 150 150 0 0 1 150 0 L 150 26 L -150 26 Z" fill="#2A1820" />
+			<path d="M -120 0 A 120 120 0 0 1 120 0" fill="none" stroke="#4A2C3B" strokeWidth={22} />
+			<path d={`M -120 0 A 120 120 0 0 1 ${Math.cos(a) * 120} ${-Math.sin(a) * 120}`} fill="none" stroke={K.yellow} strokeWidth={22} />
+			{Array.from({length: 11}, (_, i) => {
+				const b = Math.PI * (1 - i / 10);
+				return <line key={i} x1={Math.cos(b) * 138} y1={-Math.sin(b) * 138} x2={Math.cos(b) * 146} y2={-Math.sin(b) * 146} stroke={A.paper} strokeWidth={i % 5 ? 2 : 4} />;
+			})}
+			<line x1={0} y1={0} x2={Math.cos(a) * 104} y2={-Math.sin(a) * 104} stroke={A.paper} strokeWidth={8} strokeLinecap="round" />
+			<circle r={14} fill={A.brass} />
+			<text x={-150} y={58} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={26} fill={A.paperLo}>0</text>
+			<text x={150} y={58} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={26} fill={A.paperLo}>1</text>
+			<text x={0} y={70} textAnchor="middle" fontFamily={FONT} fontWeight={900} fontSize={44} fill={K.yellow}>
+				{label} = {p.toFixed(2)}
+			</text>
+		</g>
+	);
+};
+
+// A hand with its index finger pointing; the fingertip is at (0, 0), the arm comes in from below right.
+export const PointingHand: React.FC<{x: number; y: number; s?: number; r?: number}> = ({x, y, s = 1, r = -24}) => (
+	<g transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}>
+		{/* sleeve */}
+		<path d="M -70 300 L 110 300 L 130 620 L -90 620 Z" fill={A.sleeve} />
+		<path d="M -76 300 L 116 300 L 116 330 L -76 330 Z" fill={A.sleeveLo} />
+		{/* palm and curled fingers */}
+		<path d="M -60 150 Q -80 230 -60 300 L 100 300 Q 124 230 104 160 Q 90 120 40 124 L -20 124 Q -54 124 -60 150 Z" fill={A.skin} />
+		{[0, 1, 2].map((i) => (
+			<ellipse key={i} cx={30 + i * 26} cy={150 + i * 8} rx={20} ry={26} fill={A.skin} stroke={A.skinLo} strokeWidth={4} />
+		))}
+		{/* thumb */}
+		<path d="M -58 190 Q -100 170 -96 130 Q -92 108 -70 116 Q -44 140 -34 176 Z" fill={A.skin} stroke={A.skinLo} strokeWidth={4} />
+		{/* index finger, joined to the palm */}
+		<path d="M -22 150 L -22 18 Q -22 -4 0 -4 Q 22 -4 22 18 L 22 150 Z" fill={A.skin} />
+		<path d="M -22 150 L -22 18 Q -22 -4 0 -4 Q 22 -4 22 18 L 22 150" fill="none" stroke={A.skinLo} strokeWidth={4} />
+		<path d="M -12 12 Q 0 4 12 12 L 12 26 Q 0 30 -12 26 Z" fill="#F4D6C0" />
+		<path d="M -14 80 Q 0 86 14 80" fill="none" stroke={A.skinLo} strokeWidth={3} strokeLinecap="round" />
 	</g>
 );

@@ -4,7 +4,7 @@ import {City, Moon, WorldDefs} from '../../flat/world';
 import {SteamPress} from '../../characters/steam';
 import {withLook} from '../flat-track/trainMood';
 import {clamp01, lerp} from '../paper-track/timeline';
-import {A, Env, MailroomDefs} from './parts';
+import {A, LetterBig, MailroomDefs} from './parts';
 
 // The powers-of-ten zoom that opens (and, reversed, closes) chapter 3:
 // one letter on a desk, a lit window of the bank, the city at night, the planet.
@@ -28,7 +28,7 @@ export const DeskShot: React.FC<{f: number; sweep: number; flash: number}> = ({f
 		))}
 		<ellipse cx={960} cy={820} rx={560} ry={110} fill="#2A1510" opacity={0.35} />
 		{/* the letter */}
-		<Env x={960} y={700} s={6.4} r={-4} />
+		<LetterBig x={960} y={700} s={1.3} r={-4} />
 		{/* read once: a band of light crosses it */}
 		{sweep > 0 && sweep < 1 ? <rect x={lerp(300, 1500, sweep) - 60} y={380} width={120} height={640} fill="#FFF1C0" opacity={0.55 * Math.sin(Math.PI * sweep)} transform="skewX(-14)" style={{mixBlendMode: 'screen'}} /> : null}
 		{flash > 0 ? <rect x={-60} y={-60} width={2040} height={1200} fill="#FFF1C0" opacity={0.25 * flash} /> : null}
