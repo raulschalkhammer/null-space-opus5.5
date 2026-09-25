@@ -82,7 +82,12 @@ Needs Node 22+, Python 3.10+ and git.
 
 The scripts find Remotion's ffmpeg for your platform and its browser through `data-scripts/local.mjs`.
 - On a laptop, Remotion downloads its own headless Chrome the first time. The container-only browser path is used only when it exists.
-- Tested in the Linux container only. Scripts use `node`/`python` paths as written, so on Windows use WSL or adjust `.venv/bin/python` to `.venv\Scripts\python`.
+- Tested in the Linux container and on an Intel Mac (macOS, Node 25).
+  - On macOS the bundled ffmpeg needs `DYLD_LIBRARY_PATH`, which `local.mjs` and `pacing.py` set.
+  - A full chapter 1 render takes about 12 minutes there.
+  - Don't run two renders at once: a second browser once stalled the first.
+- Scripts use `node`/`python` paths as written, so on Windows use WSL or adjust `.venv/bin/python` to `.venv\Scripts\python`.
+- The Screening Room's source is `src/preview/` (`main.tsx`, `page.html`). To check it locally, `.claude/launch.json` serves `preview/` on port 8765.
 
 Then start Claude Code in the repo folder, signed in with your subscription:
 - **Terminal:** `claude`

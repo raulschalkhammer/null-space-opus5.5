@@ -21,10 +21,14 @@ It's built in Remotion (React, 24 fps, 1920×1080) in a flat-vector style, with 
 - **Anything that stands for something must be recognisable.** A letter has an address, a stamp and a postmark (`LetterBig`); p is a gauge. If a viewer couldn't name the object, redesign it.
 - **Story like Veritasium, looks like Kurzgesagt:**
   - **Story:** a puzzle, then the viewer guesses (a countdown with "GUESS"), then the experiment, then the math.
-  - **One new picture per narration line.** Almost no still frames: parallax, drifting particles, blinking lights.
+  - **Let shots breathe.** Ambient motion (parallax, drifting particles, blinking lights) is good, but there's no quota of new pictures per line.
   - **A palette per world**, and world scenes take turns with short concept stages (one idea on a glowing tile).
-  - **Also:** split panels for comparisons, zooms between scales, close-ups, and hard cuts on reveals.
-  - **Reference pacing:** a new look every 2.7 s, 7% still. Measure with `data-scripts/pacing.py`.
+  - **Also:** split panels for comparisons and zooms between scales. Use a hard cut only for a real reveal.
+  - **No pacing target.** The old aim (a new look every 2.7 s, measured with `data-scripts/pacing.py`) was dropped on 2026-09-25. A rework of chapters 1 and 2 built to it was rejected and reverted, for three reasons:
+    - Constant hard cuts between shots are annoying.
+    - Tight close-ups hide what the picture is about.
+    - Zooming and panning left half the screen empty.
+  - **Keep the whole picture readable.** The viewer should always see enough of the scene to understand it: no extreme close-ups that lose the object, and no camera move that shows empty space past the edge of the drawing.
 - **Math typography:** use `Equation` in `src/flat/math.tsx`. That's KaTeX with colour-coded terms, built one at a time, with a curly brace and a one-word label under each term. No boxes. Put the equation inside the world where you can (over the brass scale, for example).
 - **Numbers:**
   - Jev's published claims are up to 193.6× faster and 444.6× cheaper. Always say "TypeSafe's own tests".

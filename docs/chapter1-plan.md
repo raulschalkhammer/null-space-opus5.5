@@ -1,6 +1,6 @@
 # Chapter 1: Track Layer (shot list for the rework)
 
-Status: **draft for sign-off.** Nothing here is built yet.
+Status: **rejected, do not build.** This shot list was built on 2026-09-25 and then reverted: the constant hard cuts were annoying, the tight close-ups hid what the pictures were about, and the camera moves left half the screen empty. Chapter 1 is back to its original version. Kept only as a record; see the pacing rules in `CLAUDE.md`.
 
 The narration (H01 to L14) and its timing stay exactly as they are. What changes is the picture: chapter 1 gets the chapter 3 rules (see `docs/chapter3-plan.md` and `CLAUDE.md`) and more shots than chapter 3 has. The approved pieces stay the centre of their scenes: the steam trains and their expressions, the forks with branch widths, the guess beat, Shannon's study, the marble machine and the 100 runs, the swamp. They get more angles, close-ups and cuts around them.
 
