@@ -1,6 +1,6 @@
 # Chapter 2: Jev's Contract (shot list for the rework)
 
-Status: **built** (signed off 2026-09-25). The shot list below is the plan; "As built" at the end lists where the build differs.
+Status: **draft for sign-off.** Nothing here is built yet.
 
 The narration (C01 to C11) and its timing stay exactly as they are. What changes is the picture: chapter 2 gets the chapter 3 rules (see `docs/chapter3-plan.md` and `CLAUDE.md`) and more shots than chapter 3 has.
 
@@ -12,7 +12,6 @@ Measured with `data-scripts/pacing.py` on the cached render (`renders/ch2-JevCon
 |---|---|---|---|---|
 | Chapter 2 before (last handover) | 30.7 s | 47.2 s | 82% | 0 |
 | Chapter 2 before (fresh render, this machine) | 30.7 s | 47.2 s | 81% | 0 |
-| **Chapter 2 after (as built)** | **2.6 s** | **8.0 s** | **9%** | **50** |
 | Chapter 3 (for comparison) | 4.3 s | about 20 s | 40% | |
 | Kurzgesagt reference | 2.7 s | 18.5 s | 7% | 25 in 5:22 |
 | **Chapter 2 target** | **3 s or less** | **about 8 s** | **under 20%** | |
@@ -114,23 +113,3 @@ Shots 3, 13, 20, 23, 42 and 47 are close-ups with no hands: objects move by them
 - **Scale changes:** 7 (paragraph to track), 16 (padlock to mast), 54 (lamp to harbor).
 - **On-screen words** are single words or numbers. The only sentences are the letters Jev reads (the cruise email, the hard letter) and the train's speech tape.
 - **Numbers:** 0.91, 83%, 0.7, 47/28/25 and the 60 line are illustrative, and the "DRAFT · ILLUSTRATIVE NUMBERS" badge stays.
-
-## As built
-
-The build has **58 shots** (`src/shorts/jev-contract/Film.tsx`, one `Shots` list per scene, from `src/flat/shots.tsx`). Every shot carries a slow camera move (a push, pull or pan), and shots change on hard cuts; cross-fades are left only at the five section changes. Where the build differs from the list above:
-
-- **C02 (shots 6 to 9), reordered.**
-  - 6 is now the pier, where the train's chatter piles up into pages. **"more"**
-  - 7 is the paragraph-against-0.91 split.
-  - 8 is the match cut to the track of word sleepers, with a die per word.
-  - 9 is the die close-up.
-  - The planned "wide dice with the dark lighthouse" shot was dropped.
-- **Added 14b:** a close-up along the rolled team flags, as the yardarm seats.
-- **Added 18b:** a pan along the three slot plates.
-- **Shot 32 is reframed.** The camera tilts up into the open sky beside the mast, so the equation reads clear of the flags, and the flags glow in turn as "multiplied" is said.
-- **Shot 45 is now a three-way split**, one tube per panel: **"28"**, **"47"**, **"25"**. The planned single wide shot held the same framing for too long.
-- **Added 46a:** the reviewer waits at the desk with an empty tray. **"useful"** In shot 49 the letter lands in that tray.
-- **The FIXED stamp** sits on the pier face, clear of the flag labels.
-- **Also changed:**
-  - The mailroom wall and floor continue past the room's edges, so close-ups near the sides stay inside the world.
-  - `LampHead` (Jev in the mailroom) moved to `million-letters/parts.tsx` and is shared by chapters 2 and 3.
