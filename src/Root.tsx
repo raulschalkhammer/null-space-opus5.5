@@ -13,6 +13,7 @@ import {ACT_FRAMES, SteamActing, SteamMoodsClaude, SteamMoodsGpt} from './stylef
 import {JevContract, contract} from './shorts/jev-contract/Film';
 import {MillionLetters, million} from './shorts/million-letters/Film';
 import {SignalBox, signal} from './shorts/signal-box/Film';
+import {Thumbnail} from './thumbnail/Thumbnail';
 import {FILM_TOTAL, Final1, Final2, Final3, Final4, FinalFilm, edls} from './shorts/final/Film';
 
 // Block rendering until every webfont is ready, so no frame renders with fallback fonts.
@@ -41,6 +42,7 @@ export const RemotionRoot: React.FC = () => (
 		<Composition id="Final3" component={Final3} durationInFrames={edls.ch3.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="Final4" component={Final4} durationInFrames={edls.ch4.total} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="FinalFilm" component={FinalFilm} durationInFrames={FILM_TOTAL} fps={FPS} width={WIDTH} height={HEIGHT} />
+		<Composition id="Thumbnail" component={Thumbnail} durationInFrames={1} fps={FPS} width={1280} height={720} />
 		<Composition id="SteamActing" component={SteamActing} durationInFrames={ACT_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleA-Riso" component={StyleRiso} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
 		<Composition id="StyleB-Blueprint" component={StyleBlueprint} durationInFrames={1} fps={FPS} width={WIDTH} height={HEIGHT} />
